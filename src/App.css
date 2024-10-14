@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    margin-left: 20px; /* Adjust if needed */
+}
+
+.card {
+    border: 1px solid #ddd; /* Card border */
+    border-radius: 5px; /* Card border radius */
+}
+
+/* Ensure that the body takes the full height */
+html, body {
+    height: 100%;
+}

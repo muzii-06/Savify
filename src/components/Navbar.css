@@ -1,0 +1,28 @@
+.custom-navbar {
+    background-color: #FFCC00; /* Orange background color */
+    padding: 1rem 1rem; /* Adjust padding */
+    position: fixed;
+    top:0;
+    left: 0;
+    width:100%;
+}
+
+.navbar-brand img {
+    height: 30px; /* Adjust logo height */
+}
+
+.search-input {
+    height: 38px; /* Adjust input height */
+}
+
+.nav-link {
+    color: white !important; /* Change link color to white */
+    margin-left: 15px; /* Space between links */
+}
+
+.nav-link:hover {
+    color: black !important; /* Change color on hover */
+}
+.cart-icon {
+    font-size: 2rem !important; /* Increase the cart icon size */
+}

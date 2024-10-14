@@ -1,0 +1,36 @@
+.sidebar {
+    width: 200px; /* Set a fixed width for the sidebar */
+    background-color: #f8f9fa; /* Light background color */
+    padding: 20px; /* Padding for the sidebar */
+     /* Fixes the sidebar on the left */
+    /* Full height */
+   
+   
+        position:relative;
+       
+        height: 100vh;
+        background:linear-gradient(45deg,#10111a,#131444);
+        position:fixed;
+        top:0;
+        transition: all 1.2s;
+        transform: translateX(-200%);
+        /* transform: translateX(0);  */
+    
+}
+
+.sidebar h2 {
+    margin-bottom: 15px; /* Space below the title */
+}
+
+.sidebar ul {
+    list-style: none; /* Remove default list styling */
+    padding: 0; /* Remove padding */
+}
+
+.sidebar li {
+    margin-bottom: 10px; /* Space between items */
+}
+
+.sidebar li ul {
+    margin-left: 15px; /* Indent subcategories */
+}

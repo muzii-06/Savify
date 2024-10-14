@@ -1,0 +1,24 @@
+.footer {
+    background-color: #FFCC00; /* Light gray background */
+}
+
+.footer h5 {
+    font-weight: bolder;
+    color:white;
+    margin-bottom: 15px;
+}
+
+.footer ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+.footer ul li a {
+    text-decoration: none;
+    color:white; /* Bootstrap's primary color */
+    font-weight: 500;
+}
+
+.footer ul li a:hover {
+    text-decoration: underline;
+}
