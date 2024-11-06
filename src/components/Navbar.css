@@ -1,7 +1,7 @@
 .custom-navbar {
     background-color: #FFCC00; /* Orange background color */
     padding: 1rem 1rem; /* Adjust padding */
-    position: fixed;
+    position: sticky;
     top:0;
     left: 0;
     width:100%;
@@ -16,7 +16,7 @@
 }
 
 .nav-link {
-    color: white !important; /* Change link color to white */
+    color: black !important; /* Change link color to white */
     margin-left: 15px; /* Space between links */
 }
 

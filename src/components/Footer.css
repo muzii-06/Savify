@@ -4,7 +4,7 @@
 
 .footer h5 {
     font-weight: bolder;
-    color:white;
+    color:rgb(0, 0, 0);
     margin-bottom: 15px;
 }
 
@@ -15,7 +15,7 @@
 
 .footer ul li a {
     text-decoration: none;
-    color:white; /* Bootstrap's primary color */
+    color:black; /* Bootstrap's primary color */
     font-weight: 500;
 }
 

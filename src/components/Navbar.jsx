@@ -2,15 +2,14 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaSearch, FaShoppingCart } from 'react-icons/fa';
 import './Navbar.css'; // Custom styles
+import savifylogo from './Savify logo.png';
 
 
 const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-light custom-navbar p-3 flex-column"> {/* Use flex-column to stack items */}
             <div className="container-fluid d-flex justify-content-between align-items-center">
-                <div className="navbar-brand">
-                    {/* Add brand/logo here if needed */}
-                </div>
+                
 
                 <div className="m-0 p-0 ms-auto navbar-nav d-flex align-items-center justify-content-end fw-bolder">
                     <a className="nav-link" href="/">SELL ON SAVIFY</a>
@@ -29,7 +28,7 @@ const Navbar = () => {
 
            
             <a className="navbar-brand" href="/">
-                    <img src="https://via.placeholder.com/50x30?text=Logo" alt="Logo" /> {/* Replace with your logo */}
+                    <img width={100} height={100} src={savifylogo} alt="Logo" /> {/* Replace with your logo */}
                 </a>{/* Add margin-top for spacing */}
                 
                 <div className="d-flex justify-content-center align-items-center w-100 ">
