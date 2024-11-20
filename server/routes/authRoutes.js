@@ -13,22 +13,49 @@ const generateToken = (userId) => {
 
 // User signup route
 router.post('/signup', async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, address, dateOfBirth, gender, contactNumber } = req.body;
+
   try {
+    // Validate required fields
+    if (!username || !email || !password || !address || !dateOfBirth || !gender || !contactNumber) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Validate contact number format
+    if (!/^\+92\d{10}$/.test(contactNumber)) {
+      return res.status(400).json({ message: 'Contact number must start with +92 and contain exactly 10 digits.' });
+    }
+
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already in use' });
     }
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
+
+    // Create new user
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      address,
+      dateOfBirth,
+      gender,
+      contactNumber,
+    });
+
     await newUser.save();
+
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ message: 'Server error while creating user' });
   }
 });
+
+
 
 // User login route
 // User login route
