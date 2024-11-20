@@ -5,14 +5,17 @@
     top:0;
     left: 0;
     width:100%;
+    z-index: 3333;
 }
 
 .navbar-brand img {
-    height: 30px; /* Adjust logo height */
+    height: 60px;
+    border: none;
+    width: 180px; /* Adjust logo height */
 }
 
 .search-input {
-    height: 38px; /* Adjust input height */
+    height: 50px; /* Adjust input height */
 }
 
 .nav-link {
