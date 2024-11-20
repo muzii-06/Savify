@@ -2,7 +2,9 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Footer.css';
 import { Link } from 'react-router-dom'; // Custom styles (optional)
-
+import { FaInstagram } from "react-icons/fa6";
+import { FaFacebookF } from "react-icons/fa";
+import { CiTwitter } from "react-icons/ci";
 const Footer = () => {
     return (
         <footer className="footer mt-auto py-4 ">
@@ -34,10 +36,10 @@ const Footer = () => {
 
                     <div className="col-md-4">
                         <h5>Connect with Us</h5>
-                        <ul className="list-unstyled">
-                            <li><a href="/">Facebook</a></li>
-                            <li><a href="/">Twitter</a></li>
-                            <li><a href="/">Instagram</a></li>
+                        <ul className="list-unstyled d-flex align-items-center  gap-4 mt-3  ">
+                            <li ><a href="https://www.instagram.com/"><FaInstagram size={30} /></a>  </li>
+                            <li><a href="https://www.facebook.com/"><FaFacebookF size={30} /> </a></li>
+                            <li><a href="https://twitter.com/login"><CiTwitter  size={30} /></a></li>
                         </ul>
                     </div>
                 </div>
