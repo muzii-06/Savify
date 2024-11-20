@@ -1,0 +1,102 @@
+/* General Container Styling */
+.auth-container {
+  max-width: 400px;
+  width: 100%;
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.wrap {
+  height: 100vh;
+  width: 100vw;
+  /* display: flex;
+  align-items: center; */
+  justify-content: center;
+  background-color: #FFCC00;/* Light background to make the form stand out */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.auth-container:hover {
+  transform: scale(1.03);
+}
+
+/* Form Title */
+.auth-container h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Form Inputs */
+.auth-container input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  background-color: #fafafa;
+}
+
+.auth-container input:focus {
+  border-color: #FFCC00; /* Theme color on focus */
+  outline: none;
+}
+
+/* Form Buttons */
+.auth-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #FFCC00;
+  color: #333;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.auth-container button:hover {
+  background-color: #e6b800;
+}
+
+.auth-container button:active {
+  background-color: #cc9c00;
+}
+
+/* Link Styling */
+.auth-container .auth-link {
+  display: block;
+  margin-top: 1rem;
+  color: #FFCC00;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.auth-container .auth-link:hover {
+  color: #e6b800;
+  text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .auth-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .auth-container h2 {
+    font-size: 1.5rem;
+  }
+}

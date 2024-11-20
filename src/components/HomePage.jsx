@@ -4,17 +4,17 @@ import HeroSection from './HeroSection.jsx';
 import ProductGrid from './ProductGrid.jsx';
 import Footer from './Footer.jsx';
 
-const HomePage = () => {
-    return (
-        <div>
-            
-            <Navbar />
-            <HeroSection />
-            <ProductGrid />
-            
-            <Footer />
-        </div>
-    );
+const HomePage = ({ username, isAuthenticated,handleAddToCart }) => {
+  return (
+    <div>
+      <Navbar username={username} isAuthenticated={isAuthenticated} />
+      
+      <HeroSection />
+      <ProductGrid handleAddToCart={handleAddToCart} />
+      {/* <ProductGrid /> */}
+      <Footer />
+    </div>
+  );
 };
 
 export default HomePage;

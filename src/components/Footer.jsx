@@ -1,6 +1,7 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Footer.css'; // Custom styles (optional)
+import './Footer.css';
+import { Link } from 'react-router-dom'; // Custom styles (optional)
 
 const Footer = () => {
     return (
@@ -11,13 +12,12 @@ const Footer = () => {
                     <div className="col-md-4">
                         <h5>Let Us Help You</h5>
                         <ul className="list-unstyled">
-                            <li><a href="/">Amazon and COVID-19</a></li>
+                            
                             <li><a href="/">Your Account</a></li>
                             <li><a href="/">Your Orders</a></li>
-                            <li><a href="/">Shipping Rates & Policies</a></li>
-                            <li><a href="/">Returns & Replacements</a></li>
-                            <li><a href="/">Manage Your Content and Devices</a></li>
-                            <li><a href="/">Help</a></li>
+                            <li><Link to="/shipping-rates-policy">Shipping Rates & Policies</Link></li>
+                            <li><Link to="/returns-replacement-policy">Returns & Replacements</Link></li>
+                            <li><Link to="/help">Help</Link></li>
                         </ul>
                     </div>
 
@@ -27,9 +27,8 @@ const Footer = () => {
                         <ul className="list-unstyled text-white">
                             <li><a href="/">Careers</a></li>
                             <li><a href="/">Blog</a></li>
-                            <li><a href="/">About Amazon</a></li>
-                            <li><a href="/">Investor Relations</a></li>
-                            <li><a href="/">Amazon Devices</a></li>
+                            <li><a href="/">About Savify</a></li>
+                           
                         </ul>
                     </div>
 

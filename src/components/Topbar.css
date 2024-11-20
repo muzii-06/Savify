@@ -1,0 +1,30 @@
+/* TopBar.css */
+.top-bar {
+    display: flex;
+    align-items: center;
+    background-color: #FFCC00;
+    color:black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 26px 20px;
+    height: 92px; /* Position relative to allow sidebar to be below it */
+    z-index: 1; /* Ensure it stays above the sidebar */
+  }
+  
+  .sidebar-toggle {
+    cursor: pointer; /* Change cursor to indicate clickability */
+    margin-right: 20px; /* Space between icon and store info */
+  }
+  
+  .store-image {
+    width: 40px; /* Adjust size as needed */
+    height: 40px; /* Adjust size as needed */
+    border-radius: 50%; /* Make image circular */
+    margin-right: 10px; /* Space between image and text */
+  }
+  
+  .store-info {
+    display: flex;
+    align-items: center; /* Center image and text vertically */
+  }

@@ -1,0 +1,31 @@
+/* src/components/Footer_Pages/PolicyPage.css */
+
+.policy-page {
+    background-color:#FFCC00;
+    padding: 20px;
+    border-radius: 5px;
+  }
+  
+  .policy-page h2 {
+    color: black;
+  }
+  
+  .policy-page h4 {
+    color: #FFCC00;
+    margin-top: 20px;
+  }
+  
+  .policy-page p {
+    color: black;
+  }
+  
+  .policy-page ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 10px;
+  }
+  
+  .policy-page ul li {
+    margin-bottom: 8px;
+  }
+  
