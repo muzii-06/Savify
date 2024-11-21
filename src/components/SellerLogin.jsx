@@ -1,4 +1,3 @@
-// src/components/SellerLogin.jsx
 import React, { useState } from 'react';
 import { sellerLogin } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
@@ -12,33 +11,32 @@ const SellerLogin = ({ onAuthChange }) => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await sellerLogin({ email, password });
-    if (response?.data?.token) {
-      alert('Seller Login Successful');
-      
-      // Save token, storeName, username, and imageUrl to localStorage
-      localStorage.setItem('sellerToken', response.data.token);
-      localStorage.setItem('storeName', response.data.storeName);
-      localStorage.setItem('username', response.data.username);
-      localStorage.setItem('sellerImage', response.data.imageUrl);
-
-      onAuthChange();
-      navigate('/dashboard', { replace: true });
-    } else {
-      alert('Login Failed: Invalid response');
+    e.preventDefault();
+    try {
+      const response = await sellerLogin({ email, password });
+      if (response?.data?.token) {
+        console.log('Seller Login Response:', response.data); // Log response
+        
+        localStorage.setItem('sellerToken', response.data.token);
+        localStorage.setItem('storeName', response.data.storeName);
+        localStorage.setItem('username', response.data.username);
+        localStorage.setItem('sellerImage', response.data.storeImage);
+  
+        onAuthChange();
+        navigate('/dashboard', { replace: true });
+      } else {
+        alert('Login Failed: Invalid response');
+      }
+    } catch (error) {
+      console.error('Seller login error:', error);
+      alert('Login Failed: Invalid credentials or server error');
     }
-  } catch (error) {
-    console.error('Seller login error:', error);
-    alert('Login Failed');
-  }
-};
-
+  };
+  
 
   return (
     <div className="wrap">
-       <img className='m-auto d-block' width={'20%'} height={'20%'} src={savifylogo} alt="Logo" />
+      <img className="m-auto d-block" width={'20%'} height={'20%'} src={savifylogo} alt="Logo" />
       <div className="auth-container">
         <h2>Seller Login</h2>
         <form onSubmit={handleSubmit}>

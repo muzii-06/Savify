@@ -18,11 +18,17 @@
   }
   
   .store-image {
-    width: 40px; /* Adjust size as needed */
-    height: 40px; /* Adjust size as needed */
-    border-radius: 50%; /* Make image circular */
-    margin-right: 10px; /* Space between image and text */
+    width: 60px; /* Circle size */
+    height: 60px; /* Same as width for a perfect circle */
+    border-radius: 50%; /* Makes the image circular */
+    border: 2px solid #4CAF50; /* Adds a border */
+    object-fit: contain; /* Ensures the entire image fits inside the circle */
+     /* Optional: Sets a background for transparency */
+    padding: 3px; /* Optional: Space between the image and the border */
+    cursor: pointer;
   }
+  
+  
   
   .store-info {
     display: flex;
