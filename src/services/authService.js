@@ -9,5 +9,10 @@ export const signup = (userData) => axios.post(`${API_URL}/signup`, userData);
 export const login = (userData) => axios.post(`${API_URL}/login`, userData);
 
 // Seller authentication
-export const sellerSignup = (userData) => axios.post(`${API_URL}/seller-signup`, userData);
+export const sellerSignup = (formData) =>
+    axios.post(`${API_URL}/seller-signup`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Required for file upload
+      },
+    });
 export const sellerLogin = (userData) => axios.post(`${API_URL}/seller-login`, userData);

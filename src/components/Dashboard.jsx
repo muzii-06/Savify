@@ -2,36 +2,36 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import DashboardContent from './DashboardContent';
-import TopBar from './Topbar';
+import TopBar from './TopBar';
 import './Dashboard.css';
 
 function Dashboard() {
   const location = useLocation(); // Get the location object
   const [message, setMessage] = useState(''); // State for success message
+  const [sellerData, setSellerData] = useState({
+    sellerImage: '',
+    storeName: '',
+    username: '',
+  }); // State for seller details
 
   useEffect(() => {
-    // Check if there's a message in the location state
-    if (location.state && location.state.message) {
-      setMessage(location.state.message);
-      // Clear message after 3 seconds
-      const timer = setTimeout(() => {
-        setMessage('');
-      }, 3000);
-
-      // Cleanup timer on unmount
-      return () => clearTimeout(timer);
-    }
+    const storeName = localStorage.getItem('storeName');
+    const sellerImage = localStorage.getItem('sellerImage');
+    const username = localStorage.getItem('username');
+  
+    console.log({ storeName, sellerImage, username }); // Log fetched values
+    setSellerData({ sellerImage, storeName, username });
   }, [location]);
+  
 
   return (
     <div className="dashboard-container">
-      {/* TopBar remains at the top */}
+      {/* TopBar dynamically shows seller info */}
       <TopBar
-        sellerImage="https://marketplace.canva.com/EAFaFUz4aKo/2/0/1600w/canva-yellow-abstract-cooking-fire-free-logo-JmYWTjUsE-Q.jpg"
-        storeName="Seller Store Name"
-        username="Savify"
+        storeName={sellerData.storeName}
+        sellerImage={sellerData.sellerImage}
+        username={sellerData.username}
       />
-
       {/* Sidebar - Always visible */}
       <div className="sidebar">
         <Sidebar />
@@ -41,6 +41,7 @@ function Dashboard() {
       <div className="main-content">
         {/* Display success message if available */}
         {message && <div className="alert alert-success">{message}</div>}
+
         <DashboardContent />
       </div>
     </div>
