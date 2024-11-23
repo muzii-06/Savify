@@ -21,10 +21,12 @@ const App = () => {
 
   // Function to update authentication state
   const setAuth = useCallback(() => {
-    const token = localStorage.getItem('token');
-    const sellerToken = localStorage.getItem('sellerToken');
+    const token = localStorage.getItem('token'); // Buyer token
+    const sellerToken = localStorage.getItem('sellerToken'); // Seller token
     const storedUsername = localStorage.getItem('username') || null;
-
+  
+    console.log('setAuth Debug:', { token, sellerToken, storedUsername });
+  
     if (sellerToken) {
       setIsAuthenticated(true);
       setIsSeller(true);
@@ -36,14 +38,23 @@ const App = () => {
     } else {
       setIsAuthenticated(false);
       setIsSeller(false);
-      setUsername(null);
+      setUsername(null); // Reset username when logged out
     }
   }, []);
+  
 
   // Check token status when app loads
   useEffect(() => {
     setAuth();
   }, [setAuth]);
+
+  // Logout handler: Clears localStorage and updates state
+  const handleLogout = () => {
+    localStorage.clear(); // Clear all stored data
+    setIsAuthenticated(false);
+    setIsSeller(false);
+    setUsername(null); // Reset username
+  };
 
   // Add to Cart Handler
   const handleAddToCart = (product) => {
@@ -77,77 +88,80 @@ const App = () => {
               isAuthenticated={isAuthenticated}
               handleAddToCart={handleAddToCart}
               cart={cart}
+              handleLogout={handleLogout} // Pass logout handler
             />
-            
           }
         />
-       <Route
-  path="/home"
+        <Route
+          path="/home"
+          element={
+            isAuthenticated && !isSeller ? (
+              <HomePage
+                username={username}
+                isAuthenticated={isAuthenticated}
+                handleAddToCart={handleAddToCart} // Pass handleAddToCart here
+                cart={cart}
+                handleLogout={handleLogout} // Pass logout handler
+              />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+  path="/dashboard"
   element={
-    isAuthenticated && !isSeller ? (
-      <HomePage
-        username={username}
-        isAuthenticated={isAuthenticated}
-        handleAddToCart={handleAddToCart} // Pass handleAddToCart here
-        cart={cart}
-      />
+    isAuthenticated && isSeller ? (
+      <Dashboard setAuth={setAuth} /> // Pass setAuth to Dashboard
     ) : (
-      <Navigate to="/" replace />
+      <Navigate to="/seller-login" replace />
     )
   }
 />
-
-  <Route
-      path="/dashboard"
-      element={
-        isAuthenticated && isSeller ? <Dashboard /> : <Navigate to="/seller-login" replace />
-      }
-    />
-        
         <Route
-      path="/login"
-      element={
-        !isAuthenticated ? (
-          <Login onAuthChange={setAuth} />
-        ) : (
-          <Navigate to={isSeller ? '/dashboard' : '/home'} replace />
-        )
-      }
-    />
-    <Route
-      path="/signup"
-      element={
-        !isAuthenticated ? (
-          <Signup />
-        ) : (
-          <Navigate to={isSeller ? '/dashboard' : '/home'} replace />
-        )
-      }
-    />
-    <Route
-      path="/seller-login"
-      element={
-        !isAuthenticated ? (
-          <SellerLogin onAuthChange={setAuth} />
-        ) : (
-          <Navigate to="/dashboard" replace />
-        )
-      }
-    />
+          path="/login"
+          element={
+            !isAuthenticated ? (
+              <Login onAuthChange={setAuth} />
+            ) : (
+              <Navigate to={isSeller ? '/dashboard' : '/home'} replace />
+            )
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            !isAuthenticated ? (
+              <Signup />
+            ) : (
+              <Navigate to={isSeller ? '/dashboard' : '/home'} replace />
+            )
+          }
+        />
+        <Route
+          path="/seller-login"
+          element={
+            !isAuthenticated ? (
+              <SellerLogin onAuthChange={setAuth} />
+            ) : (
+              <Navigate to="/dashboard" replace />
+            )
+          }
+        />
         <Route
           path="/cart"
           element={<Cart cart={cart} setCart={setCart} />}
         />
-         <Route path="/seller-signup" element={<SellerSignup />} />
-    <Route path="/shipping-rates-policy" element={<ShippingRatesAndPolicy />} />
-    <Route path="/returns-replacement-policy" element={<ReturnsAndReplacementPolicy />} />
-    <Route path="/help" element={<Help />} />
-    <Route
-      path="*"
-      element={
-        <Navigate to={isAuthenticated ? (isSeller ? '/dashboard' : '/home') : '/login'} replace />
-      }
-    />
+        <Route path="/seller-signup" element={<SellerSignup />} />
+        <Route path="/shipping-rates-policy" element={<ShippingRatesAndPolicy />} />
+        <Route path="/returns-replacement-policy" element={<ReturnsAndReplacementPolicy />} />
+        <Route path="/help" element={<Help />} />
+        <Route
+          path="*"
+          element={
+            <Navigate to={isAuthenticated ? (isSeller ? '/dashboard' : '/home') : '/login'} replace />
+          }
+        />
       </Routes>
     </Router>
   );

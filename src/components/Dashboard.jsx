@@ -5,7 +5,7 @@ import DashboardContent from './DashboardContent';
 import TopBar from './TopBar';
 import './Dashboard.css';
 
-function Dashboard() {
+function Dashboard({setAuth}) {
   const location = useLocation(); // Get the location object
   const [message, setMessage] = useState(''); // State for success message
   const [sellerData, setSellerData] = useState({
@@ -14,6 +14,7 @@ function Dashboard() {
     username: '',
   }); // State for seller details
 
+  
   useEffect(() => {
     const storeName = localStorage.getItem('storeName');
     const sellerImage = localStorage.getItem('sellerImage');
@@ -31,6 +32,7 @@ function Dashboard() {
         storeName={sellerData.storeName}
         sellerImage={sellerData.sellerImage}
         username={sellerData.username}
+        setAuth={setAuth}
       />
       {/* Sidebar - Always visible */}
       <div className="sidebar">

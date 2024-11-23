@@ -1,53 +1,110 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { FaSearch, FaShoppingCart } from 'react-icons/fa';
-import './Navbar.css'; // Custom styles
-import savifylogo from './Savify logo.png';
 import { Link } from 'react-router-dom';
+import { FaSearch, FaShoppingCart, FaBars } from 'react-icons/fa';
+import Categories from './Categories';
+import savifylogo from './Savify logo.png';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Navbar.css';
 
 const Navbar = ({ username, isAuthenticated, cart = [] }) => {
+  const [showSidebar, setShowSidebar] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const handleLogout = () => {
-    // Clear the token and username from localStorage
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('sellerToken'); // In case of seller
+  // Sample categories data
+  const categories = [
+    {
+      name: 'Electronics',
+      subcategories: ['Mobile Phones', 'Laptops', 'Headphones', 'Cameras'],
+    },
+    {
+      name: 'Fashion',
+      subcategories: ['Men', 'Women', 'Kids', 'Accessories'],
+    },
+    {
+      name: 'Home Appliances',
+      subcategories: ['Kitchen', 'Living Room', 'Bedroom', 'Bathroom'],
+    },
+    {
+      name: 'Books',
+      subcategories: ['Fiction', 'Non-Fiction', 'Textbooks', 'Comics'],
+    },
+    {
+      name: 'Toys',
+      subcategories: ['Action Figures', 'Board Games', 'Puzzles', 'Dolls'],
+    },
+  ];
 
-    // Redirect to the home page
-    window.location.href = '/'; // Redirects to the home page
-  };
-
-  // Safely calculate total items in the cart
   const cartItemCount = cart?.reduce((total, item) => total + item.quantity, 0);
 
-  return (
-    <nav className="navbar navbar-expand-lg navbar-light custom-navbar p-3 flex-column">
-      <div className="container-fluid d-flex justify-content-between align-items-center">
-        {/* Logo */}
-        <Link className="navbar-brand" to="/">
-          <img width={100} height={100} src={savifylogo} alt="Logo" />
-        </Link>
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('sellerToken');
+    window.location.href = '/';
+  };
 
-        {/* Links and User Actions */}
-        <div className="m-0 p-0 ms-auto navbar-nav d-flex align-items-center justify-content-end fw-bolder">
+  return (
+    <>
+      {/* Navbar */}
+      <nav className="navbar navbar-expand-lg navbar-light custom-navbar p-3">
+        <div className="container-fluid d-flex align-items-center justify-content-between">
+          {/* Logo */}
+          <Link className="navbar-brand" to="/">
+            <img src={savifylogo} alt="Savify" width={100} />
+          </Link>
+
+          {/* Search and Cart Section */}
+          <div className="d-flex align-items-center">
+            {/* Categories Toggle Button */}
+            <button
+              className="btn btn-secondary rounded-circle me-3"
+              onClick={() => setShowSidebar(true)}
+            >
+              <FaBars />
+            </button>
+
+            {/* Search Bar */}
+            <form className="d-flex align-items-center">
+              <input
+                type="search"
+                className="form-control me-2 search-input rounded-5 "
+                placeholder="Search in Savify"
+              />
+              <button className="btn btn-outline-secondary">
+                <FaSearch />
+              </button>
+            </form>
+
+            {/* Cart Icon */}
+            <Link to="/cart" className="nav-link position-relative ms-3">
+              <FaShoppingCart size={24} />
+              {cartItemCount > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  {cartItemCount}
+                </span>
+              )}
+            </Link>
+          </div>
+
+          {/* User Links */}
+          <div className="d-flex align-items-center">
           <Link to="/help" className="nav-link">
             HELP & SUPPORT
           </Link>
-          {!isAuthenticated ? (
-            <>
-              <Link to="/seller-login" className="nav-link">
-                SELL ON SAVIFY
-              </Link>
-              <Link to="/login" className="nav-link">
-                LOGIN
-              </Link>
-              <Link to="/signup" className="nav-link">
-                SIGN UP
-              </Link>
-            </>
-          ) : (
-            <div className="dropdown me-5">
+            {!isAuthenticated ? (
+              <>
+                <Link to="/seller-login" className="nav-link me-3">
+                  SELL ON SAVIFY
+                </Link>
+                <Link to="/login" className="btn btn-primary me-2">
+                  LOGIN
+                </Link>
+                <Link to="/signup" className="btn btn-outline-primary">
+                  SIGN UP
+                </Link>
+              </>
+            ) : (
+              <div className="dropdown me-5">
               <span
                 className="nav-link fw-bold text-primary dropdown-toggle d-flex align-items-center gap-1"
                 onClick={() => setShowDropdown(!showDropdown)}
@@ -74,39 +131,32 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
                   </li>
                 </ul>
               )}
-            </div>
+                </div>
           )}
+          </div>
+        </div>
+      </nav>
+
+      {/* Sidebar for Categories */}
+      <div
+        className={`sidebar-overlay ${showSidebar ? 'show' : ''}`}
+        onClick={() => setShowSidebar(false)}
+      >
+        <div
+          className={`sidebar-container ${showSidebar ? 'open' : ''}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="sidebar-header d-flex justify-content-between align-items-center">
+            <h5 className="mb-0">Categories</h5>
+            <button
+              className="btn-close"
+              onClick={() => setShowSidebar(false)}
+            ></button>
+          </div>
+          <Categories categories={categories} />
         </div>
       </div>
-
-      {/* Search Bar and Cart */}
-      <div className="container-fluid mt-2">
-        <div className="d-flex justify-content-center align-items-center w-100">
-          <form className="d-flex w-75 justify-content-center align-items-center gap-3">
-            {/* Search Input */}
-            <input
-              className="form-control me-2 search-input w-50  fw-bold rounded-5"
-              type="search"
-              placeholder="Search in Savify"
-              aria-label="Search"
-            />
-            <button className="btn btn-outline-secondary" type="submit">
-              <FaSearch />
-            </button>
-
-            {/* Cart Icon */}
-            <Link to="/cart" className="nav-link cart-icon position-relative">
-              <FaShoppingCart />
-              {cartItemCount > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {cartItemCount}
-                </span>
-              )}
-            </Link>
-          </form>
-        </div>
-      </div>
-    </nav>
+    </>
   );
 };
 

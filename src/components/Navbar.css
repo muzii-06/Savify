@@ -14,6 +14,51 @@
     width: 180px; /* Adjust logo height */
 }
 
+/* Sidebar overlay */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 3333;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .sidebar-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Sidebar container */
+  .sidebar-container {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: #FFCC00; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: left 0.3s ease;
+    padding: 20px;
+    z-index: 1050;
+  }
+  
+  .sidebar-container.open {
+    left: 0;
+  }
+  
+  /* Sidebar header */
+  .sidebar-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  
+  
 .search-input {
     height: 50px; /* Adjust input height */
 }
