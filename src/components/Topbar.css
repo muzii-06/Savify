@@ -21,13 +21,41 @@
     width: 60px; /* Circle size */
     height: 60px; /* Same as width for a perfect circle */
     border-radius: 50%; /* Makes the image circular */
-    border: 2px solid #4CAF50; /* Adds a border */
+    border: 2px solid black; /* Adds a border */
     object-fit: contain; /* Ensures the entire image fits inside the circle */
      /* Optional: Sets a background for transparency */
     padding: 3px; /* Optional: Space between the image and the border */
     cursor: pointer;
   }
-  
+  /* Position dropdown below the image */
+.dropdown-menu {
+  position: absolute;
+  top: 70px; /* Adjust to position below the image */
+  right: 0;
+  background: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  z-index: 1000;
+  min-width: 150px;
+}
+
+/* Style dropdown items */
+.dropdown-item {
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  color: #333;
+  cursor: pointer;
+  text-align: left;
+  background: transparent;
+  border: none;
+  width: 100%;
+}
+
+.dropdown-item:hover {
+  background: #f8f9fa;
+  color: #007bff;
+}
+
   
   
   .store-info {
