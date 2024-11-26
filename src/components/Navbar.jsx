@@ -5,7 +5,7 @@ import Categories from './Categories';
 import savifylogo from './Savify logo.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.css';
-
+import { MdImageSearch } from "react-icons/md";
 const Navbar = ({ username, isAuthenticated, cart = [] }) => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -65,11 +65,13 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
 
             {/* Search Bar */}
             <form className="d-flex align-items-center">
+              
               <input
                 type="search"
                 className="form-control me-2 search-input rounded-5 "
                 placeholder="Search in Savify"
               />
+              
               <button className="btn btn-outline-secondary">
                 <FaSearch />
               </button>

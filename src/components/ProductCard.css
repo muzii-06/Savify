@@ -1,13 +1,44 @@
-.buy{
-    background-color: #FFCC00;
-    color:white;
-    font-weight: bolder;
-    
-}
-.card-text{
-    color:#FFCC00;
-    font-weight: bolder;
-    font-size: 18px;
-    
-}
-
+.product-card {
+    background-color: #fff; /* Card background */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Ensure image and content are contained */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+  }
+  
+  .product-image {
+    height: 200px; /* Fixed height for images */
+    object-fit: contain; /* Ensure the image fits properly */
+  }
+  
+  .card-title {
+    font-size: 1.2rem; /* Adjust font size */
+    font-weight: bold; /* Bold title */
+    color: #333; /* Dark text for contrast */
+  }
+  
+  .card-text {
+    font-size: 1rem; /* Adjust font size for price */
+    font-weight: bold; /* Bold price */
+    color: #FFCC00; /* Theme color for price */
+  }
+  
+  .buy {
+    background-color: #FFCC00; /* Bright button */
+    color: white; /* White text */
+    font-weight: bold; /* Bold text */
+    padding: 10px; /* Spacing inside the button */
+    border: none; /* No border */
+    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+  }
+  
+  .buy:hover {
+    background-color: #e6b800; /* Slightly darker on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+  }
+  

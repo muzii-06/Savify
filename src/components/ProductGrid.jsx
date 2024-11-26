@@ -1,34 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './Productgrid.css';
+import axios from 'axios';
+import './ProductGrid.css'; // Import updated styles
 
-import { products } from './products';
+const ProductGrid = ({ handleAddToCart }) => {
+  const [products, setProducts] = useState([]);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/products');
+        setProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
 
+    fetchProducts();
+  }, []);
 
-const ProductGrid = ({handleAddToCart}) => {
-    return (
-      <>
-      
-        {/* <Sidebar/> */}
-        <div className="col-lg-10 p-2 my-5 shadow m-auto">
-            <div className="row">
-            {products.map((item, index) => {
-    return (
-        <ProductCard 
-            key={index} 
-            {...item} 
+  return (
+    
+    <div className="product-grid p-3 my-5 shadow mx-auto">
+        <h2 className='fs-2'>Just For You</h2>
+      <div className="row g-4">
+        {products.map((product) => (
+          <ProductCard
+            key={product._id}
+            id={product._id}
+            name={product.name}
+            price={product.price}
+            image={`http://localhost:5000/${product.images[0]}`} // Display the first image
             handleAddToCart={handleAddToCart}
-        />
-    );
-})}
-
-            </div>
-                </div>
-       
-                </>
-    );
+          />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default ProductGrid;

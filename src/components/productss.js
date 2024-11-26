@@ -1,4 +1,4 @@
-export const products = [
+export const productss = [
     {id:1, name: "Product 1", price: 1999,quantity:35, image: "https://via.placeholder.com/250",description:"skjdkjasjk" },
     {id:2, name: "Product 2", price: 1999,quantity:35, image: "https://via.placeholder.com/250",description:"skjdkjasjk"},
     {id:3, name: "Product 3", price: 1999,quantity:35, image: "https://via.placeholder.com/250",description:"skjdkjasjk"},

@@ -52,6 +52,8 @@
     height: 80px;
     border-radius: 8px;
     border: 1px solid #ddd;
+    object-fit: contain; /* Ensures the entire image fits within the container */
+    background-color: #f9f9f9; /* Optional: Add a neutral background for non-square images */
 }
 
 /* Item details */

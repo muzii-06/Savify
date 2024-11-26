@@ -3,19 +3,19 @@ import './Cart.css';
 
 function Cart({ cart, setCart }) {
     // Handle increase quantity
-    const handleIncrease = (id) => {
+    const handleIncrease = (_id) => {
         setCart((prevCart) =>
             prevCart.map((item) =>
-                item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+                item._id === _id ? { ...item, quantity: item.quantity + 1 } : item
             )
         );
     };
 
     // Handle decrease quantity
-    const handleDecrease = (id) => {
+    const handleDecrease = (_id) => {
         setCart((prevCart) =>
             prevCart.map((item) =>
-                item.id === id && item.quantity > 1
+                item._id === _id && item.quantity > 1
                     ? { ...item, quantity: item.quantity - 1 }
                     : item
             )
@@ -23,8 +23,8 @@ function Cart({ cart, setCart }) {
     };
 
     // Handle remove item from cart
-    const handleRemove = (id) => {
-        setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+    const handleRemove = (_id) => {
+        setCart((prevCart) => prevCart.filter((item) => item._id !== _id));
     };
 
     // Calculate total price
@@ -41,8 +41,8 @@ function Cart({ cart, setCart }) {
             ) : (
                 <div className="cart-items">
                     {cart.map((item) => (
-                        <div key={item.id} className="cart-item">
-                            <img
+                        <div key={item._id} className="cart-item">
+                            <img 
                                 src={item.image}
                                 alt={item.name}
                                 className="cart-item-image"
@@ -54,19 +54,19 @@ function Cart({ cart, setCart }) {
                                 <div className="cart-item-controls">
                                     <button
                                         className="cart-btn cart-btn-increase"
-                                        onClick={() => handleIncrease(item.id)}
+                                        onClick={() => handleIncrease(item._id)}
                                     >
                                         +
                                     </button>
                                     <button
                                         className="cart-btn cart-btn-decrease"
-                                        onClick={() => handleDecrease(item.id)}
+                                        onClick={() => handleDecrease(item._id)}
                                     >
                                         -
                                     </button>
                                     <button
                                         className="cart-btn cart-btn-remove"
-                                        onClick={() => handleRemove(item.id)}
+                                        onClick={() => handleRemove(item._id)}
                                     >
                                         Remove
                                     </button>
@@ -79,8 +79,8 @@ function Cart({ cart, setCart }) {
                     ))}
                     <hr className="cart-divider" />
                     <div className="d-flex align-items-center justify-content-between">
-                    <h4 className="cart-total">Total: Rs {totalPrice}</h4>
-                    <button className="btn btn-danger p-2">Proceed to Checkout</button>
+                        <h4 className="cart-total">Total: Rs {totalPrice}</h4>
+                        <button className="btn btn-danger p-2">Proceed to Checkout</button>
                     </div>
                 </div>
             )}

@@ -21,6 +21,7 @@ const Login = ({ onAuthChange }) => {
         // Save token and username to localStorage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('username', response.data.username); // Ensure username is set correctly
+        localStorage.setItem('userId', userId);
   
         // Notify App to update auth state
         onAuthChange();

@@ -7,6 +7,37 @@
     width:100%;
     z-index: 3333;
 }
+/* Search bar styling */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    overflow: hidden;
+  }
+  
+  .search-icon {
+    color: #ffcc00;
+    padding: 0 10px;
+  }
+  
+  .search-input {
+    border: none;
+    outline: none;
+    padding: 10px;
+    flex-grow: 1;
+  }
+  
+  .search-button {
+    border: none;
+    background: #ffcc00;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 0 30px 30px 0;
+    cursor: pointer;
+  }
+  
 
 .navbar-brand img {
     height: 60px;
