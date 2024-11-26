@@ -21,7 +21,7 @@ const Login = ({ onAuthChange }) => {
         // Save token and username to localStorage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('username', response.data.username); // Ensure username is set correctly
-        localStorage.setItem('userId', userId);
+        
   
         // Notify App to update auth state
         onAuthChange();
@@ -35,6 +35,8 @@ const Login = ({ onAuthChange }) => {
       alert('Login failed. Please check your credentials.');
     }
   };
+
+  
   return (
     <div className="wrap">
        <img className='m-auto d-block' width={'20%'} height={'20%'} src={savifylogo} alt="Logo" />
