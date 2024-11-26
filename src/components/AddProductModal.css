@@ -1,0 +1,37 @@
+/* AddProductModal.css */
+
+.add-product-form {
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .add-product-form .form-group label {
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .add-product-form .form-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .add-product-form .form-control:focus {
+    border-color: #FFCC00;
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+  }
+  
+  .add-product-form .form-group small {
+    font-size: 0.9rem;
+    color: #888;
+  }
+  
+  .add-product-form button {
+    background-color: #FFCC00;
+    border-color: #FFCC00;
+    font-weight: bold;
+  }
+  
+  .add-product-form button:hover {
+    background-color: #e6b800;
+    border-color: #e6b800;
+  }
+  

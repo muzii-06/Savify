@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Seller = require('../models/Seller'); // Import the Seller model
 
+
 const router = express.Router();
 const multer = require('multer');
 
@@ -86,7 +87,8 @@ router.post('/login', async (req, res) => {
     // Include username in the response
     res.json({
       token,
-      username: user.username, // Add the username here
+      username: user.username,
+      userId: user._id,  // Add the username here
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -169,5 +171,6 @@ router.post('/seller-login', async (req, res) => {
     res.status(500).json({ message: 'Server error during seller login' });
   }
 });
+
 
 module.exports = router;

@@ -1,18 +1,10 @@
-/* ProductGrid.css */
-
 .product-grid {
-    position: relative;
-    padding-left: 200px; /* Adjust the value as needed */
-  }
-  
-  /* Sidebar.css */
-  
-  .sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 200px; /* Adjust the width as needed */
-    background-color: #f0f0f0;
-    padding: 20px;
-  }
+  background-color: #fff; /* White background */
+  border-radius: 15px; /* Smooth corners */
+  padding: 20px; /* Internal padding */
+  max-width: 1500px; /* Centered width */
+}
+
+.row {
+  margin: 0; /* Remove extra margins */
+}

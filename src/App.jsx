@@ -10,23 +10,42 @@ import Dashboard from './components/Dashboard';
 import ShippingRatesAndPolicy from './components/Footer_Pages/ShippingRatesAndPolicy';
 import ReturnsAndReplacementPolicy from './components/Footer_Pages/ReturnsAndReplacementPolicy';
 import Help from './components/Footer_Pages/Help';
+import ProductPage from './components/ProductPage';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
   const [username, setUsername] = useState(null); // Store the username
   const [cart, setCart] = useState([]); // Cart state
+  const [products, setProducts] = useState([]); // Products state
+
+  // Function to fetch products
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/products');
+      setProducts(response.data); // Update products state
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  // Fetch products on app load
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   // Function to update authentication state
   const setAuth = useCallback(() => {
     const token = localStorage.getItem('token'); // Buyer token
     const sellerToken = localStorage.getItem('sellerToken'); // Seller token
     const storedUsername = localStorage.getItem('username') || null;
-  
+
     console.log('setAuth Debug:', { token, sellerToken, storedUsername });
-  
+
     if (sellerToken) {
       setIsAuthenticated(true);
       setIsSeller(true);
@@ -41,7 +60,6 @@ const App = () => {
       setUsername(null); // Reset username when logged out
     }
   }, []);
-  
 
   // Check token status when app loads
   useEffect(() => {
@@ -56,26 +74,33 @@ const App = () => {
     setUsername(null); // Reset username
   };
 
+  
+  // Add to Cart Handler
   // Add to Cart Handler
   const handleAddToCart = (product) => {
     if (!isAuthenticated) {
       window.location.href = '/login'; // Redirect to login if not authenticated
       return;
     }
-
+  
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
+      const existingItem = prevCart.find((item) => item._id === product._id);
+  
       if (existingItem) {
+        // Update quantity of the existing product in the cart
         return prevCart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + product.quantity }
             : item
         );
       } else {
-        return [...prevCart, { ...product, quantity: 1 }];
+        // Add the new product to the cart
+        return [...prevCart, product];
       }
     });
   };
+  
+  
 
   return (
     <Router>
@@ -109,15 +134,15 @@ const App = () => {
           }
         />
         <Route
-  path="/dashboard"
-  element={
-    isAuthenticated && isSeller ? (
-      <Dashboard setAuth={setAuth} /> // Pass setAuth to Dashboard
-    ) : (
-      <Navigate to="/seller-login" replace />
-    )
-  }
-/>
+          path="/dashboard"
+          element={
+            isAuthenticated && isSeller ? (
+              <Dashboard setAuth={setAuth} /> // Pass setAuth to Dashboard
+            ) : (
+              <Navigate to="/seller-login" replace />
+            )
+          }
+        />
         <Route
           path="/login"
           element={
@@ -156,6 +181,22 @@ const App = () => {
         <Route path="/shipping-rates-policy" element={<ShippingRatesAndPolicy />} />
         <Route path="/returns-replacement-policy" element={<ReturnsAndReplacementPolicy />} />
         <Route path="/help" element={<Help />} />
+       
+
+        <Route
+  path="/product/:id"
+  element={
+    <ProductPage
+      products={products}
+      handleAddToCart={handleAddToCart}
+      username={username}
+      isAuthenticated={isAuthenticated}
+      handleLogout={handleLogout}
+    />
+  }
+/>
+
+
         <Route
           path="*"
           element={

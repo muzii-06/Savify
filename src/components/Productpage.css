@@ -1,0 +1,46 @@
+.product-page {
+  font-family: Arial, sans-serif;
+}
+
+.main-product-image {
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.thumbnail-row {
+  display: flex;
+  gap: 10px;
+}
+
+.thumbnail-image {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.thumbnail-image:hover {
+  border-color: #007bff;
+}
+
+.ratings .stars {
+  font-size: 1.2rem;
+  color: gold;
+}
+
+.quantity-control input {
+  width: 60px;
+}
+
+.reviews-section {
+  margin-top: 30px;
+}
+
+.review-item {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
