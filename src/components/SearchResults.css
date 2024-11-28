@@ -1,0 +1,35 @@
+/* Container styling */
+.search-results {
+    padding: 20px;
+    background-color: #f8f9fa; /* Light background for the page */
+    border-radius: 10px; /* Smooth corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  /* Heading styling */
+  .search-results h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333; /* Dark text for contrast */
+    text-transform: capitalize;
+    margin-bottom: 20px;
+  }
+  
+  /* Error message */
+  .text-danger {
+    font-size: 1.25rem; /* Slightly larger text for emphasis */
+  }
+  
+  /* Spinner alignment */
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  /* Responsive layout adjustments */
+  @media (max-width: 768px) {
+    .search-results h2 {
+      font-size: 1.5rem;
+    }
+  }
+  

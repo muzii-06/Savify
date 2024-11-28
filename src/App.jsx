@@ -13,7 +13,9 @@ import Help from './components/Footer_Pages/Help';
 import ProductPage from './components/ProductPage';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import SearchResults from './components/SearchResults';
 import './App.css';
+import CategoryPage from './components/CategoryPage';
 
 
 const App = () => {
@@ -181,8 +183,28 @@ const App = () => {
         <Route path="/shipping-rates-policy" element={<ShippingRatesAndPolicy />} />
         <Route path="/returns-replacement-policy" element={<ReturnsAndReplacementPolicy />} />
         <Route path="/help" element={<Help />} />
-       
-
+        <Route
+    path="/category/:category"
+    element={
+      <CategoryPage
+        handleAddToCart={handleAddToCart}
+        username={username}
+        isAuthenticated={isAuthenticated}
+        handleLogout={handleLogout}
+      />
+    }
+  />
+ <Route
+          path="/search"
+          element={
+            <SearchResults
+              handleAddToCart={handleAddToCart}
+              username={username}
+              isAuthenticated={isAuthenticated}
+              handleLogout={handleLogout}
+            />
+          }
+        />
         <Route
   path="/product/:id"
   element={

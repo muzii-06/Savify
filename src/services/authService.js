@@ -5,7 +5,16 @@ const API_URL = 'http://localhost:5000/api/auth';
 // Regular user authentication
 
 
-export const signup = (userData) => axios.post(`${API_URL}/signup`, userData);
+
+export const signup = async (userData) => {
+  try {
+    const response = await axios.post(`${API_URL}/signup`, userData);
+    return response.data;
+  } catch (error) {
+    console.error('Signup error:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
 export const login = (userData) => axios.post(`${API_URL}/login`, userData);
 
 // Seller authentication
@@ -15,4 +24,7 @@ export const sellerSignup = (formData) =>
         'Content-Type': 'multipart/form-data', // Required for file upload
       },
     });
-export const sellerLogin = (userData) => axios.post(`${API_URL}/seller-login`, userData);
+    export const sellerLogin = (userData) => axios.post(`${API_URL}/seller-login`, userData);
+
+    // Add sellerRequestOtp function
+    export const sellerRequestOtp = (data) => axios.post(`${API_URL}/seller-request-login-otp`, data);

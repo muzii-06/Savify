@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); // Ensure mongoose is imported
 
 const sellerSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
@@ -10,6 +10,8 @@ const sellerSchema = new mongoose.Schema({
   dateOfBirth: { type: Date, required: true },
   warehouseAddress: { type: String, required: true },
   storeImage: { type: String }, // Store image path
+  verificationCode: { type: String }, // OTP for verification
+  otpCreatedAt: { type: Date }, // Timestamp for OTP expiration
   createdAt: { type: Date, default: Date.now },
 });
 

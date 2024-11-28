@@ -2,16 +2,27 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import './AddProductModal.css'; // Import custom CSS for styling
+import './AddProductModal.css';
 
 const AddProductModal = ({ show, handleClose }) => {
   const [formData, setFormData] = useState({
     name: '',
     price: '',
     description: '',
-    sellerName: 'Your Seller Name', // Replace with dynamic seller name if needed
+    category: '',
+    subcategory: '', // Add subcategory field
+    quantity: '',
+    sellerName: 'Your Seller Name',
   });
   const [images, setImages] = useState([]);
+
+  const categories = {
+    Electronics: ['Mobile Phones', 'Laptops', 'Headphones', 'Cameras'],
+    Fashion: ['Men', 'Women', 'Kids', 'Accessories'],
+    'Home Appliances': ['Kitchen', 'Living Room', 'Bedroom', 'Bathroom'],
+    Books: ['Fiction', 'Non-Fiction', 'Textbooks', 'Comics'],
+    Toys: ['Action Figures', 'Board Games', 'Puzzles', 'Dolls'],
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,7 +35,7 @@ const AddProductModal = ({ show, handleClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       data.append(key, value);
@@ -32,10 +43,9 @@ const AddProductModal = ({ show, handleClose }) => {
     Array.from(images).forEach((image) => {
       data.append('images', image);
     });
-  
+
     try {
-      const response =await axios.post('http://localhost:5000/api/products', data ,
-      {
+      const response = await axios.post('http://localhost:5000/api/products', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -47,7 +57,6 @@ const AddProductModal = ({ show, handleClose }) => {
       alert('Failed to add product. Try again.');
     }
   };
-  
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -94,6 +103,57 @@ const AddProductModal = ({ show, handleClose }) => {
               onChange={handleInputChange}
               required
             ></textarea>
+          </div>
+          <div className="form-group mb-3">
+            <label htmlFor="category">Category</label>
+            <select
+              className="form-control"
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Select a category</option>
+              {Object.keys(categories).map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+          {formData.category && (
+            <div className="form-group mb-3">
+              <label htmlFor="subcategory">Subcategory</label>
+              <select
+                className="form-control"
+                id="subcategory"
+                name="subcategory"
+                value={formData.subcategory}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select a subcategory</option>
+                {categories[formData.category].map((subcategory) => (
+                  <option key={subcategory} value={subcategory}>
+                    {subcategory}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div className="form-group mb-3">
+            <label htmlFor="quantity">Quantity</label>
+            <input
+              type="number"
+              className="form-control"
+              id="quantity"
+              name="quantity"
+              placeholder="Enter available quantity"
+              value={formData.quantity}
+              onChange={handleInputChange}
+              required
+            />
           </div>
           <div className="form-group mb-3">
             <label htmlFor="images">Product Images</label>
