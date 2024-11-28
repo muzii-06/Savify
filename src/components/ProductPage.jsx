@@ -111,7 +111,7 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
             <p className="text-muted">Brand: {product.sellerName || 'No Brand'}</p>
 
             <div className="ratings mb-3">
-              <span className="stars">⭐⭐⭐⭐⭐</span>
+              <span className="stars ">⭐⭐⭐⭐⭐</span>
               <span className="ms-2 text-secondary">{averageRating} Ratings</span>
             </div>
 
@@ -141,13 +141,13 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
 
             <div className="d-flex gap-3">
               <button
-                className="btn btn-primary w-50"
+                className="btn btn-primary w-50 rounded-pill fw-bold"
                 onClick={() => navigate('/checkout')}
               >
                 Buy Now
               </button>
               <button
-                className="btn btn-warning w-50"
+                className="btn btn-warning w-50 rounded-pill fw-bold"
                 onClick={() =>
                   handleAddToCart({
                     _id: product._id,

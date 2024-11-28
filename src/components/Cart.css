@@ -118,8 +118,8 @@
 }
 
 /* Remove button */
-.cart-btn-remove {
-    background-color: #dc3545;
+.cart-btn-remove,.ptco {
+    background-color:red;
     color: white;
 }
 

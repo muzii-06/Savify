@@ -71,7 +71,7 @@
   left: -350px; /* Hidden initially */
   width: 350px;
   height: 100%;
-  background: linear-gradient(180deg, #FFD700, #FFF8DC); /* Gradient from gold to cream */
+  background:#ffcc00; /* Gradient from gold to cream */
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Depth shadow */
   transition: left 0.4s ease, background-color 0.3s ease;
   padding: 30px 20px;
@@ -134,7 +134,9 @@
   border-radius: 20px; /* Rounded edges */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow */
 }
-
+.navsearch{
+  width:400px;
+}
 .list-group-item:hover {
   background: #FFE680; /* Warm yellow on hover */
   color: #000; /* Dark text */

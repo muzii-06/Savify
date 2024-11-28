@@ -8,18 +8,23 @@ const ProductCard = ({ id, name, price, image, handleAddToCart }) => {
   const product = { id, name, price, image, quantity: 1 };
 
   return (
-    <div className="col-lg-2 col-md-4 col-sm-6 mb-4 border m-3 p-3">
+    <div className="col-lg-2 col-md-4 col-sm-6 mb-4 border m-3  bg-white rounded-3">
       <div
-        className="product-card shadow-sm rounded"
+        className="pr-card"
         onClick={() => navigate(`/product/${id}`)} // Navigate to the product page
         style={{ cursor: 'pointer' }}
       >
-        <img src={image} alt={name} width="100%" height="150px" className="rounded-top" />
+        <img src={image} alt={name} width="100%"  className="rounded-3 product-image" />
         <div className="card-body">
-          <h5 className="card-title text-center">{name}</h5>
-          <p className="card-text text-center">Rs {price}</p>
-          <button
-  className="btn btn-primary w-100 rounded-pill mt-3"
+          <p className="card-title  fs-4 ">{name}</p>
+          <p className="card-text  fs-4">Rs {price}</p>
+          
+
+
+        </div>
+      </div>
+      <button
+  className="btn buy  w-100  rounded-pill mt-3"
   onClick={(e) => {
     e.stopPropagation(); // Prevent navigation
     handleAddToCart({
@@ -33,10 +38,6 @@ const ProductCard = ({ id, name, price, image, handleAddToCart }) => {
 >
   Add to Cart
 </button>
-
-
-        </div>
-      </div>
     </div>
   );
 };

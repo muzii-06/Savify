@@ -61,7 +61,7 @@ const Signup = () => {
 
   return (
     <div className="wrap">
-      <img className="m-auto d-block" width="20%" height="20%" src={savifylogo} alt="Logo" />
+      <img className="m-auto d-block" width="50%"  src={savifylogo} alt="Logo" />
       <div className="auth-container">
         <h2>Sign Up</h2>
         <form onSubmit={handleSubmit}>
@@ -114,7 +114,7 @@ const Signup = () => {
             onChange={handleInputChange} 
             required 
           />
-          <select 
+          <select className='gen rounded-2 w-100 p-2'
             name="gender" 
             value={formData.gender} 
             onChange={handleInputChange} 
