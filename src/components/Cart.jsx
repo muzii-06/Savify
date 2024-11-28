@@ -1,5 +1,6 @@
 import React from 'react';
 import './Cart.css';
+import savifylogo from './Savify logo.png';
 
 function Cart({ cart, setCart }) {
     // Handle increase quantity
@@ -79,8 +80,9 @@ function Cart({ cart, setCart }) {
                     ))}
                     <hr className="cart-divider" />
                     <div className="d-flex align-items-center justify-content-between">
-                        <h4 className="cart-total">Total: Rs {totalPrice}</h4>
-                        <button className="btn btn-danger p-2">Proceed to Checkout</button>
+                        <h4 className="cart-total fs-4">Total: Rs {totalPrice}</h4>
+                        <img className="m-auto d-block" width="40%"  src={savifylogo} alt="Logo" />
+                        <button className="btn  p-2 ptco">Proceed to Checkout</button>
                     </div>
                 </div>
             )}

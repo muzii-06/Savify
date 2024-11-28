@@ -100,7 +100,7 @@ const Login = ({ onAuthChange }) => {
           Don't have a Buyer account? Sign up
         </Link>
     </div>
-    <img className='m-auto d-block' width={'20%'} height={'20%'} src={savifylogo} alt="Logo" />
+    <img className='m-auto d-block' width={'50%'} src={savifylogo} alt="Logo" />
     </div>
   );
 };

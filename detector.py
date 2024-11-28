@@ -55,7 +55,7 @@ def detect_image(model, conf_threshold):
 
 def main():
     # Define the path to your YOLOv11 model
-    model_path = r"C:\Users\USER 1\Desktop\predict3classesthroughwebcam\predict\best.pt"  # Update with your actual model path
+    model_path = r"C:\Users\hp\Desktop\Savify\best.pt"  # Update with your actual model path
 
     # Set the confidence threshold manually
     conf_threshold = 0.85  # Adjust this value as needed (e.g., 0.25, 0.50, etc.)

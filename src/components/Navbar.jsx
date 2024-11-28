@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch, FaShoppingCart, FaBars } from 'react-icons/fa';
+
 import Categories from './Categories';
 import savifylogo from './Savify logo.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -62,28 +63,28 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
 
           <div className="d-flex align-items-center">
             <button
-              className="btn btn-secondary rounded-circle me-3"
+              className="btn btn-dark rounded-circle me-3"
               onClick={() => setShowSidebar(true)}
             >
               <FaBars />
             </button>
 
             {/* Updated Search Bar */}
-            <form className="d-flex align-items-center" onSubmit={handleSearch}>
+            <form className="d-flex align-items-center " onSubmit={handleSearch}>
               <input
-                type="search"
-                className="form-control me-2 search-input rounded-5"
+                type="search "
+                className="form-control border-none me-2 search-input rounded-5 navsearch"
                 placeholder="Search in Savify"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button type="submit" className="btn btn-outline-secondary">
-                <FaSearch />
+              <button type="submit" className="btn ">
+                <FaSearch  size={30} />
               </button>
             </form>
 
             <Link to="/cart" className="nav-link position-relative ms-3">
-              <FaShoppingCart size={24} />
+              <FaShoppingCart size={30} />
               {cartItemCount > 0 && (
                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                   {cartItemCount}
@@ -98,13 +99,13 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
             </Link>
             {!isAuthenticated ? (
               <>
-                <Link to="/seller-login" className="nav-link me-3">
+                <Link to="/seller-login" className="nav-link me-3 ">
                   SELL ON SAVIFY
                 </Link>
-                <Link to="/login" className="btn btn-primary me-2">
+                <Link to="/login" className="btn btn-dark rounded-pill btn-primary me-2">
                   LOGIN
                 </Link>
-                <Link to="/signup" className="btn btn-outline-primary">
+                <Link to="/signup" className="btn btn-dark rounded-pill ">
                   SIGN UP
                 </Link>
               </>
@@ -151,7 +152,7 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="sidebar-header d-flex justify-content-between align-items-center">
-            <h5 className="mb-0">Categories</h5>
+            <h5 className="text-center m-auto fw-bold">Categories</h5>
             <button
               className="btn-close"
               onClick={() => setShowSidebar(false)}

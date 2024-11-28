@@ -82,7 +82,7 @@ const SellerLogin = ({ onAuthChange }) => {
           Don't have a seller account? Sign up
         </Link>
       </div>
-      <img className="m-auto d-block" width={'20%'} height={'20%'} src={savifylogo} alt="Logo" />
+      <img className="m-auto d-block" width={'50%'}  src={savifylogo} alt="Logo" />
     </div>
   );
 };
