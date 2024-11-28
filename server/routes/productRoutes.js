@@ -7,10 +7,10 @@ const path = require('path');
 // Multer configuration for handling file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Directory to save uploaded files
+    cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Generate a unique filename
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
@@ -20,64 +20,136 @@ const upload = multer({ storage });
 router.get('/', async (req, res) => {
   try {
     const products = await Product.find();
-    res.status(200).json(products); // Respond with fetched products
+    res.status(200).json(products);
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ message: 'Failed to fetch products' });
   }
 });
 
-// Route: Fetch a single product by ID
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
+// Route: Search products
+// Search products by name, description, or category
+router.get('/search', async (req, res) => {
+  const { query } = req.query;
+
   try {
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+    if (!query) {
+      console.error('Search query is missing.');
+      return res.status(400).json({ message: 'Search query is required.' });
     }
-    res.status(200).json(product); // Respond with the found product
+
+    console.log(`Received search query: "${query}"`);
+
+    // Perform the database search
+    const products = await Product.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { description: { $regex: query, $options: 'i' } },
+        { category: { $regex: query, $options: 'i' } },
+      ],
+    });
+
+    console.log(`Search results for "${query}":`, products);
+
+    // Return an empty array or a specific message with 200 status
+    res.status(200).json(products);
   } catch (error) {
-    console.error('Error fetching product:', error);
-    res.status(500).json({ message: 'Failed to fetch product' });
+    console.error('Error fetching search results:', error);
+    res.status(500).json({ message: 'Failed to fetch search results.', error: error.message });
   }
 });
 
+
+
+// Fetch a single product by ID
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Validate if `id` is a valid ObjectId
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'Invalid product ID.' });
+    }
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found.' });
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    res.status(500).json({ message: 'Failed to fetch product.' });
+  }
+});
+
+
+
+
+
+// Route: Fetch products by category
+router.get('/category/:category', async (req, res) => {
+  const category = decodeURIComponent(req.params.category).toLowerCase();
+  console.log('Requested Category:', category);
+
+  try {
+    const products = await Product.find({
+      $or: [
+        { category: { $regex: new RegExp(`^${category}$`, 'i') } },
+        { subcategory: { $regex: new RegExp(`^${category}$`, 'i') } },
+      ],
+    });
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('Error fetching products by category:', error);
+    res.status(500).json({ message: 'Failed to fetch products by category.' });
+  }
+});
+
+// Route: Fetch a single product by ID
+
+
 // Route: Add a new product
 router.post('/', upload.array('images', 5), async (req, res) => {
-  const { name, price, description, sellerName } = req.body;
+  const { name, price, description, category, subcategory, quantity, sellerName } = req.body;
 
-  // Ensure at least one image is uploaded
-  if (!req.files || req.files.length === 0) {
-    return res.status(400).json({ message: 'At least one product image is required' });
+  if (!name || !price || !description || !category || !subcategory || !quantity || !sellerName) {
+    return res.status(400).json({ message: 'All fields are required.' });
   }
 
-  const imagePaths = req.files.map((file) => file.path); // Store file paths of uploaded images
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({ message: 'At least one product image is required.' });
+  }
+
+  const imagePaths = req.files.map((file) => file.path);
 
   try {
     const newProduct = new Product({
       name,
       price,
       description,
+      category,
+      subcategory,
+      quantity: Number(quantity),
       images: imagePaths,
       sellerName,
     });
 
-    await newProduct.save(); // Save the new product to the database
-    res.status(201).json(newProduct); // Respond with the newly created product
+    await newProduct.save();
+    res.status(201).json(newProduct);
   } catch (error) {
     console.error('Error adding product:', error);
-    res.status(500).json({ message: 'Failed to add product' });
+    res.status(500).json({ message: 'Failed to add product.' });
   }
 });
 
-// Route: Add a review to a product
-// Route: Add a review to a product
 // Route: Add a review to a product
 router.post('/:id/reviews', async (req, res) => {
   const { id } = req.params;
   const { user, rating, comment } = req.body;
 
-  // Validate required fields
   if (!user || !rating || !comment) {
     return res.status(400).json({ message: 'User, rating, and comment are required' });
   }
@@ -88,23 +160,15 @@ router.post('/:id/reviews', async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    const newReview = {
-      user, // Dynamically assign user name
-      rating: Number(rating),
-      comment,
-    };
-
-    // Add the new review to the product's reviews array
+    const newReview = { user, rating: Number(rating), comment };
     product.reviews.push(newReview);
-    await product.save(); // Save the updated product to the database
 
+    await product.save();
     res.status(201).json({ message: 'Review added successfully', review: newReview });
   } catch (error) {
     console.error('Error adding review:', error);
     res.status(500).json({ message: 'Failed to add review' });
   }
 });
-
-
 
 module.exports = router;

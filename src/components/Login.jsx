@@ -1,65 +1,106 @@
 import React, { useState } from 'react';
-import { login } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import savifylogo from './Savify logo.png';
-import './Auth.css';
 
 const Login = ({ onAuthChange }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleRequestOtp = async (e) => {
     e.preventDefault();
     try {
-      const response = await login({ email, password });
+      const response = await fetch('http://localhost:5000/api/auth/request-login-otp', { // Match the backend route
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
   
-      if (response?.data?.token) {
-        alert('Login Successful');
-  
-        // Save token and username to localStorage
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('username', response.data.username); // Ensure username is set correctly
-        
-  
-        // Notify App to update auth state
-        onAuthChange();
-  
-        // Redirect to home page
-        navigate('/home', { replace: true });
-      } else {
-        alert('Unexpected response from server.');
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Request failed');
       }
+  
+      const data = await response.json();
+      alert(data.message);
+      setOtpSent(true);
     } catch (error) {
-      alert('Login failed. Please check your credentials.');
+      alert(`Request OTP error: ${error.message}`);
+      console.error('Request OTP error:', error);
     }
   };
-
+  
+  
+  
+ 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', { // Correct backend URL
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, verificationCode }),
+      });
+  
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Login failed');
+      }
+  
+      const data = await response.json();
+      alert(data.message);
+      localStorage.setItem('token', data.token); // Save the token
+      localStorage.setItem('username', data.username); // Save the username
+      onAuthChange(); // Notify the app about the login
+      navigate('/home'); // Redirect to the home page
+    } catch (error) {
+      alert(`Login error: ${error.message}`);
+      console.error('Login error:', error);
+    }
+  };
   
   return (
     <div className="wrap">
-       <img className='m-auto d-block' width={'20%'} height={'20%'} src={savifylogo} alt="Logo" />
+       
     <div className="auth-container">
-      <form onSubmit={handleSubmit}>
-        <h2>Login to Savify</h2>
+      <form onSubmit={otpSent ? handleLogin : handleRequestOtp}>
+        <h2>Login</h2>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
+          required
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
+          required
         />
-        <button type="submit">Login</button>
-       
-        <Link to="/signup" className="auth-link"> Don't have an account? Sign Up</Link>
+        {otpSent && (
+          <input
+            type="text"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value)}
+            placeholder="Enter OTP"
+            required
+          />
+        )}
+        <button type="submit">{otpSent ? 'Login' : 'Request OTP'}</button>
       </form>
+      <button onClick={() => navigate('/seller-login')} className="seller-dashboard-button">
+         Seller Account?
+        </button>
+      <Link to="/signup" className="auth-link">
+          Don't have a Buyer account? Sign up
+        </Link>
     </div>
+    <img className='m-auto d-block' width={'20%'} height={'20%'} src={savifylogo} alt="Logo" />
     </div>
   );
 };

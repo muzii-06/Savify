@@ -4,7 +4,7 @@ const connectDB = require('./config/db');
 const path = require('path');
 const cors = require('cors');
 const productRoutes = require('./routes/productRoutes'); // Import the routes
-
+const authRoutes = require('./routes/authRoutes');
 dotenv.config();
 connectDB();
 
@@ -19,7 +19,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 // Register routes
-app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes); // Make sure this is registered
 
 

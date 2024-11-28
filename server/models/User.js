@@ -12,11 +12,13 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: function (v) {
-        return /^\+92\d{10}$/.test(v); // Validate +92 followed by exactly 10 digits
+        return /^\+92\d{10}$/.test(v);
       },
       message: props => `${props.value} is not a valid Pakistani contact number!`
     }
   },
+  verificationCode: { type: String }, // Store the OTP
+  otpCreatedAt: { type: Date }, // Track OTP creation time
   createdAt: { type: Date, default: Date.now },
 });
 

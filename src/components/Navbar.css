@@ -44,51 +44,163 @@
     border: none;
     width: 180px; /* Adjust logo height */
 }
-
-/* Sidebar overlay */
+/* Sidebar Overlay */
+/* Sidebar Overlay */
 .sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 3333;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Dimmed overlay */
+  z-index: 3333;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Sidebar Container */
+.sidebar-container {
+  position: fixed;
+  top: 0;
+  left: -350px; /* Hidden initially */
+  width: 350px;
+  height: 100%;
+  background: linear-gradient(180deg, #FFD700, #FFF8DC); /* Gradient from gold to cream */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Depth shadow */
+  transition: left 0.4s ease, background-color 0.3s ease;
+  padding: 30px 20px;
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-container.open {
+  left: 0;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1); /* Subtle separator */
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Close Button Style */
+.sidebar-header .btn-close {
+  font-size: 1.2rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.3s ease;
+}
+
+.sidebar-header .btn-close:hover {
+  color: #000;
+}
+
+/* Category List */
+.list-group {
+  padding: 0;
+  margin: 0;
+  list-style: none;
   
-  .sidebar-overlay.show {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  /* Sidebar container */
-  .sidebar-container {
-    position: fixed;
-    top: 0;
-    left: -300px;
-    width: 300px;
-    height: 100%;
-    background-color: #FFCC00; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: left 0.3s ease;
-    padding: 20px;
-    z-index: 1050;
-  }
-  
-  .sidebar-container.open {
-    left: 0;
-  }
-  
-  /* Sidebar header */
-  .sidebar-header {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-  }
-  
+}
+
+.list-group-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #444;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fff; /* White background */
+  border-radius: 20px; /* Rounded edges */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+.list-group-item:hover {
+  background: #FFE680; /* Warm yellow on hover */
+  color: #000; /* Dark text */
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+/* Subcategory List */
+.subcategory-list {
+  margin-top: 10px;
+  padding-left: 20px; /* Indentation for hierarchy */
+  border-left: 2px solid rgba(255, 223, 186, 0.6); /* Soft yellow border */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.subcategory-item {
+  font-size: 0.9rem;
+  color: #555;
+  padding: 8px 15px;
+  background: #f7f7f7; /* Light gray background */
+  border-radius: 2000px;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.subcategory-item:hover {
+  background: #FFF2CC; /* Pale yellow hover effect */
+  color: #333; /* Darker hover text */
+  transform: translateX(5px); /* Slide-in effect */
+}
+
+/* Remove Link Styles */
+.category-link,
+.subcategory-link {
+  text-decoration: none; /* Remove underline */
+  color: inherit; /* Inherit text color */
+}
+
+.category-link:hover,
+.subcategory-link:hover {
+  text-decoration: none; /* Prevent underline on hover */
+}
+
+/* Neat Scrollbar */
+.sidebar-container {
+  overflow-y: auto; /* Enable scrolling for long content */
+}
+
+.sidebar-container::-webkit-scrollbar {
+  width: 6px; /* Thin scrollbar */
+}
+
+.sidebar-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Subtle scrollbar thumb */
+  border-radius: 10px;
+}
+
+.sidebar-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4); /* Slightly darker on hover */
+}
+
+/* Spacing between main categories */
+.list-group-item + .list-group-item {
+  margin-top: 10px;
+}
+
   
 .search-input {
     height: 50px; /* Adjust input height */

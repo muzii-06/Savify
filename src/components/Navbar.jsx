@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch, FaShoppingCart, FaBars } from 'react-icons/fa';
 import Categories from './Categories';
 import savifylogo from './Savify logo.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.css';
-import { MdImageSearch } from "react-icons/md";
+
 const Navbar = ({ username, isAuthenticated, cart = [] }) => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(''); // Search query state
+  const navigate = useNavigate();
 
-  // Sample categories data
   const categories = [
     {
       name: 'Electronics',
@@ -43,19 +44,23 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
     window.location.href = '/';
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery('');
+    }
+  };
+
   return (
     <>
-      {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-light custom-navbar p-3">
         <div className="container-fluid d-flex align-items-center justify-content-between">
-          {/* Logo */}
           <Link className="navbar-brand" to="/">
             <img src={savifylogo} alt="Savify" width={100} />
           </Link>
 
-          {/* Search and Cart Section */}
           <div className="d-flex align-items-center">
-            {/* Categories Toggle Button */}
             <button
               className="btn btn-secondary rounded-circle me-3"
               onClick={() => setShowSidebar(true)}
@@ -63,21 +68,20 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
               <FaBars />
             </button>
 
-            {/* Search Bar */}
-            <form className="d-flex align-items-center">
-              
+            {/* Updated Search Bar */}
+            <form className="d-flex align-items-center" onSubmit={handleSearch}>
               <input
                 type="search"
-                className="form-control me-2 search-input rounded-5 "
+                className="form-control me-2 search-input rounded-5"
                 placeholder="Search in Savify"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-              
-              <button className="btn btn-outline-secondary">
+              <button type="submit" className="btn btn-outline-secondary">
                 <FaSearch />
               </button>
             </form>
 
-            {/* Cart Icon */}
             <Link to="/cart" className="nav-link position-relative ms-3">
               <FaShoppingCart size={24} />
               {cartItemCount > 0 && (
@@ -88,11 +92,10 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
             </Link>
           </div>
 
-          {/* User Links */}
           <div className="d-flex align-items-center">
-          <Link to="/help" className="nav-link">
-            HELP & SUPPORT
-          </Link>
+            <Link to="/help" className="nav-link">
+              HELP & SUPPORT
+            </Link>
             {!isAuthenticated ? (
               <>
                 <Link to="/seller-login" className="nav-link me-3">
@@ -107,39 +110,38 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
               </>
             ) : (
               <div className="dropdown me-5">
-              <span
-                className="nav-link fw-bold text-primary dropdown-toggle d-flex align-items-center gap-1"
-                onClick={() => setShowDropdown(!showDropdown)}
-                style={{ cursor: 'pointer' }}
-              >
-                <p className="m-0 p-0 text-uppercase">{username}'s Account</p>
-              </span>
-              {showDropdown && (
-                <ul className="dropdown-menu dropdown-menu-right show">
-                  <li>
-                    <Link className="dropdown-item" to="/edit-profile">
-                      Edit Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="/manage-orders">
-                      Manage Orders
-                    </Link>
-                  </li>
-                  <li>
-                    <button className="dropdown-item" onClick={handleLogout}>
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              )}
-                </div>
-          )}
+                <span
+                  className="nav-link fw-bold text-primary dropdown-toggle d-flex align-items-center gap-1"
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <p className="m-0 p-0 text-uppercase">{username}'s Account</p>
+                </span>
+                {showDropdown && (
+                  <ul className="dropdown-menu dropdown-menu-right show">
+                    <li>
+                      <Link className="dropdown-item" to="/edit-profile">
+                        Edit Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/manage-orders">
+                        Manage Orders
+                      </Link>
+                    </li>
+                    <li>
+                      <button className="dropdown-item" onClick={handleLogout}>
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </nav>
 
-      {/* Sidebar for Categories */}
       <div
         className={`sidebar-overlay ${showSidebar ? 'show' : ''}`}
         onClick={() => setShowSidebar(false)}
@@ -155,7 +157,7 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
               onClick={() => setShowSidebar(false)}
             ></button>
           </div>
-          <Categories categories={categories} />
+          <Categories categories={categories} setShowSidebar={setShowSidebar} />
         </div>
       </div>
     </>
