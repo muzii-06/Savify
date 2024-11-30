@@ -311,29 +311,38 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>Select Option</Modal.Title>
+          <Modal.Title className='fw-bolder fs-4'>Select Option</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <Button
-            variant="primary"
-            className="me-2"
-            onClick={() => handleCameraOptionSelect('automatic')}
-          >
-            Automatic Detection
-          </Button>
-          <Button
+          
+        <Button
             variant="success"
-            className="me-2"
+            className="me-2 rounded-pill mb-3 bg-warning text-dark border-0 "
             onClick={() => handleCameraOptionSelect('capture')}
           >
             Capture from Camera
           </Button>
+
+          
           <Button
             variant="secondary"
+            className='rounded-pill mb-3  bg-warning text-dark border-0'
             onClick={() => handleCameraOptionSelect('select')}
           >
             Select Image
           </Button>
+          <Button
+            variant="primary"
+            className="me-2 rounded-pill mb-3 bg-dark border-0 "
+            onClick={() => handleCameraOptionSelect('automatic')}
+          >
+            Automatic Detection
+          </Button>
+          <h6 className='text-danger text-start fw-bold'>Note that:</h6>
+          <p className='text-secondary fs-6 m-0 p-0 text-start'>•Make sure the object is near.</p>
+          <p className='text-secondary fs-6 m-0 p-0 text-start'>•Make sure camera is clear.</p>
+          <p className='text-secondary fs-6 m-0 p-0 text-start'>•Make sure Lightning is perfect.</p>
+          <p className='text-secondary fs-6 m-0 p-0 text-start'>•For automatic detection hold the item still.</p>
         </Modal.Body>
       </Modal>
 
