@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import savifylogo from './Savify logo.png';
 
+
 const Login = ({ onAuthChange }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

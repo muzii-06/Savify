@@ -15,6 +15,8 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  
+
 
   // State variables for camera options
   const [showCameraOptionsModal, setShowCameraOptionsModal] = useState(false);
@@ -27,6 +29,30 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
   const webcamRef = useRef(null); // Ref for the webcam component
   const fileInputRef = useRef(null); // Ref for the file input
   const captureIntervalRef = useRef(null); // Ref for the capture interval
+
+  const categories = [
+    {
+      name: 'Electronics',
+      subcategories: ['Mobile Phones', 'Laptops', 'Headphones', 'Cameras'],
+    },
+    {
+      name: 'Fashion',
+      subcategories: ['Men', 'Women', 'Kids', 'Accessories'],
+    },
+    {
+      name: 'Home Appliances',
+      subcategories: ['Kitchen', 'Living Room', 'Bedroom', 'Bathroom'],
+    },
+    {
+      name: 'Books',
+      subcategories: ['Fiction', 'Non-Fiction', 'Textbooks', 'Comics'],
+    },
+    {
+      name: 'Toys',
+      subcategories: ['Action Figures', 'Board Games', 'Puzzles', 'Dolls'],
+    },
+  ];
+
 
   const cartItemCount = cart?.reduce((total, item) => total + item.quantity, 0);
 
@@ -304,6 +330,26 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
         </div>
       </nav>
 
+      <div
+        className={`sidebar-overlay ${showSidebar ? 'show' : ''}`}
+        onClick={() => setShowSidebar(false)}
+      >
+        <div
+          className={`sidebar-container ${showSidebar ? 'open' : ''}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="sidebar-header d-flex justify-content-between align-items-center">
+            <h5 className="text-center m-auto fw-bold">Categories</h5>
+            <button
+              className="btn-close"
+              onClick={() => setShowSidebar(false)}
+            ></button>
+          </div>
+          <Categories categories={categories} setShowSidebar={setShowSidebar} />
+        </div>
+      </div>
+      
+        
       {/* Camera Options Modal */}
       <Modal
         show={showCameraOptionsModal}

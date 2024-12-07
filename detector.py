@@ -58,7 +58,7 @@ def main():
     model_path = r"C:\Users\hp\Desktop\Savify\best.pt"  # Update with your actual model path
 
     # Set the confidence threshold manually
-    conf_threshold = 0.85  # Adjust this value as needed (e.g., 0.25, 0.50, etc.)
+    conf_threshold = 0.90  # Adjust this value as needed (e.g., 0.25, 0.50, etc.)
 
     # Load the YOLOv11 model
     try:
