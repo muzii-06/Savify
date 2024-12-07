@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import './HeroSection.css'; // Optional, for custom styles
 import savify1 from './ssavify.png'; 
+import savifyBanner1 from './sale savify web banner.png'
 
 import { GrNext } from "react-icons/gr";
 import { GrPrevious } from "react-icons/gr";
 const HeroSection = () => {
     const [index,setIndex]=useState(0); 
-    const images = [savify1];
+    const images = [savifyBanner1,savify1];
     const handleNext=()=>
     {
         setIndex(index+1);
@@ -30,8 +31,8 @@ const HeroSection = () => {
             <p>Find the best products from multiple vendors, all in one place!</p> */}
             
             <img width={'100%'} src={images[index]} alt="" />
-            <GrNext onClick={handleNext} className='position-absolute top-50 end-0 mx-4' size={40} cursor="pointer" />
-            <GrPrevious onClick={handlePrev}  className='position-absolute top-50 start-0 mx-4' size={40} cursor="pointer" />
+            <GrNext onClick={handleNext} className='position-absolute top-50 end-0 mx-4 ' size={50} cursor="pointer" />
+            <GrPrevious onClick={handlePrev}  className='position-absolute top-50 start-0 mx-4' size={50} cursor="pointer" />
 
         </div>
     );
