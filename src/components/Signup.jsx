@@ -63,7 +63,7 @@ const Signup = () => {
     <div className="wrap">
       <img className="m-auto d-block" width="50%"  src={savifylogo} alt="Logo" />
       <div className="auth-container">
-        <h2>Sign Up</h2>
+        <h2> Customer Sign Up</h2>
         <form onSubmit={handleSubmit}>
           {error && <p className="error-message">{error}</p>} {/* Show error messages */}
           <input 
