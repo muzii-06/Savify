@@ -14,7 +14,7 @@ body {
     position: fixed;
     bottom: 50px;
     right: 30px;
-    width: 60px;
+    width: 600px;
     height: 60px;
     cursor: pointer;
     z-index: 1000;
