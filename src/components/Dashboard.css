@@ -12,7 +12,7 @@
   .sidebar {
     width: 250px;
     background-color:white;
-    padding: 200px;
+    padding: 20px;
     height: calc(100% - 92px); /* Full height, minus the top bar */
     position: fixed;
     top: 92px; /* Start below the top bar */
