@@ -54,7 +54,9 @@ const Login = ({ onAuthChange }) => {
       const data = await response.json();
       alert(data.message);
       localStorage.setItem('token', data.token); // Save the token
-      localStorage.setItem('username', data.username); // Save the username
+      localStorage.setItem('username', data.username);
+       // Save the username
+       localStorage.setItem('userId', data.userId);
       onAuthChange(); // Notify the app about the login
       navigate('/home'); // Redirect to the home page
     } catch (error) {
@@ -97,6 +99,10 @@ const Login = ({ onAuthChange }) => {
       <button onClick={() => navigate('/seller-login')} className="seller-dashboard-button">
          Seller Account?
         </button>
+              <Link to="/forgot-password" className="auth-link mt-2">
+        Forgot Password?
+      </Link>
+
       <Link to="/signup" className="auth-link">
           Don't have a Buyer account? Sign up
         </Link>

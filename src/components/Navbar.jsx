@@ -308,10 +308,11 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
                 {showDropdown && (
                   <ul className="dropdown-menu dropdown-menu-right show">
                     <li>
-                      <Link className="dropdown-item" to="/edit-profile">
-                        Edit Profile
-                      </Link>
-                    </li>
+                        <Link className="dropdown-item" to="/edit-profile">
+                          Edit Profile
+                        </Link>
+                      </li>
+
                     <li>
                       <Link className="dropdown-item" to="/manage-orders">
                         Manage Orders

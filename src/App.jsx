@@ -10,12 +10,18 @@ import Dashboard from './components/Dashboard';
 import ShippingRatesAndPolicy from './components/Footer_Pages/ShippingRatesAndPolicy';
 import ReturnsAndReplacementPolicy from './components/Footer_Pages/ReturnsAndReplacementPolicy';
 import Help from './components/Footer_Pages/Help';
+import ForgotPassword from './components/ForgotPassword';
+
+import EditSellerProfile from './components/EditSellerProfile'; // ✅ Import Seller Edit Profile
+
 import ProductPage from './components/ProductPage';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SearchResults from './components/SearchResults';
+
 import './App.css';
 import CategoryPage from './components/CategoryPage';
+import EditProfile from './components/EditProfile';
 
 
 const App = () => {
@@ -45,10 +51,11 @@ const App = () => {
     const token = localStorage.getItem('token'); // Buyer token
     const sellerToken = localStorage.getItem('sellerToken'); // Seller token
     const storedUsername = localStorage.getItem('username') || null;
-
-    console.log('setAuth Debug:', { token, sellerToken, storedUsername });
-
-    if (sellerToken) {
+    const storedSellerId = localStorage.getItem('sellerId') || null;
+  
+    console.log('setAuth Debug:', { token, sellerToken, storedUsername, storedSellerId });
+  
+    if (sellerToken && storedSellerId) {
       setIsAuthenticated(true);
       setIsSeller(true);
       setUsername(storedUsername);
@@ -59,9 +66,10 @@ const App = () => {
     } else {
       setIsAuthenticated(false);
       setIsSeller(false);
-      setUsername(null); // Reset username when logged out
+      setUsername(null);
     }
   }, []);
+  
 
   // Check token status when app loads
   useEffect(() => {
@@ -145,6 +153,9 @@ const App = () => {
             )
           }
         />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
         <Route
           path="/login"
           element={
@@ -156,6 +167,17 @@ const App = () => {
           }
         />
         <Route
+  path="/edit-seller-profile"
+  element={
+    isAuthenticated && isSeller ? (
+      <EditSellerProfile />
+    ) : (
+      <Navigate to="/seller-login" replace />
+    )
+  }
+/>
+
+        <Route
           path="/signup"
           element={
             !isAuthenticated ? (
@@ -166,15 +188,16 @@ const App = () => {
           }
         />
         <Route
-          path="/seller-login"
-          element={
-            !isAuthenticated ? (
-              <SellerLogin onAuthChange={setAuth} />
-            ) : (
-              <Navigate to="/dashboard" replace />
-            )
-          }
-        />
+  path="/seller-login"
+  element={
+    !isAuthenticated ? (
+      <SellerLogin onAuthChange={setAuth} />
+    ) : (
+      <Navigate to="/dashboard" replace />
+    )
+  }
+/>
+
         <Route
           path="/cart"
           element={<Cart cart={cart} setCart={setCart} />}

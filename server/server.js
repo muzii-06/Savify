@@ -5,6 +5,8 @@ const path = require('path');
 const cors = require('cors');
 const productRoutes = require('./routes/productRoutes'); // Import the routes
 const authRoutes = require('./routes/authRoutes');
+ 
+
 
 dotenv.config();
 connectDB();
@@ -13,6 +15,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 // app.use(express.urlencoded({ extended: true }));
 
 // Serve static files for product images
