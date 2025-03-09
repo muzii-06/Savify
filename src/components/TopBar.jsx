@@ -25,6 +25,15 @@ function TopBar({ sellerImage, storeName, username, setAuth }) {
     navigate('/');
   };
 
+  const handleEditProfile = () => {
+    const sellerId = localStorage.getItem('sellerId');
+    if (sellerId) {
+      navigate('/edit-seller-profile'); // Redirect seller to seller profile
+    } else {
+      navigate('/edit-profile'); // Redirect user to normal profile
+    }
+  };
+
   return (
     <div className="top-bar position-relative">
       {/* Store Name */}
@@ -40,22 +49,16 @@ function TopBar({ sellerImage, storeName, username, setAuth }) {
         </div>
 
         {/* Store Image with Dropdown */}
-        <div
-          className="position-relative"
-          onClick={() => setShowDropdown(!showDropdown)} // Toggle dropdown visibility
-          style={{ cursor: 'pointer' }}
-        >
-          <img
-            src={sellerImage || 'https://via.placeholder.com/150'}
-            alt="Store"
-            className="store-image rounded-circle "
-          />
+        <div className="position-relative" onClick={() => setShowDropdown(!showDropdown)} style={{ cursor: 'pointer' }}>
+  <img
+    src={sellerImage && sellerImage !== 'undefined' ? sellerImage : '/default-profile.png'} 
+    alt="Store"
+    className="store-image rounded-circle"
+  />
+</div>
           {showDropdown && (
             <div className="dropdown-menu dropdown-menu-end show">
-              <button
-                className="dropdown-item"
-                onClick={() => navigate('/edit-profile')}
-              >
+              <button className="dropdown-item" onClick={() => navigate('/edit-seller-profile')}>
                 Edit Profile
               </button>
               <button className="dropdown-item" onClick={handleLogout}>
@@ -65,7 +68,7 @@ function TopBar({ sellerImage, storeName, username, setAuth }) {
           )}
         </div>
       </div>
-    </div>
+    
   );
 }
 

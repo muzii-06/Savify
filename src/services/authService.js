@@ -24,7 +24,22 @@ export const sellerSignup = (formData) =>
         'Content-Type': 'multipart/form-data', // Required for file upload
       },
     });
-    export const sellerLogin = (userData) => axios.post(`${API_URL}/seller-login`, userData);
+    export const sellerLogin = async ({ email, password, verificationCode }) => {
+      try {
+        const response = await axios.post('http://localhost:5000/api/auth/seller-login', {
+          email,
+          password,
+          verificationCode
+        });
+    
+        console.log('Seller login API response:', response.data); // ✅ Debug response
+    
+        return response;
+      } catch (error) {
+        console.error('Seller login error:', error.response?.data || error.message);
+        throw error;
+      }
+    };
 
     // Add sellerRequestOtp function
     export const sellerRequestOtp = (data) => axios.post(`${API_URL}/seller-request-login-otp`, data);
