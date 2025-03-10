@@ -108,7 +108,12 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
           {/* Right Column: Details */}
           <div className="col-lg-6 col-md-6">
             <h1 className="product-title">{product.name}</h1>
-            <p className="text-muted">Brand: {product.sellerName || 'No Brand'}</p>
+            <p className="text-muted">
+  Store: {product.storeName ? product.storeName : 'Unknown Store'}
+</p>
+
+
+
 
             <div className="ratings mb-3">
               <span className="stars ">⭐⭐⭐⭐⭐</span>

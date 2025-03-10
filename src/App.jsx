@@ -22,6 +22,7 @@ import SearchResults from './components/SearchResults';
 import './App.css';
 import CategoryPage from './components/CategoryPage';
 import EditProfile from './components/EditProfile';
+import SellerForgetPassword from './components/SellerForgetPassword';
 
 
 const App = () => {
@@ -155,6 +156,7 @@ const App = () => {
         />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/seller-forgot-password" element={<SellerForgetPassword />} />
 
         <Route
           path="/login"

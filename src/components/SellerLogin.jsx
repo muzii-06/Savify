@@ -91,10 +91,14 @@ const SellerLogin = ({ onAuthChange }) => {
           <button type="submit" disabled={loading}>
             {loading ? 'Processing...' : otpSent ? 'Login' : 'Request OTP'}
           </button>
+          
         </form>
         <button onClick={() => navigate('/login')} className="seller-dashboard-button">
           Buyer Account
         </button>
+        <Link to="/seller-forgot-password" className="auth-link mt-2">
+        Forgot Password?
+      </Link>
         <Link to="/seller-signup" className="auth-link">
           Don't have a seller account? Sign up
         </Link>
