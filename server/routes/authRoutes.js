@@ -526,6 +526,79 @@ router.put('/reset-password', async (req, res) => {
   }
 });
 
+router.post('/seller-request-password-reset', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const seller = await Seller.findOne({ email });
+    if (!seller) return res.status(404).json({ message: 'Seller not found.' });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    seller.verificationCode = otp;
+    seller.otpCreatedAt = new Date();
+    await seller.save();
+
+    // Send OTP via Email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      to: email,
+      subject: 'Seller Password Reset OTP',
+      html: `<p>Your OTP for password reset is <strong>${otp}</strong></p>`,
+    });
+
+    res.status(200).json({ message: 'OTP sent to your email.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error while sending OTP.' });
+  }
+});
+router.post('/seller-verify-reset-otp', async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const seller = await Seller.findOne({ email });
+    if (!seller || seller.verificationCode !== otp) {
+      return res.status(400).json({ message: 'Invalid or expired OTP.' });
+    }
+
+    // Check if OTP is still valid (5 minutes expiry)
+    const now = new Date();
+    const otpExpiryTime = new Date(seller.otpCreatedAt);
+    otpExpiryTime.setMinutes(otpExpiryTime.getMinutes() + 5);
+
+    if (now > otpExpiryTime) {
+      return res.status(400).json({ message: 'OTP expired.' });
+    }
+
+    res.status(200).json({ message: 'OTP verified successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error while verifying OTP.' });
+  }
+});
+
+router.put('/seller-reset-password', async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const seller = await Seller.findOne({ email });
+    if (!seller) return res.status(404).json({ message: 'Seller not found.' });
+
+    seller.password = await bcrypt.hash(newPassword, 10);
+    seller.verificationCode = undefined;
+    seller.otpCreatedAt = undefined;
+    await seller.save();
+
+    res.status(200).json({ message: 'Password updated successfully!' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error while resetting password.' });
+  }
+});
 
 
 
