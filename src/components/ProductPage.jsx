@@ -109,8 +109,9 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
           <div className="col-lg-6 col-md-6">
             <h1 className="product-title">{product.name}</h1>
             <p className="text-muted">
-  Store: {product.storeName ? product.storeName : 'Unknown Store'}
+  Store: {product.seller ? product.seller.storeName : 'Unknown Store'}
 </p>
+
 
 
 

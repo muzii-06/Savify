@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -10,11 +10,20 @@ const AddProductModal = ({ show, handleClose }) => {
     price: '',
     description: '',
     category: '',
-    subcategory: '', // Add subcategory field
+    subcategory: '',
     quantity: '',
-    sellerName: 'Your Seller Name',
   });
   const [images, setImages] = useState([]);
+  const [sellerId, setSellerId] = useState('');
+
+  // Fetch sellerId from localStorage when the modal opens
+  useEffect(() => {
+    const storedSellerId = localStorage.getItem("sellerId");
+    console.log("📌 Retrieved Seller ID from localStorage:", storedSellerId); // Debugging
+    if (storedSellerId) {
+      setSellerId(storedSellerId);
+    }
+  }, [show]); // Run every time modal is opened
 
   const categories = {
     Electronics: ['Mobile Phones', 'Laptops', 'Headphones', 'Cameras'],
@@ -36,6 +45,11 @@ const AddProductModal = ({ show, handleClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!sellerId) {
+      alert("❌ Seller ID is missing. Please log in again.");
+      return;
+    }
+
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       data.append(key, value);
@@ -44,17 +58,21 @@ const AddProductModal = ({ show, handleClose }) => {
       data.append('images', image);
     });
 
+    data.append('sellerId', sellerId); // ✅ Append sellerId
+
+    console.log("🚀 FormData before sending:", [...data.entries()]); // Debugging
+
     try {
       const response = await axios.post('http://localhost:5000/api/products', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      alert('Product added successfully!');
+      alert('✅ Product added successfully!');
       handleClose();
     } catch (error) {
-      console.error('Error adding product:', error);
-      alert('Failed to add product. Try again.');
+      console.error('❌ Error adding product:', error.response?.data || error.message);
+      alert('❌ Failed to add product. Try again.');
     }
   };
 

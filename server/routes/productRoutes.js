@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
+const Seller = require('../models/Seller'); // ✅ Import Seller model
+
 const multer = require('multer');
 const path = require('path');
 
@@ -62,16 +64,17 @@ router.get('/search', async (req, res) => {
 
 
 // Fetch a single product by ID
+// Fetch a single product by ID with seller details
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Validate if `id` is a valid ObjectId
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({ message: 'Invalid product ID.' });
     }
 
-    const product = await Product.findById(id);
+    // ✅ Populate seller details (storeName only)
+    const product = await Product.findById(id).populate('seller', 'storeName');
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found.' });
@@ -111,21 +114,27 @@ router.get('/category/:category', async (req, res) => {
 // Route: Fetch a single product by ID
 
 
-// Route: Add a new product
+// Add a new product
 router.post('/', upload.array('images', 5), async (req, res) => {
-  const { name, price, description, category, subcategory, quantity, sellerName } = req.body;
+  const { name, price, description, category, subcategory, quantity, sellerId } = req.body;
 
-  if (!name || !price || !description || !category || !subcategory || !quantity || !sellerName) {
-    return res.status(400).json({ message: 'All fields are required.' });
+  if (!name || !price || !description || !category || !subcategory || !quantity || !sellerId) {
+    return res.status(400).json({ message: 'All fields, including sellerId, are required.' });
   }
 
   if (!req.files || req.files.length === 0) {
     return res.status(400).json({ message: 'At least one product image is required.' });
   }
 
-  const imagePaths = req.files.map((file) => file.path);
-
   try {
+    // ✅ Verify Seller Exists
+    const seller = await Seller.findById(sellerId);
+    if (!seller) {
+      return res.status(404).json({ message: 'Seller not found.' });
+    }
+
+    const imagePaths = req.files.map((file) => file.path);
+
     const newProduct = new Product({
       name,
       price,
@@ -134,7 +143,7 @@ router.post('/', upload.array('images', 5), async (req, res) => {
       subcategory,
       quantity: Number(quantity),
       images: imagePaths,
-      sellerName,
+      seller: seller._id, // ✅ Store seller as ObjectId reference
     });
 
     await newProduct.save();
