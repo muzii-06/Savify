@@ -87,6 +87,81 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// ✅ Fetch products by seller ID
+router.get('/seller/:sellerId', async (req, res) => {
+  const { sellerId } = req.params;
+
+  try {
+    const products = await Product.find({ seller: sellerId });
+    res.status(200).json(products);
+  } catch (error) {
+    console.error('❌ Error fetching seller products:', error);
+    res.status(500).json({ message: 'Failed to fetch seller products.' });
+  }
+});
+
+// ✅ Update a product by ID
+// ✅ Update product details (excluding images)
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, price, description, category, subcategory, quantity } = req.body;
+
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      { name, price, description, category, subcategory, quantity },
+      { new: true } // ✅ Return updated product
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found.' });
+    }
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    console.error('❌ Error updating product:', error);
+    res.status(500).json({ message: 'Failed to update product.' });
+  }
+});
+
+router.put('/:id/images', upload.array('images', 5), async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+
+    // ✅ Replace existing images with new ones
+    const imagePaths = req.files.map((file) => file.path);
+    product.images = imagePaths;
+
+    await product.save();
+    res.status(200).json({ message: "Product images updated successfully.", images: imagePaths });
+  } catch (error) {
+    console.error("❌ Error updating product images:", error);
+    res.status(500).json({ message: "Failed to update product images." });
+  }
+});
+
+// ✅ Delete a product by ID
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(id);
+
+    if (!deletedProduct) {
+      return res.status(404).json({ message: 'Product not found.' });
+    }
+
+    res.status(200).json({ message: 'Product deleted successfully.' });
+  } catch (error) {
+    console.error('❌ Error deleting product:', error);
+    res.status(500).json({ message: 'Failed to delete product.' });
+  }
+});
 
 
 
