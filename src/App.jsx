@@ -11,7 +11,8 @@ import ShippingRatesAndPolicy from './components/Footer_Pages/ShippingRatesAndPo
 import ReturnsAndReplacementPolicy from './components/Footer_Pages/ReturnsAndReplacementPolicy';
 import Help from './components/Footer_Pages/Help';
 import ForgotPassword from './components/ForgotPassword';
-
+import ManageProducts from "./components/ManageProducts"; // ✅ Import ManageProducts
+// import EditProduct from "./components/EditProduct"; 
 import EditSellerProfile from './components/EditSellerProfile'; // ✅ Import Seller Edit Profile
 
 import ProductPage from './components/ProductPage';
@@ -23,6 +24,7 @@ import './App.css';
 import CategoryPage from './components/CategoryPage';
 import EditProfile from './components/EditProfile';
 import SellerForgetPassword from './components/SellerForgetPassword';
+import EditProductModal from './components/EditProductModal';
 
 
 const App = () => {
@@ -158,6 +160,8 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/seller-forgot-password" element={<SellerForgetPassword />} />
 
+        <Route path="/products" element={<ManageProducts />} /> {/* ✅ Route for managing products */}
+        <Route path="/edit-product/:id" element={<EditProductModal />} /> {/* ✅ Route for editing a product */}
         <Route
           path="/login"
           element={

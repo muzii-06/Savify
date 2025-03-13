@@ -17,10 +17,10 @@ function Sidebar() {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={Link} to="/products">
-            <FaBox className="icon" /> Products
-          </Nav.Link>
-        </Nav.Item>
+  <Nav.Link as={Link} to="/products">
+    <FaBox className="icon" /> Products
+  </Nav.Link>
+</Nav.Item>
         <Nav.Item>
           <Nav.Link onClick={() => setShowModal(true)}>
             <FaPlusCircle className="icon" /> Add Product
