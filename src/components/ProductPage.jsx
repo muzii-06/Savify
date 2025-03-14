@@ -6,7 +6,7 @@ import './ProductPage.css';
 
 const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, handleLogout }) => {
   const { id } = useParams();
-  const navigate = useNavigate(); // Use navigate instead of Navigate
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [reviews, setReviews] = useState([]);
@@ -39,7 +39,7 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
     }
 
     const reviewData = {
-      user: username || 'Anonymous', // Use the username passed as a prop
+      user: username || 'Anonymous',
       rating,
       comment: newReview,
     };
@@ -50,8 +50,8 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
         reviewData
       );
       setReviews([...reviews, response.data.review]); // Update reviews in the UI
-      setNewReview(''); // Reset the review input field
-      setRating(0); // Reset the rating
+      setNewReview('');
+      setRating(0);
     } catch (error) {
       console.error('Error adding review:', error);
       alert('Failed to submit review. Please try again.');
@@ -109,12 +109,8 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
           <div className="col-lg-6 col-md-6">
             <h1 className="product-title">{product.name}</h1>
             <p className="text-muted">
-  Store: {product.seller ? product.seller.storeName : 'Unknown Store'}
-</p>
-
-
-
-
+              Store: {product.seller && product.seller.storeName ? product.seller.storeName : 'Unknown Store'}
+            </p>
 
             <div className="ratings mb-3">
               <span className="stars ">⭐⭐⭐⭐⭐</span>
@@ -160,7 +156,7 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
                     name: product.name,
                     price: product.price,
                     image: `http://localhost:5000/${product.images[0]}`,
-                    quantity, // Use the quantity state value
+                    quantity,
                   })
                 }
               >
@@ -182,6 +178,11 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
                     <span className="text-warning">⭐{review.rating}</span>
                   </p>
                   <p>{review.comment}</p>
+                  {review.reply && product.seller && product.seller.storeName && (
+                    <p className="reply text-muted">
+                      <strong>{product.seller.storeName}:</strong> {review.reply}
+                    </p>
+                  )}
                 </div>
               ))
             ) : (

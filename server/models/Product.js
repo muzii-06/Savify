@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
-// Review Schema
+// Review Schema with Reply Field
 const reviewSchema = new mongoose.Schema({
   user: { type: String, required: true },
   rating: { type: Number, required: true, min: 1, max: 5 },
   comment: { type: String, required: true },
+  reply: { type: String, default: null }, // ✅ New field for seller reply
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -14,7 +14,7 @@ import ForgotPassword from './components/ForgotPassword';
 import ManageProducts from "./components/ManageProducts"; // ✅ Import ManageProducts
 // import EditProduct from "./components/EditProduct"; 
 import EditSellerProfile from './components/EditSellerProfile'; // ✅ Import Seller Edit Profile
-
+import ManageReviews from "./components/ManageReviews";
 import ProductPage from './components/ProductPage';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -159,7 +159,7 @@ const App = () => {
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/seller-forgot-password" element={<SellerForgetPassword />} />
-
+        <Route path="/manage-reviews" element={<ManageReviews />} />
         <Route path="/products" element={<ManageProducts />} /> {/* ✅ Route for managing products */}
         <Route path="/edit-product/:id" element={<EditProductModal />} /> {/* ✅ Route for editing a product */}
         <Route

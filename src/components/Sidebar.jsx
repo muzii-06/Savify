@@ -32,6 +32,12 @@ function Sidebar() {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
+  <Nav.Link as={Link} to="/manage-reviews">
+    <FaEnvelope className="icon" /> Manage Reviews
+  </Nav.Link>
+</Nav.Item>
+
+        <Nav.Item>
           <Nav.Link as={Link} to="/manage-messages">
             <FaEnvelope className="icon" /> Manage Messages
           </Nav.Link>
