@@ -163,6 +163,67 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.get("/seller/:sellerId/reviews", async (req, res) => {
+  const { sellerId } = req.params;
+
+  try {
+    const products = await Product.find({ seller: sellerId }, "name images reviews");
+    const reviews = products.flatMap((product) =>
+      product.reviews.map((review) => ({
+        ...review.toObject(),
+        productName: product.name,
+        productImage: product.images[0] || "", // ✅ Get first product image
+        productId: product._id,
+      }))
+    );
+
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error("❌ Error fetching reviews:", error);
+    res.status(500).json({ message: "Failed to fetch reviews." });
+  }
+});
+
+// ✅ Delete a Review
+router.delete("/:productId/reviews/:reviewId", async (req, res) => {
+  const { productId, reviewId } = req.params;
+
+  try {
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).json({ message: "Product not found." });
+
+    product.reviews = product.reviews.filter((review) => review._id.toString() !== reviewId);
+    await product.save();
+
+    res.status(200).json({ message: "Review deleted successfully." });
+  } catch (error) {
+    console.error("❌ Error deleting review:", error);
+    res.status(500).json({ message: "Failed to delete review." });
+  }
+});
+
+// ✅ Reply to a Review
+router.put("/:productId/reviews/:reviewId/reply", async (req, res) => {
+  const { productId, reviewId } = req.params;
+  const { reply } = req.body;
+
+  try {
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).json({ message: "Product not found." });
+
+    const review = product.reviews.find((review) => review._id.toString() === reviewId);
+    if (!review) return res.status(404).json({ message: "Review not found." });
+
+    review.reply = reply;
+    await product.save();
+
+    res.status(200).json({ message: "Reply added successfully.", review });
+  } catch (error) {
+    console.error("❌ Error adding reply:", error);
+    res.status(500).json({ message: "Failed to add reply." });
+  }
+});
+
 
 
 
