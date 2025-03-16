@@ -149,19 +149,20 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
                 Buy Now
               </button>
               <button
-                className="btn btn-warning w-50 rounded-pill fw-bold"
-                onClick={() =>
-                  handleAddToCart({
-                    _id: product._id,
-                    name: product.name,
-                    price: product.price,
-                    image: `http://localhost:5000/${product.images[0]}`,
-                    quantity,
-                  })
-                }
-              >
-                Add to Cart
-              </button>
+  className="btn btn-warning w-50 rounded-pill fw-bold"
+  onClick={() =>
+    handleAddToCart({
+      _id: product._id,
+      name: product.name,
+      price: product.price,
+      image: `http://localhost:5000/${product.images[0]}`,
+      quantity, // Pass quantity properly
+    })
+  }
+>
+  Add to Cart
+</button>
+
             </div>
           </div>
         </div>

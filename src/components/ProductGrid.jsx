@@ -25,14 +25,23 @@ const ProductGrid = ({ handleAddToCart }) => {
         <h2 className='fs-2'>Just For You</h2>
       <div className="row g-4">
         {products.map((product) => (
-          <ProductCard
-            key={product._id}
-            id={product._id}
-            name={product.name}
-            price={product.price}
-            image={`http://localhost:5000/${product.images[0]}`} // Display the first image
-            handleAddToCart={handleAddToCart}
-          />
+         <ProductCard
+         key={product._id}
+         id={product._id}
+         name={product.name}
+         price={product.price}
+         image={`http://localhost:5000/${product.images[0]}`}
+         handleAddToCart={() =>
+           handleAddToCart({
+             _id: product._id,
+             name: product.name,
+             price: product.price,
+             image: `http://localhost:5000/${product.images[0]}`,
+             quantity: 1, // Default quantity is 1
+           })
+         }
+       />
+       
         ))}
       </div>
     </div>
