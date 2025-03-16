@@ -20,6 +20,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SearchResults from './components/SearchResults';
 
+
 import './App.css';
 import CategoryPage from './components/CategoryPage';
 import EditProfile from './components/EditProfile';
@@ -31,9 +32,16 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSeller, setIsSeller] = useState(false);
   const [username, setUsername] = useState(null); // Store the username
-  const [cart, setCart] = useState([]); // Cart state
+   // Cart state
   const [products, setProducts] = useState([]); // Products state
-
+  const [cart, setCart] = useState(() => {
+    // Load cart from localStorage on app load
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
   // Function to fetch products
   const fetchProducts = async () => {
     try {
@@ -92,7 +100,7 @@ const App = () => {
   // Add to Cart Handler
   const handleAddToCart = (product) => {
     if (!isAuthenticated) {
-      window.location.href = '/login'; // Redirect to login if not authenticated
+      window.location.href = "/login"; // Redirect if not logged in
       return;
     }
   
@@ -100,14 +108,14 @@ const App = () => {
       const existingItem = prevCart.find((item) => item._id === product._id);
   
       if (existingItem) {
-        // Update quantity of the existing product in the cart
+        // If product exists, update its quantity
         return prevCart.map((item) =>
           item._id === product._id
             ? { ...item, quantity: item.quantity + product.quantity }
             : item
         );
       } else {
-        // Add the new product to the cart
+        // Otherwise, add it as a new item
         return [...prevCart, product];
       }
     });
