@@ -313,11 +313,12 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
                         </Link>
                       </li>
 
-                    <li>
-                      <Link className="dropdown-item" to="/manage-orders">
-                        Manage Orders
-                      </Link>
-                    </li>
+                      <li>
+  <Link className="dropdown-item" to="/manage-orders-buyer">
+    Manage Orders
+  </Link>
+</li>
+
                     <li>
                       <button className="dropdown-item" onClick={handleLogout}>
                         Logout

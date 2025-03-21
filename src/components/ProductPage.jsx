@@ -14,17 +14,32 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
   const [rating, setRating] = useState(0);
 
   useEffect(() => {
+    console.log("📌 Fetching Product ID:", id); // ✅ Log ID before making API request
+
+    if (!id || id.length !== 24) {
+        console.error("❌ Invalid Product ID:", id);
+        return;
+    }
+
     const fetchProduct = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/products/${id}`);
-        setProduct(response.data);
-        setReviews(response.data.reviews || []); // Load existing reviews
-      } catch (error) {
-        console.error('Error fetching product:', error);
-      }
+        try {
+            const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+            console.log("📌 Product Data Fetched:", response.data); // ✅ Log fetched product
+
+            if (!response.data.seller || !response.data.seller._id) {
+                console.warn("⚠️ Warning: Seller ID missing in fetched product:", response.data.name);
+            }
+
+            setProduct(response.data);
+        } catch (error) {
+            console.error("❌ Error fetching product:", error.response?.data || error.message);
+        }
     };
+
     fetchProduct();
-  }, [id]);
+}, [id]);
+
+
 
   const handleQuantityChange = (type) => {
     setQuantity((prev) =>
@@ -142,12 +157,31 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
             </div>
 
             <div className="d-flex gap-3">
-              <button
-                className="btn btn-primary w-50 rounded-pill fw-bold"
-                onClick={() => navigate('/checkout')}
-              >
-                Buy Now
-              </button>
+            <button
+  className="btn btn-primary w-50 rounded-pill fw-bold"
+  onClick={() => {
+    navigate('/checkout', {
+      state: {
+        directBuy: {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          quantity,
+          image: `http://localhost:5000/${product.images[0].replace(/\\/g, "/")}`,
+          seller: {
+            _id: product.seller?._id,
+            storeName: product.seller?.storeName || "Unknown Store",
+          },
+          sellerId: product.seller?._id || "UNKNOWN_SELLER",
+        },
+      },
+    });
+  }}
+>
+  Buy Now
+</button>
+
+
               <button
   className="btn btn-warning w-50 rounded-pill fw-bold"
   onClick={() =>
@@ -156,12 +190,20 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
       name: product.name,
       price: product.price,
       image: `http://localhost:5000/${product.images[0]}`,
-      quantity, // Pass quantity properly
+      quantity,
+      seller: {
+        _id: product.seller?._id,
+        storeName: product.seller?.storeName,
+      },
+      sellerId: product.seller?._id,
     })
   }
 >
   Add to Cart
 </button>
+
+
+
 
             </div>
           </div>

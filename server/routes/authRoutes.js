@@ -5,6 +5,7 @@ const User = require('../models/User');
 const Seller = require('../models/Seller'); // Import the Seller model
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const mongoose = require("mongoose");
 
 const router = express.Router();
 const multer = require('multer');
@@ -332,17 +333,21 @@ router.post('/seller-login', async (req, res) => {
 
 // Get user data by ID
 router.get('/user/:id', async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ message: 'Invalid User ID format' });
+  }
+
   try {
     const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
+    if (!user) return res.status(404).json({ message: 'User not found.' });
+
     res.status(200).json(user);
   } catch (error) {
     console.error('Error fetching user data:', error);
     res.status(500).json({ message: 'Server error while fetching user data.' });
   }
 });
+
 router.get('/seller/:id', async (req, res) => {
   try {
     console.log("Fetching seller data for ID:", req.params.id); // ✅ Debugging Log
@@ -360,6 +365,7 @@ router.get('/seller/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error while fetching seller data.' });
   }
 });
+
 
 
 // Update User Profile Route
@@ -433,6 +439,8 @@ router.put('/change-password', async (req, res) => {
   }
 });
 
+
+
 router.put('/seller-change-password', async (req, res) => {
   const { sellerId, oldPassword, newPassword } = req.body;
 
@@ -485,6 +493,7 @@ router.post('/request-password-reset', async (req, res) => {
     res.status(500).json({ message: 'Server error while sending OTP.' });
   }
 });
+
 router.post('/verify-reset-otp', async (req, res) => {
   const { email, otp } = req.body;
 
@@ -508,6 +517,7 @@ router.post('/verify-reset-otp', async (req, res) => {
     res.status(500).json({ message: 'Server error while verifying OTP.' });
   }
 });
+
 router.put('/reset-password', async (req, res) => {
   const { email, newPassword } = req.body;
 
@@ -525,6 +535,7 @@ router.put('/reset-password', async (req, res) => {
     res.status(500).json({ message: 'Server error while resetting password.' });
   }
 });
+
 
 router.post('/seller-request-password-reset', async (req, res) => {
   const { email } = req.body;
@@ -558,6 +569,7 @@ router.post('/seller-request-password-reset', async (req, res) => {
     res.status(500).json({ message: 'Server error while sending OTP.' });
   }
 });
+
 router.post('/seller-verify-reset-otp', async (req, res) => {
   const { email, otp } = req.body;
 
@@ -582,6 +594,7 @@ router.post('/seller-verify-reset-otp', async (req, res) => {
   }
 });
 
+
 router.put('/seller-reset-password', async (req, res) => {
   const { email, newPassword } = req.body;
 
@@ -599,10 +612,6 @@ router.put('/seller-reset-password', async (req, res) => {
     res.status(500).json({ message: 'Server error while resetting password.' });
   }
 });
-
-
-
-
 
 
 

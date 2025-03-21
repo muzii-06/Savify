@@ -1,0 +1,130 @@
+.buyer-orders-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .page-title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: #222;
+  }
+  
+  .no-orders {
+    text-align: center;
+    font-size: 18px;
+    color: #777;
+  }
+  
+  .order-card {
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  }
+  
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .order-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    text-transform: capitalize;
+    font-weight: 500;
+  }
+  
+  .order-status.pending {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  .order-status.shipped {
+    background-color: #d1ecf1;
+    color: #0c5460;
+  }
+  
+  .order-status.delivered {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .order-date {
+    font-size: 14px;
+    color: #777;
+  }
+  
+  .order-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+  }
+  
+  .item-info p,
+  .store-info p {
+    margin: 3px 0;
+  }
+  
+  .item-name {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .item-quantity,
+  .item-price {
+    color: #555;
+    font-size: 14px;
+  }
+  
+  .store-name {
+    font-size: 14px;
+    color: #007bff;
+  }
+  
+  .order-footer {
+    margin-top: 15px;
+    text-align: right;
+    font-weight: 600;
+    font-size: 16px;
+    color: #111;
+  }
+  .order-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px dashed #eee;
+  }
+  
+  .order-item-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  

@@ -43,11 +43,15 @@ const SellerLogin = ({ onAuthChange }) => {
   
       if (response?.data?.sellerToken) {
         localStorage.setItem('sellerToken', response.data.sellerToken);
-        localStorage.setItem('sellerId', response.data.sellerId);
-        localStorage.setItem('storeName', response.data.storeName);
-        localStorage.setItem('username', response.data.username);
-        localStorage.setItem('sellerImage', response.data.storeImage);
-  
+localStorage.setItem('sellerId', response.data.sellerId);
+localStorage.setItem('storeName', response.data.storeName);
+localStorage.setItem('username', response.data.username); 
+localStorage.setItem('sellerImage', response.data.storeImage);
+
+// 🚨 Remove buyer-related details if they exist
+localStorage.removeItem('token');
+localStorage.removeItem('userId');
+
         onAuthChange();
         navigate('/dashboard', { replace: true });
       } else {

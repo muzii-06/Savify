@@ -1,86 +1,140 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import "./Checkout.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./Checkout.css";
 
-const Checkout = ({ cart, setCart, userId }) => {
+const Checkout = ({ cart, setCart }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
+const directBuy = location.state?.directBuy;
 
-  // ✅ Ensure userId is available before making API call
+
+  // 🔄 Use directPurchase item or full cart
+  const cartItems = directBuy ? [directBuy] : cart;
+
+
+  const userId = localStorage.getItem("userId");
+
   useEffect(() => {
     const fetchUserDetails = async () => {
-        if (!userId) {
-          console.error("User ID is missing!");
-          return;
-        }
-      
-        try {
-          const response = await axios.get(`http://localhost:5000/api/user/${userId}`); // ✅ Ensure Correct API Path
-          setUser(response.data);
-        } catch (error) {
-          console.error("Error fetching user data:", error.response ? error.response.data : error.message);
-        }
-      };
-      
+      try {
+        const response = await axios.get(`http://localhost:5000/api/auth/user/${userId}`);
+        setUser(response.data);
+      } catch (error) {
+        console.error("❌ Error fetching user details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    fetchUserDetails();
+    if (userId) fetchUserDetails();
   }, [userId]);
 
-  // Calculate total price
-  const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  useEffect(() => {
+    console.log("📌 Cart at Checkout:", cartItems);
+  }, [cartItems]);
 
-  // Handle order placement
-  const handleOrder = async () => {
+  const handlePlaceOrder = async () => {
+    const buyerId = localStorage.getItem("userId");
+    if (!buyerId || !buyerId.match(/^[0-9a-fA-F]{24}$/)) {
+      alert("❌ Invalid or missing user ID. Please re-login.");
+      return;
+    }
+
     try {
-      const response = await axios.post("http://localhost:5000/api/orders/checkout", {
-        userId,
-        cartItems: cart,
-      });
+      const userResponse = await axios.get(`http://localhost:5000/api/auth/user/${buyerId}`);
+      const buyer = {
+        _id: userResponse.data._id,
+        username: userResponse.data.username,
+        email: userResponse.data.email,
+        address: userResponse.data.address,
+        contactNumber: userResponse.data.contactNumber,
+      };
 
-      if (response.data.success) {
-        alert("Order placed successfully!");
-        setCart([]); // Clear cart after order
-        localStorage.removeItem("cart");
-        navigate("/orders"); // Redirect to orders page
+      const orderItems = cartItems.map((item) => ({
+        productId: item._id,
+        name: item.name,
+        image: item.image,
+        price: item.price,
+        quantity: item.quantity,
+        seller: {
+          _id: item?.seller?._id || item?.sellerId || "UNKNOWN_SELLER",
+        },
+      }));
+      
+
+      if (orderItems.includes(null)) return;
+
+      const orderData = {
+        buyerId: buyer._id,
+        items: orderItems,
+        totalAmount: cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
+        paymentMethod: "Cash on Delivery",
+      };
+
+      console.log("📦 ✅ Sending Order Data:", orderData);
+
+      const response = await axios.post("http://localhost:5000/api/orders/place-order", orderData);
+      if (response.status === 201) {
+        alert("🎉 Order placed successfully!");
+        if (!directBuy) {
+          setCart([]);
+          localStorage.removeItem("cart");
+        }
+        navigate("/order-success");
       }
     } catch (error) {
-      console.error("Error placing order:", error.response ? error.response.data : error.message);
-      alert("Failed to place order.");
+      console.error("❌ Error placing order:", error.response?.data || error.message);
+      alert("❌ Failed to place order. Please try again.");
     }
   };
 
   return (
-    <div className="checkout-page">
+    <div className="checkout-container">
       <h2>Checkout</h2>
 
-      {user ? (
+      {loading ? (
+        <p>Loading...</p>
+      ) : user ? (
         <div className="checkout-details">
-          <h4>Shipping Address</h4>
-          <p>{user.address}</p>
-
-          <h4>Order Summary</h4>
-          <div className="checkout-items">
-            {cart.map((item) => (
-              <div key={item._id} className="checkout-item">
-                <p>
-                  {item.name} × {item.quantity} - Rs {item.price * item.quantity}
-                </p>
-              </div>
-            ))}
+          <div className="section">
+            <h4>Shipping Details</h4>
+            <p><strong>Name:</strong> {user.username}</p>
+            <p><strong>Phone:</strong> {user.contactNumber || "Not Available"}</p>
+            <p><strong>Address:</strong> {user.address || "Not Provided"}</p>
           </div>
 
-          <h3>Total: Rs {totalPrice}</h3>
+          <div className="section">
+            <h4>Order Summary</h4>
+            <ul className="order-items">
+            {cartItems.map((item) => (
+  <li key={item._id} className="order-item">
+    <img src={item.image} alt={item.name} className="order-item-img" />
+    <span>{item.name} (x{item.quantity})</span>
+    <span>Rs. {item.price * item.quantity}</span>
+  </li>
+))}
 
-          <h4>Payment Method</h4>
-          <p><strong>Cash on Delivery</strong> (Pay at your doorstep)</p>
+            </ul>
+            <h4>Total: Rs. {cartItems.reduce((total, item) => total + item.price * item.quantity, 0)}</h4>
 
-          <button className="btn btn-success" onClick={handleOrder}>
-            Confirm Order
+          </div>
+
+          <div className="section">
+            <h4>Payment Method</h4>
+            <p>
+              <input type="radio" name="payment" checked readOnly /> Cash on Delivery
+            </p>
+          </div>
+
+          <button className="place-order-btn" onClick={handlePlaceOrder}>
+            Place Order
           </button>
         </div>
       ) : (
-        <p>Loading user details...</p>
+        <p className="error-text">❌ Failed to load user details.</p>
       )}
     </div>
   );

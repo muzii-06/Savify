@@ -44,12 +44,13 @@ const AddProductModal = ({ show, handleClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    const sellerId = localStorage.getItem("sellerId"); // ✅ Ensure sellerId is included
     if (!sellerId) {
-      alert("❌ Seller ID is missing. Please log in again.");
+      alert("Seller ID is missing. Please log in again.");
       return;
     }
-
+  
     const data = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       data.append(key, value);
@@ -57,25 +58,22 @@ const AddProductModal = ({ show, handleClose }) => {
     Array.from(images).forEach((image) => {
       data.append('images', image);
     });
-
+  
     data.append('sellerId', sellerId); // ✅ Append sellerId
-
-    console.log("🚀 FormData before sending:", [...data.entries()]); // Debugging
-
+  
     try {
-      const response = await axios.post('http://localhost:5000/api/products', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await axios.post("http://localhost:5000/api/products", data, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      alert('✅ Product added successfully!');
+  
+      alert("✅ Product added successfully!");
       handleClose();
     } catch (error) {
-      console.error('❌ Error adding product:', error.response?.data || error.message);
-      alert('❌ Failed to add product. Try again.');
+      console.error("❌ Error adding product:", error.response?.data || error.message);
+      alert("❌ Failed to add product. Try again.");
     }
   };
-
+  
   return (
     <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>

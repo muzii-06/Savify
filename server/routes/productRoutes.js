@@ -68,24 +68,34 @@ router.get('/search', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
-  try {
-    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+  if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      console.error("❌ Invalid product ID received:", id);
       return res.status(400).json({ message: 'Invalid product ID.' });
-    }
+  }
 
-    // ✅ Populate seller details (storeName only)
-    const product = await Product.findById(id).populate('seller', 'storeName');
+  try {
+      const product = await Product.findById(id).populate('seller', 'storeName _id email contactNumber');
 
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found.' });
-    }
+      if (!product) {
+          return res.status(404).json({ message: 'Product not found.' });
+      }
 
-    res.status(200).json(product);
+      if (!product.seller || !product.seller._id) {
+          console.warn("⚠️ Warning: Seller ID missing in fetched product:", product.name);
+      }
+
+      console.log("📌 Product Sent from Backend:", product); // ✅ Log backend response
+      res.status(200).json(product);
   } catch (error) {
-    console.error('Error fetching product:', error);
-    res.status(500).json({ message: 'Failed to fetch product.' });
+      console.error('❌ Error fetching product:', error);
+      res.status(500).json({ message: 'Failed to fetch product.' });
   }
 });
+
+
+
+
+
 
 // ✅ Fetch products by seller ID
 router.get('/seller/:sellerId', async (req, res) => {
@@ -251,22 +261,18 @@ router.get('/category/:category', async (req, res) => {
 
 
 // Add a new product
-router.post('/', upload.array('images', 5), async (req, res) => {
+router.post("/", upload.array("images", 5), async (req, res) => {
   const { name, price, description, category, subcategory, quantity, sellerId } = req.body;
 
   if (!name || !price || !description || !category || !subcategory || !quantity || !sellerId) {
-    return res.status(400).json({ message: 'All fields, including sellerId, are required.' });
-  }
-
-  if (!req.files || req.files.length === 0) {
-    return res.status(400).json({ message: 'At least one product image is required.' });
+    return res.status(400).json({ message: "All fields, including sellerId, are required." });
   }
 
   try {
-    // ✅ Verify Seller Exists
+    // ✅ Validate Seller ID
     const seller = await Seller.findById(sellerId);
     if (!seller) {
-      return res.status(404).json({ message: 'Seller not found.' });
+      return res.status(404).json({ message: "Seller not found." });
     }
 
     const imagePaths = req.files.map((file) => file.path);
@@ -279,16 +285,17 @@ router.post('/', upload.array('images', 5), async (req, res) => {
       subcategory,
       quantity: Number(quantity),
       images: imagePaths,
-      seller: seller._id, // ✅ Store seller as ObjectId reference
+      seller: sellerId, // ✅ Save sellerId properly
     });
 
     await newProduct.save();
     res.status(201).json(newProduct);
   } catch (error) {
-    console.error('Error adding product:', error);
-    res.status(500).json({ message: 'Failed to add product.' });
+    console.error("❌ Error adding product:", error);
+    res.status(500).json({ message: "Failed to add product." });
   }
 });
+
 
 // Route: Add a review to a product
 router.post('/:id/reviews', async (req, res) => {

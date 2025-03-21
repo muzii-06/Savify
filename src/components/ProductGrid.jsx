@@ -30,17 +30,23 @@ const ProductGrid = ({ handleAddToCart }) => {
          id={product._id}
          name={product.name}
          price={product.price}
-         image={`http://localhost:5000/${product.images[0]}`}
+         image={`http://localhost:5000/${product.images[0].replace(/\\/g, "/")}`}
          handleAddToCart={() =>
            handleAddToCart({
              _id: product._id,
              name: product.name,
              price: product.price,
-             image: `http://localhost:5000/${product.images[0]}`,
-             quantity: 1, // Default quantity is 1
+             image: `http://localhost:5000/${product.images[0].replace(/\\/g, "/")}`,
+             quantity: 1,
+             seller: {
+               _id: product.seller?._id,
+               storeName: product.seller?.storeName || "Unknown Store",
+             },
+             sellerId: product.seller?._id || "UNKNOWN_SELLER",
            })
          }
        />
+       
        
         ))}
       </div>
