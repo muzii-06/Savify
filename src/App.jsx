@@ -7,6 +7,9 @@ import Cart from './components/Cart'; // New Cart Component
 import SellerLogin from './components/SellerLogin';
 import SellerSignup from './components/SellerSignup';
 import Dashboard from './components/Dashboard';
+import Checkout from "./components/Checkout";
+import OrderSuccess from "./components/OrderSuccess";
+import ManageOrdersBuyer from './components/ManageOrdersBuyer';
 import ShippingRatesAndPolicy from './components/Footer_Pages/ShippingRatesAndPolicy';
 import ReturnsAndReplacementPolicy from './components/Footer_Pages/ReturnsAndReplacementPolicy';
 import Help from './components/Footer_Pages/Help';
@@ -35,13 +38,14 @@ const App = () => {
    // Cart state
   const [products, setProducts] = useState([]); // Products state
   const [cart, setCart] = useState(() => {
-    // Load cart from localStorage on app load
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
-  });
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+});
+useEffect(() => {
+  console.log("📌 Saving Cart to Local Storage:", cart); // ✅ Log cart before saving
+  localStorage.setItem("cart", JSON.stringify(cart));
+}, [cart]);
+
   // Function to fetch products
   const fetchProducts = async () => {
     try {
@@ -100,26 +104,55 @@ const App = () => {
   // Add to Cart Handler
   const handleAddToCart = (product) => {
     if (!isAuthenticated) {
-      window.location.href = "/login"; // Redirect if not logged in
-      return;
+        window.location.href = "/login"; 
+        return;
     }
-  
+
+    console.log("📌 Adding Product to Cart:", product);
+
+    if (!product.seller || !product.seller._id) {
+        console.error(`❌ ERROR: Seller ID missing for product: ${product.name}`);
+    }
+
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item._id === product._id);
-  
-      if (existingItem) {
-        // If product exists, update its quantity
-        return prevCart.map((item) =>
-          item._id === product._id
-            ? { ...item, quantity: item.quantity + product.quantity }
-            : item
-        );
-      } else {
-        // Otherwise, add it as a new item
-        return [...prevCart, product];
-      }
+        const existingItem = prevCart.find((item) => item._id === product._id);
+
+        if (existingItem) {
+            return prevCart.map((item) =>
+                item._id === product._id
+                    ? { ...item, quantity: item.quantity + product.quantity }
+                    : item
+            );
+        } else {
+            return [
+                ...prevCart,
+                {
+                    ...product,
+                    seller: {
+                        _id: product.seller?._id || product.sellerId || "UNKNOWN_SELLER", // ✅ Ensure correct seller ID
+                        storeName: product.seller?.storeName || "Unknown Store"
+                    },
+                    sellerId: product.seller?._id || product.sellerId || "UNKNOWN_SELLER", // ✅ Store correct sellerId
+                },
+            ];
+        }
     });
-  };
+
+    setTimeout(() => {
+        console.log("📌 Updated Cart:", JSON.parse(localStorage.getItem("cart"))); // ✅ Debugging
+    }, 500);
+};
+
+
+
+
+
+
+
+
+
+
+
   
   
 
@@ -170,6 +203,9 @@ const App = () => {
         <Route path="/manage-reviews" element={<ManageReviews />} />
         <Route path="/products" element={<ManageProducts />} /> {/* ✅ Route for managing products */}
         <Route path="/edit-product/:id" element={<EditProductModal />} /> {/* ✅ Route for editing a product */}
+        <Route path="/checkout" element={<Checkout cart={cart} setCart={setCart} />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/manage-orders-buyer" element={<ManageOrdersBuyer />} />
         <Route
           path="/login"
           element={

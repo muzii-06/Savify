@@ -53,10 +53,16 @@ const Login = ({ onAuthChange }) => {
   
       const data = await response.json();
       alert(data.message);
-      localStorage.setItem('token', data.token); // Save the token
+      localStorage.setItem('token', data.token);
       localStorage.setItem('username', data.username);
-       // Save the username
-       localStorage.setItem('userId', data.userId);
+      localStorage.setItem('userId', data.userId);
+      
+      // 🚨 Remove seller-related details if they exist
+      localStorage.removeItem('sellerToken');
+      localStorage.removeItem('sellerId');
+      localStorage.removeItem('storeName');
+      localStorage.removeItem('sellerImage');
+      
       onAuthChange(); // Notify the app about the login
       navigate('/home'); // Redirect to the home page
     } catch (error) {

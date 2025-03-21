@@ -1,39 +1,42 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Cart.css';
 import savifylogo from './Savify logo.png';
 
 function Cart({ cart, setCart }) {
+    const navigate = useNavigate(); // ✅ Use navigate hook for redirection
+
     // Handle increase quantity
     const handleIncrease = (_id) => {
         setCart((prevCart) => {
-          const updatedCart = prevCart.map((item) =>
-            item._id === _id ? { ...item, quantity: item.quantity + 1 } : item
-          );
-          localStorage.setItem("cart", JSON.stringify(updatedCart)); // Sync with localStorage
-          return updatedCart;
+            const updatedCart = prevCart.map((item) =>
+                item._id === _id ? { ...item, quantity: item.quantity + 1 } : item
+            );
+            localStorage.setItem("cart", JSON.stringify(updatedCart)); // Sync with localStorage
+            return updatedCart;
         });
-      };
-      
-      const handleDecrease = (_id) => {
+    };
+
+    const handleDecrease = (_id) => {
         setCart((prevCart) => {
-          const updatedCart = prevCart.map((item) =>
-            item._id === _id && item.quantity > 1
-              ? { ...item, quantity: item.quantity - 1 }
-              : item
-          );
-          localStorage.setItem("cart", JSON.stringify(updatedCart)); // Sync with localStorage
-          return updatedCart;
+            const updatedCart = prevCart.map((item) =>
+                item._id === _id && item.quantity > 1
+                    ? { ...item, quantity: item.quantity - 1 }
+                    : item
+            );
+            localStorage.setItem("cart", JSON.stringify(updatedCart)); // Sync with localStorage
+            return updatedCart;
         });
-      };
-      
-      const handleRemove = (_id) => {
+    };
+
+    const handleRemove = (_id) => {
         setCart((prevCart) => {
-          const updatedCart = prevCart.filter((item) => item._id !== _id);
-          localStorage.setItem("cart", JSON.stringify(updatedCart)); // Sync with localStorage
-          return updatedCart;
+            const updatedCart = prevCart.filter((item) => item._id !== _id);
+            localStorage.setItem("cart", JSON.stringify(updatedCart)); // Sync with localStorage
+            return updatedCart;
         });
-      };
-      
+    };
+
     // Calculate total price
     const totalPrice = cart.reduce(
         (total, item) => total + item.price * item.quantity,
@@ -49,7 +52,7 @@ function Cart({ cart, setCart }) {
                 <div className="cart-items">
                     {cart.map((item) => (
                         <div key={item._id} className="cart-item">
-                            <img 
+                            <img
                                 src={item.image}
                                 alt={item.name}
                                 className="cart-item-image"
@@ -87,8 +90,13 @@ function Cart({ cart, setCart }) {
                     <hr className="cart-divider" />
                     <div className="d-flex align-items-center justify-content-between">
                         <h4 className="cart-total fs-4">Total: Rs {totalPrice}</h4>
-                        <img className="m-auto d-block" width="40%"  src={savifylogo} alt="Logo" />
-                        <button className="btn  p-2 ptco">Proceed to Checkout</button>
+                        <img className="m-auto d-block" width="40%" src={savifylogo} alt="Logo" />
+                        <button
+                            className="btn btn-success p-2 ptco"
+                            onClick={() => navigate("/checkout")} // ✅ Redirect to Checkout Page
+                        >
+                            Proceed to Checkout
+                        </button>
                     </div>
                 </div>
             )}

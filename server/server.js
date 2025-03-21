@@ -5,6 +5,7 @@ const path = require('path');
 const cors = require('cors');
 const productRoutes = require('./routes/productRoutes'); // Import the routes
 const authRoutes = require('./routes/authRoutes');
+const orderRoutes = require("./routes/orderRoutes");
 
 
  
@@ -28,7 +29,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Register routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes); // Make sure this is registered
-
+app.use("/api/orders", orderRoutes);
 
 
 const PORT = process.env.PORT || 5000;
