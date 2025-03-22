@@ -27,10 +27,11 @@ function Sidebar() {
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={Link} to="/orders">
-            <FaShoppingCart className="icon" /> Manage Orders
-          </Nav.Link>
-        </Nav.Item>
+  <Nav.Link as={Link} to="/seller/manage-orders">
+    <FaShoppingCart className="icon" /> Manage Orders
+  </Nav.Link>
+</Nav.Item>
+
         <Nav.Item>
   <Nav.Link as={Link} to="/manage-reviews">
     <FaEnvelope className="icon" /> Manage Reviews

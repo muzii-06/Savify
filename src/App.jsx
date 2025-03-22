@@ -22,7 +22,7 @@ import ProductPage from './components/ProductPage';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SearchResults from './components/SearchResults';
-
+import ManageOrdersSeller from './components/ManageOrdersSeller';
 
 import './App.css';
 import CategoryPage from './components/CategoryPage';
@@ -206,6 +206,7 @@ useEffect(() => {
         <Route path="/checkout" element={<Checkout cart={cart} setCart={setCart} />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/manage-orders-buyer" element={<ManageOrdersBuyer />} />
+        <Route path="/seller/manage-orders" element={<ManageOrdersSeller />} />
         <Route
           path="/login"
           element={
