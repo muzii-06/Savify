@@ -29,9 +29,10 @@ const ManageOrdersBuyer = () => {
           <div key={idx} className="order-card">
             <div className="order-header">
               <h4>Order #{idx + 1}</h4>
-              <span className={`order-status ${order.status?.toLowerCase() || 'pending'}`}>
-  {order.status || 'Pending'}
+              <span className={`order-status ${order?.status?.toLowerCase?.() || 'pending'}`}>
+  {order?.status || 'Pending'}
 </span>
+
 
               <span className="order-date">
                 {new Date(order.createdAt).toLocaleDateString()}

@@ -16,13 +16,21 @@ const orderSchema = new mongoose.Schema({
       price: { type: Number, required: true },
       quantity: { type: Number, required: true },
       seller: {
-        _id: { type: mongoose.Schema.Types.ObjectId, ref: "Seller", required: true }, // ✅ Ensure seller is required
-        storeName: String, 
+        _id: { type: mongoose.Schema.Types.ObjectId, ref: "Seller", required: true },
+        storeName: String,
       },
     },
   ],
   totalAmount: { type: Number, required: true },
   paymentMethod: { type: String, required: true },
+
+  // ✅ Add this field:
+  status: {
+    type: String,
+    enum: ["Pending", "Shipped", "Delivered"],
+    default: "Pending",
+  },
+
   createdAt: { type: Date, default: Date.now },
 });
 
