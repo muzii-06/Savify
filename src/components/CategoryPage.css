@@ -1,15 +1,17 @@
-.category-page {
+.category-page 
+{
     background-color: #f9f9f9; /* Light background */
     padding: 20px; /* Add spacing */
     border-radius: 10px; /* Smooth corners */
-  }
+}
   
-  .category-title {
-    font-size: 2rem;
+.category-title 
+  {
+    font-size: 2.5rem;
     font-weight: bold;
     text-align: center;
     margin-bottom: 20px;
-    color: #333; /* Dark text for contrast */
+    color: #333;  /* Dark text for contrast */
   }
   
   /* .product-grid { */
