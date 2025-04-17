@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Cart.css';
 import savifylogo from './Savify logo.png';
+import { toast } from 'react-toastify';
 
 function Cart({ cart, setCart }) {
     const navigate = useNavigate(); // ✅ Use navigate hook for redirection
@@ -29,13 +30,22 @@ function Cart({ cart, setCart }) {
         });
     };
 
+    
+
     const handleRemove = (_id) => {
-        setCart((prevCart) => {
-            const updatedCart = prevCart.filter((item) => item._id !== _id);
-            localStorage.setItem("cart", JSON.stringify(updatedCart)); // Sync with localStorage
-            return updatedCart;
-        });
+      setCart((prevCart) => {
+        const removedItem = prevCart.find((item) => item._id === _id);
+    
+        if (removedItem) {
+          toast.error(`🗑️ ${removedItem.name} removed from cart`);
+        }
+    
+        const updatedCart = prevCart.filter((item) => item._id !== _id);
+        localStorage.setItem("cart", JSON.stringify(updatedCart)); // Sync with localStorage
+        return updatedCart;
+      });
     };
+    
 
     // Calculate total price
     const totalPrice = cart.reduce(

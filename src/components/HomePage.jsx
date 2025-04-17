@@ -5,10 +5,10 @@ import ProductGrid from './ProductGrid.jsx';
 import Footer from './Footer.jsx';
 import ChatBot from './ChatBot.jsx';
 
-const HomePage = ({ username, isAuthenticated,handleAddToCart }) => {
+const HomePage = ({ username, isAuthenticated,handleAddToCart,cart }) => {
   return (
     <div>
-      <Navbar username={username} isAuthenticated={isAuthenticated} />
+      <Navbar username={username} isAuthenticated={isAuthenticated} cart={cart} />
       
       <HeroSection />
       <ProductGrid handleAddToCart={handleAddToCart} />

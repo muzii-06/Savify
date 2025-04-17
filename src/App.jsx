@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 import HomePage from './components/HomePage';
 import Login from './components/Login';
 import Signup from './components/Signup';
@@ -29,6 +31,8 @@ import CategoryPage from './components/CategoryPage';
 import EditProfile from './components/EditProfile';
 import SellerForgetPassword from './components/SellerForgetPassword';
 import EditProductModal from './components/EditProductModal';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const App = () => {
@@ -102,46 +106,51 @@ useEffect(() => {
   
   // Add to Cart Handler
   // Add to Cart Handler
-  const handleAddToCart = (product) => {
-    if (!isAuthenticated) {
-        window.location.href = "/login"; 
-        return;
+ 
+
+const handleAddToCart = (product) => {
+  if (!isAuthenticated) {
+    window.location.href = "/login";
+    return;
+  }
+
+  console.log("📌 Adding Product to Cart:", product);
+
+  if (!product.seller || !product.seller._id) {
+    console.error(`❌ ERROR: Seller ID missing for product: ${product.name}`);
+  }
+
+  setCart((prevCart) => {
+    const existingItem = prevCart.find((item) => item._id === product._id);
+
+    if (existingItem) {
+      toast.info(`${product.name} quantity updated in cart`);
+      return prevCart.map((item) =>
+        item._id === product._id
+          ? { ...item, quantity: item.quantity + product.quantity }
+          : item
+      );
+    } else {
+      toast.success(`${product.name} added to cart`);
+      return [
+        ...prevCart,
+        {
+          ...product,
+          seller: {
+            _id: product.seller?._id || product.sellerId || "UNKNOWN_SELLER",
+            storeName: product.seller?.storeName || "Unknown Store",
+          },
+          sellerId: product.seller?._id || product.sellerId || "UNKNOWN_SELLER",
+        },
+      ];
     }
+  });
 
-    console.log("📌 Adding Product to Cart:", product);
-
-    if (!product.seller || !product.seller._id) {
-        console.error(`❌ ERROR: Seller ID missing for product: ${product.name}`);
-    }
-
-    setCart((prevCart) => {
-        const existingItem = prevCart.find((item) => item._id === product._id);
-
-        if (existingItem) {
-            return prevCart.map((item) =>
-                item._id === product._id
-                    ? { ...item, quantity: item.quantity + product.quantity }
-                    : item
-            );
-        } else {
-            return [
-                ...prevCart,
-                {
-                    ...product,
-                    seller: {
-                        _id: product.seller?._id || product.sellerId || "UNKNOWN_SELLER", // ✅ Ensure correct seller ID
-                        storeName: product.seller?.storeName || "Unknown Store"
-                    },
-                    sellerId: product.seller?._id || product.sellerId || "UNKNOWN_SELLER", // ✅ Store correct sellerId
-                },
-            ];
-        }
-    });
-
-    setTimeout(() => {
-        console.log("📌 Updated Cart:", JSON.parse(localStorage.getItem("cart"))); // ✅ Debugging
-    }, 500);
+  setTimeout(() => {
+    console.log("📌 Updated Cart:", JSON.parse(localStorage.getItem("cart")));
+  }, 500);
 };
+
 
 
 
@@ -265,6 +274,7 @@ useEffect(() => {
         username={username}
         isAuthenticated={isAuthenticated}
         handleLogout={handleLogout}
+        cart={cart}
       />
     }
   />
@@ -276,6 +286,7 @@ useEffect(() => {
               username={username}
               isAuthenticated={isAuthenticated}
               handleLogout={handleLogout}
+              cart={cart}
             />
           }
         />
@@ -287,6 +298,7 @@ useEffect(() => {
       handleAddToCart={handleAddToCart}
       username={username}
       isAuthenticated={isAuthenticated}
+      cart={cart}
       handleLogout={handleLogout}
     />
   }
@@ -300,7 +312,13 @@ useEffect(() => {
           }
         />
       </Routes>
+      <ToastContainer 
+  position="top-center" 
+  autoClose={2000} 
+  pauseOnHover 
+/>
     </Router>
+    
   );
 };
 

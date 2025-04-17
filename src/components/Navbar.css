@@ -212,6 +212,10 @@
     color: black !important; /* Change link color to white */
     margin-left: 15px; /* Space between links */
 }
+.nav-link.position-relative {
+  display: inline-block;
+}
+
 
 .nav-link:hover {
     color: black !important; /* Change color on hover */
@@ -219,3 +223,29 @@
 .cart-icon {
     font-size: 2rem !important; /* Increase the cart icon size */
 }
+.cart-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-count-badge {
+  position: absolute;
+  top: 0px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+
+
+

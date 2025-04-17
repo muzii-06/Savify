@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 import ProductCard from './ProductCard';
 import './CategoryPage.css';
 
-const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout }) => {
+const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout,cart }) => {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +39,7 @@ const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout
         username={username}
         isAuthenticated={isAuthenticated}
         handleLogout={handleLogout}
-        cart={[]} // Pass cart if required
+        cart={cart}// Pass cart if required
       />
       <div className="category-page container mt-5">
         {loading ? (
