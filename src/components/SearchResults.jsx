@@ -5,7 +5,7 @@ import Navbar from './Navbar'; // Ensure Navbar is imported
 import ProductCard from './ProductCard'; // Ensure ProductCard is properly styled
 import './SearchResults.css'; // Ensure styles are imported
 
-const SearchResults = ({ handleAddToCart, username, isAuthenticated, handleLogout }) => {
+const SearchResults = ({ handleAddToCart, username, isAuthenticated, handleLogout,cart }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -47,7 +47,7 @@ const SearchResults = ({ handleAddToCart, username, isAuthenticated, handleLogou
         username={username}
         isAuthenticated={isAuthenticated}
         handleLogout={handleLogout}
-        cart={[]} // Ensure cart details are passed if required
+        cart={cart} // Ensure cart details are passed if required
       />
 
       <div className="search-results container mt-5">

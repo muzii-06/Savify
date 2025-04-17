@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import savifylogo from './Savify logo.png';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const Login = ({ onAuthChange }) => {
@@ -14,7 +17,7 @@ const Login = ({ onAuthChange }) => {
   const handleRequestOtp = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth/request-login-otp', { // Match the backend route
+      const response = await fetch('http://localhost:5000/api/auth/request-login-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -26,21 +29,20 @@ const Login = ({ onAuthChange }) => {
       }
   
       const data = await response.json();
-      alert(data.message);
+      toast.success(data.message);
       setOtpSent(true);
     } catch (error) {
-      alert(`Request OTP error: ${error.message}`);
+      toast.error(`❌ ${error.message}`);
       console.error('Request OTP error:', error);
     }
   };
-  
   
   
  
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', { // Correct backend URL
+      const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, verificationCode }),
@@ -52,24 +54,24 @@ const Login = ({ onAuthChange }) => {
       }
   
       const data = await response.json();
-      alert(data.message);
+      toast.success(data.message);
       localStorage.setItem('token', data.token);
       localStorage.setItem('username', data.username);
       localStorage.setItem('userId', data.userId);
-      
-      // 🚨 Remove seller-related details if they exist
+  
       localStorage.removeItem('sellerToken');
       localStorage.removeItem('sellerId');
       localStorage.removeItem('storeName');
       localStorage.removeItem('sellerImage');
-      
-      onAuthChange(); // Notify the app about the login
-      navigate('/home'); // Redirect to the home page
+  
+      onAuthChange();
+      navigate('/home');
     } catch (error) {
-      alert(`Login error: ${error.message}`);
+      toast.error(`❌ ${error.message}`);
       console.error('Login error:', error);
     }
   };
+  
   
   return (
     <div className="wrap">

@@ -54,7 +54,10 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
   ];
 
 
-  const cartItemCount = cart?.reduce((total, item) => total + item.quantity, 0);
+  const cartItemCount = cart?.length || 0;
+
+
+
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -268,13 +271,15 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
             </form>
 
             <Link to="/cart" className="nav-link position-relative ms-3">
-              <FaShoppingCart size={30} />
-              {cartItemCount > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {cartItemCount}
-                </span>
-              )}
-            </Link>
+  <FaShoppingCart size={30} className="cart-icon" />
+  {cartItemCount > 0 && (
+    <span className="cart-count-badge">{cartItemCount}</span>
+  )}
+</Link>
+
+
+
+
           </div>
 
           <div className="d-flex align-items-center">

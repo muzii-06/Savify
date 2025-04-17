@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 import axios from 'axios';
 import './ProductPage.css';
 
-const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, handleLogout }) => {
+const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, handleLogout,cart }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
@@ -98,7 +98,9 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
         username={username}
         isAuthenticated={isAuthenticated}
         handleLogout={handleLogout}
+        cart={cart} // ✅ use prop instead of localStorage
       />
+
       <div className="container product-page mt-4">
         <div className="row">
           {/* Left Column: Images */}
