@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SellerForgetPassword = () => {
   const [email, setEmail] = useState('');
@@ -19,14 +21,14 @@ const SellerForgetPassword = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-      
+
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Failed to send OTP');
-      
-      alert(data.message);
+
+      toast.success(data.message);
       setOtpSent(true);
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     }
   };
 
@@ -39,14 +41,14 @@ const SellerForgetPassword = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp }),
       });
-      
+
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Invalid OTP');
-      
-      alert(data.message);
+
+      toast.success(data.message);
       setOtpVerified(true);
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     }
   };
 
@@ -54,24 +56,24 @@ const SellerForgetPassword = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      alert('Passwords do not match!');
+      toast.warning('Passwords do not match!');
       return;
     }
-    
+
     try {
       const response = await fetch('http://localhost:5000/api/auth/seller-reset-password', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, newPassword }),
       });
-      
+
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Failed to reset password');
-      
-      alert(data.message);
+
+      toast.success(data.message);
       navigate('/seller-login');
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     }
   };
 

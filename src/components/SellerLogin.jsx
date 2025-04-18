@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import savifylogo from './Savify logo.png';
 import './Auth.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SellerLogin = ({ onAuthChange }) => {
   const [email, setEmail] = useState('');
@@ -19,49 +21,48 @@ const SellerLogin = ({ onAuthChange }) => {
     setLoading(true);
     try {
       const response = await sellerRequestOtp({ email });
-      alert(response.data.message);
-      setOtpSent(true); // Show OTP input field
+      toast.success(response.data.message); // ✅ Toast instead of alert
+      setOtpSent(true);
     } catch (error) {
-      alert(`Error requesting OTP: ${error.response?.data?.message || error.message}`);
+      toast.error(`Error requesting OTP: ${error.response?.data?.message || error.message}`);
     } finally {
       setLoading(false);
     }
   };
+  
 
   // ✅ Handle Login Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password || !verificationCode) {
-      alert('Please fill in all fields.');
+      toast.warning('Please fill in all fields.');
       return;
     }
   
     try {
       const response = await sellerLogin({ email, password, verificationCode });
   
-      console.log('Seller login final response:', response.data); // ✅ Debug final response
-  
       if (response?.data?.sellerToken) {
         localStorage.setItem('sellerToken', response.data.sellerToken);
-localStorage.setItem('sellerId', response.data.sellerId);
-localStorage.setItem('storeName', response.data.storeName);
-localStorage.setItem('username', response.data.username); 
-localStorage.setItem('sellerImage', response.data.storeImage);
-
-// 🚨 Remove buyer-related details if they exist
-localStorage.removeItem('token');
-localStorage.removeItem('userId');
-
+        localStorage.setItem('sellerId', response.data.sellerId);
+        localStorage.setItem('storeName', response.data.storeName);
+        localStorage.setItem('username', response.data.username); 
+        localStorage.setItem('sellerImage', response.data.storeImage);
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+  
+        toast.success('Login successful!');
         onAuthChange();
         navigate('/dashboard', { replace: true });
       } else {
-        alert('Login Failed: Invalid response');
+        toast.error('Login Failed: Invalid response');
       }
     } catch (error) {
       console.error('Login Failed:', error.response?.data || error.message);
-      alert(`Login Failed: ${error.response?.data?.message || 'Server error'}`);
+      toast.error(`Login Failed: ${error.response?.data?.message || 'Server error'}`);
     }
   };
+  
   
 
   return (

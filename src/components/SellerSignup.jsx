@@ -3,6 +3,9 @@ import { sellerSignup } from '../services/authService';
 import { Link, useNavigate } from 'react-router-dom';
 import savifylogo from './Savify logo.png';
 import './Auth.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const SellerSignup = () => {
   const [formData, setFormData] = useState({
@@ -39,11 +42,11 @@ const SellerSignup = () => {
   
       console.log('Form Data:', [...data.entries()]); // Debugging
       await sellerSignup(data);
-      alert('Seller Signup Successful');
+      toast.success('🎉 Seller Signup Successful');
       navigate('/seller-login', { replace: true });
     } catch (error) {
       console.error(error.response?.data || error.message);
-      alert('Signup Failed');
+      toast.error(`❌ Signup Failed: ${error.response?.data?.message || error.message}`);
     }
   };
   
