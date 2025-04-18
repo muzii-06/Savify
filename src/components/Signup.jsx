@@ -3,6 +3,8 @@ import { signup } from '../services/authService';
 import { Link, useNavigate } from 'react-router-dom';
 import savifylogo from './Savify logo.png';
 import './Auth.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -15,8 +17,7 @@ const Signup = () => {
     gender: '',
     contactNumber: '+92', // Pre-fill with +92
   });
-  const [error, setError] = useState(''); // State to track errors
-
+ 
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -36,36 +37,36 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Validation for passwords matching
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('❌ Passwords do not match');
       return;
     }
-
+  
     // Validation for contact number length (must be exactly 11 digits excluding +92)
     const contactWithoutPrefix = formData.contactNumber.replace('+92', '');
     if (contactWithoutPrefix.length !== 10) {
-      setError('Contact number must be exactly 11 digits (excluding +92)');
+      toast.error('❌ Contact number must be exactly 11 digits (excluding +92)');
       return;
     }
-
+  
     try {
-      await signup(formData); // Pass entire formData
-      alert('Signup Successful');
-      navigate('/login', { replace: true }); // Redirect to login page
+      await signup(formData); // Submit form data
+      toast.success('🎉 Signup Successful');
+      navigate('/login', { replace: true });
     } catch (error) {
-      setError('Signup Failed');
+      toast.error(`❌ Signup Failed: ${error.response?.data?.message || error.message}`);
     }
   };
-
+  
   return (
     <div className="wrap">
       <img className="m-auto d-block" width="50%"  src={savifylogo} alt="Logo" />
       <div className="auth-container">
         <h2> Customer Sign Up</h2>
         <form onSubmit={handleSubmit}>
-          {error && <p className="error-message">{error}</p>} {/* Show error messages */}
+          
           <input 
             type="text" 
             name="username" 
