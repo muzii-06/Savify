@@ -1,42 +1,37 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
+
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const User = require('../models/User');
-const Seller = require('../models/Seller');
-const mongoose = require("mongoose");
-// ✅ Route 1: Place a new order
+
+// ✅ Route 1: Place a new multi-vendor order
 router.post('/place-order', async (req, res) => {
   try {
     const { buyerId, items, paymentMethod } = req.body;
-
     console.log("📌 Received Order Request:", req.body);
 
-    // ✅ Validate Buyer ID
+    // Validate buyer
     if (!mongoose.Types.ObjectId.isValid(buyerId)) {
       return res.status(400).json({ message: "Invalid Buyer ID format" });
     }
 
-    // ✅ Fetch Buyer
     const buyer = await User.findById(buyerId);
     if (!buyer) {
       return res.status(404).json({ message: 'Buyer not found' });
     }
 
-    // ✅ Process Items and Group by Seller
-    const sellerMap = {}; // { sellerId: [items] }
-
+    // Group items by seller
+    const sellerMap = {}; // sellerId => [items]
     for (const item of items) {
       const product = await Product.findById(item.productId).populate('seller', 'storeName');
-
-      if (!product) {
-        throw new Error(`Product with ID ${item.productId} not found`);
-      }
+      if (!product) throw new Error(`Product with ID ${item.productId} not found`);
 
       if (product.quantity < item.quantity) {
-        throw new Error(`Insufficient stock for product "${product.name}". Only ${product.quantity} left.`);
+        throw new Error(`Insufficient stock for "${product.name}". Only ${product.quantity} left.`);
       }
-    
+
       product.quantity -= item.quantity;
       await product.save();
 
@@ -54,22 +49,28 @@ router.post('/place-order', async (req, res) => {
         },
       };
 
-      if (!sellerMap[sellerId]) {
-        sellerMap[sellerId] = [];
-      }
-
+      if (!sellerMap[sellerId]) sellerMap[sellerId] = [];
       sellerMap[sellerId].push(formattedItem);
     }
 
-    // ✅ Create separate order for each seller
+    // Create separate orders per seller
     const createdOrders = [];
 
     for (const sellerId in sellerMap) {
       const sellerItems = sellerMap[sellerId];
-      const totalAmount = sellerItems.reduce(
+      let subtotal = sellerItems.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
       );
+      
+      // Check if a cart-level voucher exists (from frontend)
+      const cartVouchers = req.body.cartVouchers || {}; // expected format: { sellerId: { discountedTotal } }
+      const voucher = cartVouchers[sellerId]; // for this seller
+      
+      const totalAmount = voucher?.discountedTotal
+        ? Number(voucher.discountedTotal)
+        : subtotal;
+      
 
       const newOrder = new Order({
         buyer: {
@@ -89,6 +90,10 @@ router.post('/place-order', async (req, res) => {
       createdOrders.push(newOrder);
     }
 
+    // ✅ Increment total orders for buyer
+    buyer.totalOrders = (buyer.totalOrders || 0) + 1;
+    await buyer.save();
+
     res.status(201).json({
       message: '✅ Orders placed successfully',
       orders: createdOrders,
@@ -103,36 +108,36 @@ router.post('/place-order', async (req, res) => {
   }
 });
 
-// ✅ Route 2: Get all orders for a Buyer (Manage Orders - User Panel)
+// ✅ Route 2: Get all orders for a Buyer
 router.get('/buyer/:buyerId', async (req, res) => {
   try {
     const orders = await Order.find({ 'buyer._id': req.params.buyerId }).sort({ createdAt: -1 });
     res.status(200).json(orders);
   } catch (error) {
-    console.error('Error fetching buyer orders:', error);
+    console.error('❌ Error fetching buyer orders:', error);
     res.status(500).json({ message: 'Failed to fetch orders' });
   }
 });
 
-// ✅ Route 3: Get all orders for a Seller (Manage Orders - Seller Panel)
+// ✅ Route 3: Get all orders for a Seller
 router.get('/seller/:sellerId', async (req, res) => {
   try {
     const orders = await Order.find({ 'items.seller._id': req.params.sellerId }).sort({ createdAt: -1 });
     res.status(200).json(orders);
   } catch (error) {
-    console.error('Error fetching seller orders:', error);
+    console.error('❌ Error fetching seller orders:', error);
     res.status(500).json({ message: 'Failed to fetch orders' });
   }
 });
 
-// ✅ Route 4: Update order status (Sellers can change order status)
+// ✅ Route 4: Update order status (by Seller)
 router.put('/update-status/:orderId', async (req, res) => {
   try {
     const { status } = req.body;
     const validStatuses = ['Pending', 'Shipped', 'Delivered'];
 
     if (!validStatuses.includes(status)) {
-      return res.status(400).json({ message: 'Invalid status' });
+      return res.status(400).json({ message: 'Invalid status value' });
     }
 
     const updatedOrder = await Order.findByIdAndUpdate(
@@ -147,7 +152,7 @@ router.put('/update-status/:orderId', async (req, res) => {
 
     res.status(200).json({ message: 'Order status updated', order: updatedOrder });
   } catch (error) {
-    console.error('Error updating order status:', error);
+    console.error('❌ Error updating order status:', error);
     res.status(500).json({ message: 'Failed to update order status' });
   }
 });

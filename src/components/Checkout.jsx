@@ -7,12 +7,21 @@ const Checkout = ({ cart, setCart }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  
   const location = useLocation();
-const directBuy = location.state?.directBuy;
+  const directBuy = location.state?.directBuy;
+const cartVoucher = location.state?.cartVoucher || JSON.parse(localStorage.getItem("cartVoucher"));
 
+const cartItems = location.state?.items || (directBuy ? [directBuy] : cart);
+const voucher = location.state?.voucher || cartVoucher;
 
-  // 🔄 Use directPurchase item or full cart
-  const cartItems = directBuy ? [directBuy] : cart;
+const originalTotal = cartItems.reduce(
+  (total, item) => total + item.price * item.quantity,
+  0
+);
+const discountedTotal = directBuy?.price || voucher?.discountedTotal;
+const discountPercent = directBuy?.discountPercent || voucher?.discountPercent;
+
 
 
   const userId = localStorage.getItem("userId");
@@ -35,6 +44,23 @@ const directBuy = location.state?.directBuy;
   useEffect(() => {
     console.log("📌 Cart at Checkout:", cartItems);
   }, [cartItems]);
+  useEffect(() => {
+    const fetchVoucher = async () => {
+      if (!directBuy?.voucherApplied) return;
+  
+      try {
+        const response = await axios.get(`http://localhost:5000/api/vouchers/${userId}/${directBuy._id}`);
+        if (response.data) {
+          setFinalPrice(response.data.discountedPrice);
+        }
+      } catch (err) {
+        console.warn("⚠️ No voucher applied or it expired");
+      }
+    };
+  
+    fetchVoucher();
+  }, []);
+  
 
   const handlePlaceOrder = async () => {
     const buyerId = localStorage.getItem("userId");
@@ -66,12 +92,15 @@ const directBuy = location.state?.directBuy;
       
 
       if (orderItems.includes(null)) return;
-
+      const cartVouchers = JSON.parse(localStorage.getItem("cartVouchers")) || {};
       const orderData = {
         buyerId: buyer._id,
         items: orderItems,
-        totalAmount: cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
+        totalAmount: discountedTotal || originalTotal,
+
+        
         paymentMethod: "Cash on Delivery",
+        cartVouchers,
       };
 
       console.log("📦 ✅ Sending Order Data:", orderData);
@@ -82,7 +111,9 @@ const directBuy = location.state?.directBuy;
         if (!directBuy) {
           setCart([]);
           localStorage.removeItem("cart");
+          localStorage.removeItem("cartVoucher"); // ✅ make sure this line exists
         }
+        
         navigate("/order-success");
       }
     } catch (error) {
@@ -107,18 +138,51 @@ const directBuy = location.state?.directBuy;
           </div>
 
           <div className="section">
-            <h4>Order Summary</h4>
-            <ul className="order-items">
-            {cartItems.map((item) => (
-  <li key={item._id} className="order-item">
-    <img src={item.image} alt={item.name} className="order-item-img" />
-    <span>{item.name} (x{item.quantity})</span>
-    <span>Rs. {item.price * item.quantity}</span>
-  </li>
-))}
+          <h4 className="text-success mb-2">Order Summary</h4>
+          <ul className="order-items">
+  {cartItems.map((item) => (
+    <li key={item._id} className="order-item">
+      <img src={item.image} alt={item.name} className="order-item-img" />
+      <div className="ms-2 w-100">
+        <div className="d-flex justify-content-between">
+          <span>{item.name} (x{item.quantity})</span>
+          {location.state?.directBuy?.voucherApplied ? (
+            <>
+             
+              <span className="text-success fw-bold ms-2">
+              Rs. {(item.originalPrice || item.price).toFixed(0)}
+              </span>
+            </>
+          ) : (
+            <span>Rs. {(item.price * item.quantity).toFixed(0)}</span>
+          )}
+        </div>
+      </div>
+    </li>
+  ))}
+</ul>
 
-            </ul>
-            <h4>Total: Rs. {cartItems.reduce((total, item) => total + item.price * item.quantity, 0)}</h4>
+{discountedTotal && discountPercent ? (
+  <>
+    <p className="text-muted mt-3">
+      <strong>Bargain Discount:</strong> {parseFloat(discountPercent).toFixed(2)}%
+    </p>
+    <h5 className="text-success">
+      New Price: Rs. {Math.floor(discountedTotal)}
+    </h5>
+  </>
+) : (
+  <h5>
+    Total: Rs. {originalTotal.toFixed(2)}
+  </h5>
+)}
+
+
+
+
+
+
+
 
           </div>
 

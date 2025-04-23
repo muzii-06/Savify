@@ -19,15 +19,17 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Route: Fetch all products
+// Route: Fetch all products
 router.get('/', async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().populate("seller", "storeName _id"); // ✅ ADD THIS
     res.status(200).json(products);
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ message: 'Failed to fetch products' });
   }
 });
+
 
 // Route: Search products
 // Search products by name, description, or category
@@ -49,7 +51,8 @@ router.get('/search', async (req, res) => {
         { description: { $regex: query, $options: 'i' } },
         { category: { $regex: query, $options: 'i' } },
       ],
-    });
+    }).populate('seller', 'storeName _id');
+    
 
     console.log(`Search results for "${query}":`, products);
 
@@ -248,7 +251,7 @@ router.get('/category/:category', async (req, res) => {
         { category: { $regex: new RegExp(`^${category}$`, 'i') } },
         { subcategory: { $regex: new RegExp(`^${category}$`, 'i') } },
       ],
-    });
+    }).populate('seller', 'storeName _id'); // ✅ ADD THIS
 
     res.status(200).json(products);
   } catch (error) {
@@ -257,12 +260,24 @@ router.get('/category/:category', async (req, res) => {
   }
 });
 
+
 // Route: Fetch a single product by ID
 
 
 // Add a new product
+// Add a new product
 router.post("/", upload.array("images", 5), async (req, res) => {
-  const { name, price, description, category, subcategory, quantity, sellerId } = req.body;
+  const {
+    name,
+    price,
+    description,
+    category,
+    subcategory,
+    quantity,
+    sellerId,
+    bargainRounds,
+    maxDiscountPercent,
+  } = req.body;
 
   if (!name || !price || !description || !category || !subcategory || !quantity || !sellerId) {
     return res.status(400).json({ message: "All fields, including sellerId, are required." });
@@ -285,7 +300,9 @@ router.post("/", upload.array("images", 5), async (req, res) => {
       subcategory,
       quantity: Number(quantity),
       images: imagePaths,
-      seller: sellerId, // ✅ Save sellerId properly
+      seller: sellerId,
+      bargainRounds: Number(bargainRounds) || 0,            // ✅ Add Bargaining Logic
+      maxDiscountPercent: Number(maxDiscountPercent) || 0,  // ✅ Add Max Discount Logic
     });
 
     await newProduct.save();

@@ -1,0 +1,82 @@
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 2rem 1rem;
+  }
+  
+  h2 {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+  }
+  
+  .card {
+    border: none;
+    border-radius: 12px;
+    background-color: #ffffff;
+    transition: box-shadow 0.3s ease;
+    width: 50%;
+    margin: auto;
+  }
+  
+  .card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+
+  }
+  
+  .order-header {
+    margin-bottom: 1rem;
+  }
+  
+  .order-header h5 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .list-group-item {
+    background-color: #f8f9fa;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .list-group-item img {
+    border-radius: 8px;
+  }
+  
+  .list-group-item p {
+    margin: 0;
+  }
+  
+  .order-footer {
+    border-top: 1px solid #dee2e6;
+    padding-top: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .form-select {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.95rem;
+    border-radius: 6px;
+  }
+  
+  .badge.bg-success {
+    font-size: 0.85rem;
+    padding: 0.35em 0.65em;
+    border-radius: 0.45rem;
+    background-color: #28a745;
+  }
+  
+  .fw-bold {
+    font-weight: 600;
+  }
+  
+  .text-muted {
+    color: #6c757d !important;
+  }
+  

@@ -56,8 +56,9 @@ const Login = ({ onAuthChange }) => {
       const data = await response.json();
       toast.success(data.message);
       localStorage.setItem('token', data.token);
-      localStorage.setItem('username', data.username);
-      localStorage.setItem('userId', data.userId);
+localStorage.setItem('username', data.username);
+localStorage.setItem('userId', data.userId);
+
   
       localStorage.removeItem('sellerToken');
       localStorage.removeItem('sellerId');

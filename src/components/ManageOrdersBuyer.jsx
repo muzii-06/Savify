@@ -57,9 +57,23 @@ const ManageOrdersBuyer = () => {
 ))}
 
             </div>
-            <div className="order-footer">
-              <p><strong>Total:</strong> Rs. {order.totalAmount}</p>
-            </div>
+            <div className="order-footer d-flex justify-content-between align-items-center">
+  <p className="m-0">
+    <strong>Total:</strong> Rs. {Math.floor(order.totalAmount)}
+  </p>
+
+  {order.totalAmount && order.items?.length > 0 && (() => {
+    const totalActual = order.items.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    const wasBargained = Math.floor(order.totalAmount) < Math.floor(totalActual);
+    return wasBargained ? (
+      <span className="badge bg-success ms-2">💬 Bargained</span>
+    ) : null;
+  })()}
+</div>
+
           </div>
         ))
       )}

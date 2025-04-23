@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 import ProductCard from './ProductCard';
 import './CategoryPage.css';
 
-const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout,cart }) => {
+const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout, cart }) => {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,9 +13,9 @@ const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout
 
   useEffect(() => {
     const fetchProductsByCategory = async () => {
-      setProducts([]); // Reset products for UI refresh
-      setError(null); // Reset error state
-      setLoading(true); // Show loading spinner
+      setProducts([]);
+      setError(null);
+      setLoading(true);
 
       try {
         const response = await axios.get(
@@ -39,7 +39,7 @@ const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout
         username={username}
         isAuthenticated={isAuthenticated}
         handleLogout={handleLogout}
-        cart={cart}// Pass cart if required
+        cart={cart}
       />
       <div className="category-page container mt-5">
         {loading ? (
@@ -50,16 +50,40 @@ const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout
           <>
             <h2 className="category-title">{category}</h2>
             <div className="product-grid row g-4">
-              {products.map((product) => (
-                <ProductCard
-                  key={product._id}
-                  id={product._id}
-                  name={product.name}
-                  price={product.price}
-                  image={`http://localhost:5000/${product.images[0]}`}
-                  handleAddToCart={handleAddToCart}
-                />
-              ))}
+              {products.map((product) => {
+                const sellerId = product?.seller?._id || 'UNKNOWN_SELLER';
+                const rating = product.reviews?.length
+                  ? product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length
+                  : 4.5;
+
+                return (
+                  <ProductCard
+                    key={product._id}
+                    id={product._id}
+                    name={product.name}
+                    price={product.price}
+                    image={`http://localhost:5000/${product.images[0].replace(/\\/g, "/")}`}
+                    sellerId={sellerId}
+                    handleAddToCart={() =>
+                      handleAddToCart({
+                        _id: product._id,
+                        name: product.name,
+                        price: product.price,
+                        image: `http://localhost:5000/${product.images[0].replace(/\\/g, "/")}`,
+                        quantity: 1,
+                        seller: {
+                          _id: sellerId,
+                          storeName: product?.seller?.storeName || 'Unknown Store',
+                        },
+                        sellerId: sellerId,
+                        bargainRounds: product?.bargainRounds || 1,
+                        maxDiscountPercent: product?.maxDiscountPercent || 10,
+                        rating: rating,
+                      })
+                    }
+                  />
+                );
+              })}
             </div>
           </>
         ) : (
@@ -74,4 +98,3 @@ const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout
 };
 
 export default CategoryPage;
-

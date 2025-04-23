@@ -12,7 +12,10 @@ const AddProductModal = ({ show, handleClose }) => {
     category: '',
     subcategory: '',
     quantity: '',
+    bargainRounds: '',         // ✅ New
+    maxDiscountPercent: '',    // ✅ New
   });
+  
   const [images, setImages] = useState([]);
   const [sellerId, setSellerId] = useState('');
 
@@ -171,6 +174,34 @@ const AddProductModal = ({ show, handleClose }) => {
               required
             />
           </div>
+          <div className="form-group mb-3">
+  <label htmlFor="bargainRounds">Bargain Rounds</label>
+  <input
+    type="number"
+    className="form-control"
+    id="bargainRounds"
+    name="bargainRounds"
+    placeholder="Enter number of rounds (e.g. 4)"
+    value={formData.bargainRounds}
+    onChange={handleInputChange}
+    required
+  />
+</div>
+
+<div className="form-group mb-3">
+  <label htmlFor="maxDiscountPercent">Max Discount (%)</label>
+  <input
+    type="number"
+    className="form-control"
+    id="maxDiscountPercent"
+    name="maxDiscountPercent"
+    placeholder="Max discount (e.g. 10%)"
+    value={formData.maxDiscountPercent}
+    onChange={handleInputChange}
+    required
+  />
+</div>
+
           <div className="form-group mb-3">
             <label htmlFor="images">Product Images</label>
             <input

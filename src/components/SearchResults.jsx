@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from './Navbar'; // Ensure Navbar is imported
-import ProductCard from './ProductCard'; // Ensure ProductCard is properly styled
-import './SearchResults.css'; // Ensure styles are imported
+import Navbar from './Navbar';
+import ProductCard from './ProductCard';
+import './SearchResults.css';
 
-const SearchResults = ({ handleAddToCart, username, isAuthenticated, handleLogout,cart }) => {
+const SearchResults = ({ handleAddToCart, username, isAuthenticated, handleLogout, cart }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -47,7 +47,7 @@ const SearchResults = ({ handleAddToCart, username, isAuthenticated, handleLogou
         username={username}
         isAuthenticated={isAuthenticated}
         handleLogout={handleLogout}
-        cart={cart} // Ensure cart details are passed if required
+        cart={cart}
       />
 
       <div className="search-results container mt-5">
@@ -65,16 +65,42 @@ const SearchResults = ({ handleAddToCart, username, isAuthenticated, handleLogou
           <p className="text-danger text-center fs-4">{error}</p>
         ) : (
           <div className="row g-4">
-            {searchResults.map((product) => (
-              <ProductCard
-                key={product._id}
-                id={product._id}
-                name={product.name}
-                price={product.price}
-                image={`http://localhost:5000/${product.images[0]}`}
-                handleAddToCart={handleAddToCart}
-              />
-            ))}
+            {searchResults.map((product) => {
+              // Normalize seller ID and name
+              const sellerId = (product?.seller?._id || product?.sellerId || '').toString().trim();
+              const sellerName = product?.seller?.storeName || product?.storeName || 'Unknown Store';
+
+              const rating = product.reviews?.length
+                ? product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length
+                : 4.5;
+
+              const formattedProduct = {
+                _id: product._id,
+                name: product.name,
+                price: product.price,
+                image: `http://localhost:5000/${product.images[0].replace(/\\/g, '/')}`,
+                quantity: 1,
+                seller: {
+                  _id: sellerId,
+                  storeName: sellerName,
+                },
+                sellerId: sellerId || 'UNKNOWN_SELLER',
+                bargainRounds: product?.bargainRounds || 1,
+                maxDiscountPercent: product?.maxDiscountPercent || 10,
+                rating: rating,
+              };
+
+              return (
+                <ProductCard
+                  key={product._id}
+                  id={product._id}
+                  name={product.name}
+                  price={product.price}
+                  image={formattedProduct.image}
+                  handleAddToCart={() => handleAddToCart(formattedProduct)}
+                />
+              );
+            })}
           </div>
         )}
       </div>

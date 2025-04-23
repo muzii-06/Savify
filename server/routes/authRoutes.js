@@ -331,22 +331,39 @@ router.post('/seller-login', async (req, res) => {
   }
 });
 
-// Get user data by ID
 router.get('/user/:id', async (req, res) => {
+  console.log("🛠️ Incoming User ID:", req.params.id);
+
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    console.log("❌ Invalid ObjectId format");
     return res.status(400).json({ message: 'Invalid User ID format' });
   }
 
   try {
     const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: 'User not found.' });
+    if (!user) {
+      console.log("❌ No user found in DB with that ID");
+      return res.status(404).json({ message: 'User not found.' });
+    }
 
-    res.status(200).json(user);
+    console.log("✅ User found:", user.email);
+
+    res.status(200).json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      address: user.address,
+      contactNumber: user.contactNumber,
+      createdAt: user.createdAt,
+      totalOrders: user.totalOrders || 0,
+    });
   } catch (error) {
-    console.error('Error fetching user data:', error);
+    console.error('❌ DB Error:', error);
     res.status(500).json({ message: 'Server error while fetching user data.' });
   }
 });
+
+
 
 router.get('/seller/:id', async (req, res) => {
   try {

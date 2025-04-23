@@ -5,11 +5,11 @@ const reviewSchema = new mongoose.Schema({
   user: { type: String, required: true },
   rating: { type: Number, required: true, min: 1, max: 5 },
   comment: { type: String, required: true },
-  reply: { type: String, default: null }, // ✅ New field for seller reply
+  reply: { type: String, default: null },
   createdAt: { type: Date, default: Date.now },
 });
 
-// Product Schema
+// Product Schema with Bargain Support
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
@@ -19,7 +19,20 @@ const productSchema = new mongoose.Schema({
   subcategory: { type: String, required: true },
   quantity: { type: Number, required: true },
   reviews: [reviewSchema],
-  seller: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: true }, // ✅ Reference Seller model
+  seller: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: true },
+
+  // ✅ AI Negotiation Fields
+  bargainRounds: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+  maxDiscountPercent: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
+
   createdAt: { type: Date, default: Date.now },
 });
 

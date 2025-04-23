@@ -7,8 +7,8 @@ const userSchema = new mongoose.Schema({
   address: { type: String, required: true },
   dateOfBirth: { type: Date, required: true },
   gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
-  contactNumber: { 
-    type: String, 
+  contactNumber: {
+    type: String,
     required: true,
     validate: {
       validator: function (v) {
@@ -17,8 +17,17 @@ const userSchema = new mongoose.Schema({
       message: props => `${props.value} is not a valid Pakistani contact number!`
     }
   },
-  verificationCode: { type: String }, // Store the OTP
-  otpCreatedAt: { type: Date }, // Track OTP creation time
+
+  // ✅ Fields for AI model
+  totalOrders: {
+    type: Number,
+    default: 0,
+  },
+  // Note: accountAgeDays will be computed dynamically during bargaining
+  // from the createdAt field
+
+  verificationCode: { type: String },
+  otpCreatedAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
 });
 

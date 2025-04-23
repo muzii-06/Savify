@@ -25,6 +25,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SearchResults from './components/SearchResults';
 import ManageOrdersSeller from './components/ManageOrdersSeller';
+import NegotiatePage  from './components/NegotiatePage';
 
 import './App.css';
 import CategoryPage from './components/CategoryPage';
@@ -95,6 +96,9 @@ useEffect(() => {
     setAuth();
   }, [setAuth]);
 
+  
+
+
   // Logout handler: Clears localStorage and updates state
   const handleLogout = () => {
     localStorage.clear(); // Clear all stored data
@@ -108,55 +112,69 @@ useEffect(() => {
   // Add to Cart Handler
  
 
-const handleAddToCart = (product) => {
-  if (!isAuthenticated) {
-    window.location.href = "/login";
-    return;
-  }
-
-  console.log("📌 Adding Product to Cart:", product);
-
-  if (!product.seller || !product.seller._id) {
-    console.error(`❌ ERROR: Seller ID missing for product: ${product.name}`);
-  }
-
-  setCart((prevCart) => {
-    const existingItem = prevCart.find((item) => item._id === product._id);
-
-    if (existingItem) {
-      toast.info(`${product.name} quantity updated in cart`);
-      return prevCart.map((item) =>
-        item._id === product._id
-          ? { ...item, quantity: item.quantity + product.quantity }
-          : item
-      );
-    } else {
-      toast.success(`${product.name} added to cart`);
-      return [
-        ...prevCart,
-        {
-          ...product,
-          seller: {
-            _id: product.seller?._id || product.sellerId || "UNKNOWN_SELLER",
-            storeName: product.seller?.storeName || "Unknown Store",
-          },
-          sellerId: product.seller?._id || product.sellerId || "UNKNOWN_SELLER",
-        },
-      ];
+  const handleAddToCart = (product) => {
+    if (!isAuthenticated) {
+      window.location.href = "/login";
+      return;
     }
-  });
-
-  setTimeout(() => {
-    console.log("📌 Updated Cart:", JSON.parse(localStorage.getItem("cart")));
-  }, 500);
-};
-
-
-
-
-
-
-
+  
+    const sellerId = product?.seller?._id || product?.sellerId || "UNKNOWN_SELLER";
+    console.log("🛒 Adding to cart | Product:", product.name);
+    console.log("🧾 Seller ID:", sellerId);
+  
+    setCart((prevCart) => {
+      const existingVouchers = JSON.parse(localStorage.getItem("cartVouchers") || "{}");
+      console.log("📦 Existing Cart Vouchers:", existingVouchers);
+  
+      const isNewProduct = !prevCart.some(item => item._id === product._id);
+      const sameSellerProducts = prevCart.filter(item =>
+        (item?.seller?._id || item?.sellerId) === sellerId
+      );
+      console.log("🧾 Same Seller Products in Cart:", sameSellerProducts);
+  
+      let updatedCart;
+  
+      if (!isNewProduct) {
+        toast.info(`${product.name} quantity updated in cart`);
+        updatedCart = prevCart.map(item =>
+          item._id === product._id
+            ? { ...item, quantity: item.quantity + (product.quantity || 1) }
+            : item
+        );
+      } else {
+        toast.success(`${product.name} added to cart`);
+        updatedCart = [
+          ...prevCart,
+          {
+            ...product,
+            quantity: product.quantity || 1,
+            seller: {
+              _id: sellerId,
+              storeName: product.seller?.storeName || "Unknown Store",
+            },
+            sellerId,
+            bargainRounds: product.bargainRounds || 1,
+            maxDiscountPercent: product.maxDiscountPercent || 10,
+            rating: product.rating || 4.5,
+          },
+        ];
+      }
+  
+      // ✅ Always remove voucher if same seller had one and product is new
+      if (isNewProduct && existingVouchers[sellerId]) {
+        console.log("❌ Removing voucher for seller:", sellerId);
+        delete existingVouchers[sellerId];
+        localStorage.setItem("cartVouchers", JSON.stringify(existingVouchers));
+        toast.warning(`⚠️ Voucher removed for seller: ${product.seller?.storeName || sellerId}`);
+      } else {
+        console.log("✅ No need to remove voucher");
+      }
+  
+      return updatedCart;
+    });
+  };
+  
+  
 
 
 
@@ -215,6 +233,7 @@ const handleAddToCart = (product) => {
         <Route path="/checkout" element={<Checkout cart={cart} setCart={setCart} />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/manage-orders-buyer" element={<ManageOrdersBuyer />} />
+        <Route path="/negotiate" element={<NegotiatePage />} />
         <Route path="/seller/manage-orders" element={<ManageOrdersSeller />} />
         <Route
           path="/login"
