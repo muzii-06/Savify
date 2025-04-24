@@ -8,7 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const orderRoutes = require("./routes/orderRoutes");
 const discountRouter = require('./ai-discount/router');
 const voucherRoutes = require("./routes/voucher");
-
+const chatbotRoutes = require('./routes/chatbotRoutes');
 
 
 
@@ -39,6 +39,6 @@ app.use("/api/orders", orderRoutes);
 app.use('/api', discountRouter); // this maps POST /api/negotiate correctly
 // ❌ Failing if router is not exported properly
 app.use("/api/vouchers", voucherRoutes);
-
+app.use('/api', chatbotRoutes);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

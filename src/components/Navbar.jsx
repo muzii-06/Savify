@@ -126,20 +126,31 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
           // Convert base64 image to a File object
           const blob = await (await fetch(imageSrc)).blob();
           const file = new File([blob], 'frame.jpg', { type: 'image/jpeg' });
-
+  
           // Send the image file to the backend for prediction
           const result = await detectClassFromImage(file);
-          if (result && result.predictions && result.predictions.length > 0) {
-            const highestConfidencePrediction = result.predictions.reduce(
+  
+          // Check if result is a valid array of predictions
+          if (result && result.length > 0) {
+            const highestConfidencePrediction = result.reduce(
               (prev, current) => (prev.confidence > current.confidence ? prev : current)
             );
-            if (highestConfidencePrediction.confidence >= 0.85) {
+  
+            // Lowered confidence threshold to 0.45 for better real-time detection
+            if (highestConfidencePrediction.confidence >= 0.60) {
               stopCapturing();
               setShowCameraModal(false);
-              const className = highestConfidencePrediction.class_name;
+  
+              const className = highestConfidencePrediction.name;  // Correct key
               setSearchQuery(className);
-              navigate(`/search?query=${encodeURIComponent(className)}`);
+  
+              // Trigger search after setting query visually
+              setTimeout(() => {
+                navigate(`/search?query=${encodeURIComponent(className)}`);
+              }, 100);
             }
+          } else {
+            console.log('No confident predictions detected.');
           }
         } catch (error) {
           console.error('Error detecting class from image:', error);
@@ -147,6 +158,7 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
       }
     }
   };
+  
 
   // Manual capture functions
   const handleCapture = () => {
@@ -163,40 +175,72 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
   const handleSubmitCapturedImage = async () => {
     if (capturedImage) {
       setIsProcessing(true);
+  
       try {
-        // Convert base64 image to a File object
         const blob = await (await fetch(capturedImage)).blob();
         const file = new File([blob], 'captured.jpg', { type: 'image/jpeg' });
-
-        // Send the image file to the backend for prediction
-        const classNames = await detectClassFromImage(file);
-        if (classNames.classNames && classNames.classNames.length > 0) {
-          setSearchQuery(classNames.classNames.join(', '));
-          navigate(`/search?query=${encodeURIComponent(classNames.classNames.join(', '))}`);
+  
+        const predictions = await detectClassFromImage(file);
+  
+        if (predictions && predictions.length > 0) {
+          // Optionally find the most confident prediction
+          const highestConfidencePrediction = predictions.reduce(
+            (prev, current) => (prev.confidence > current.confidence ? prev : current)
+          );
+  
+          // Optional: skip low-confidence predictions (< 0.45)
+          if (highestConfidencePrediction.confidence >= 0.60) {
+            const className = highestConfidencePrediction.name;
+  
+            // 🔥 Trigger UI update and auto-navigation
+            setSearchQuery(''); // Clear first to refresh the input visually
+            setTimeout(() => {
+              setSearchQuery(className); // Show detected class in search input
+              navigate(`/search?query=${encodeURIComponent(className)}`); // Trigger search
+            }, 100);
+          } else {
+            alert('No confident objects detected in the image.');
+          }
         } else {
           alert('No objects detected in the image.');
         }
       } catch (error) {
         console.error('Error detecting class from image:', error);
-        alert('Error detecting class from image');
+        alert('Error detecting class from image.');
       } finally {
         setIsProcessing(false);
-        setShowCameraModal(false);
-        setCapturedImage(null);
+        setCapturedImage(null); // Reset after processing
       }
     }
   };
+  
+  
+  
+  
 
   const handleImageSelection = async (event) => {
     const file = event.target.files[0];
     if (file) {
       setIsProcessing(true);
       try {
-        // Send the selected image file to the backend for prediction
-        const classNames = await detectClassFromImage(file);
-        if (classNames.classNames && classNames.classNames.length > 0) {
-          setSearchQuery(classNames.classNames.join(', '));
-          navigate(`/search?query=${encodeURIComponent(classNames.classNames.join(', '))}`);
+        const predictions = await detectClassFromImage(file);
+  
+        if (predictions && predictions.length > 0) {
+          const highestConfidencePrediction = predictions.reduce(
+            (prev, current) => (prev.confidence > current.confidence ? prev : current)
+          );
+  
+          if (highestConfidencePrediction.confidence >= 0.2) {
+            const className = highestConfidencePrediction.name;
+  
+            setSearchQuery('');
+            setTimeout(() => {
+              setSearchQuery(className);
+              navigate(`/search?query=${encodeURIComponent(className)}`);
+            }, 100);
+          } else {
+            alert('No confident objects detected.');
+          }
         } else {
           alert('No objects detected in the image.');
         }
@@ -206,30 +250,47 @@ const Navbar = ({ username, isAuthenticated, cart = [] }) => {
       } finally {
         setIsProcessing(false);
         setSelectedImage(null);
-        // Reset the file input
         if (fileInputRef.current) {
           fileInputRef.current.value = null;
         }
       }
     }
   };
+  
 
   const detectClassFromImage = async (file) => {
     const formData = new FormData();
-    formData.append('image', file);
-
-    const response = await fetch('http://localhost:8000/predict/', {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else {
-      throw new Error('Failed to detect class from image');
+    formData.append('file', file);
+  
+    try {
+      const response = await fetch('http://127.0.0.1:8000/predict/', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log("📦 Response from backend:", data);
+  
+        // Return correct array
+        if (data.predictions && Array.isArray(data.predictions)) {
+          return data.predictions;
+        } else {
+          console.warn("⚠️ No predictions array found");
+          return [];
+        }
+      } else {
+        console.error("❌ Backend error:", response.statusText);
+        return [];
+      }
+    } catch (err) {
+      console.error("❌ Error in detection:", err);
+      return [];
     }
   };
+  
+  
+  
 
   return (
     <>
