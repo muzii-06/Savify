@@ -4,6 +4,7 @@ import HeroSection from './HeroSection.jsx';
 import ProductGrid from './ProductGrid.jsx';
 import Footer from './Footer.jsx';
 import ChatBot from './ChatBot.jsx';
+import CreatedBy from './CreatedBy.jsx';
 
 const HomePage = ({ username, isAuthenticated,handleAddToCart,cart }) => {
   return (
@@ -14,6 +15,7 @@ const HomePage = ({ username, isAuthenticated,handleAddToCart,cart }) => {
       <ProductGrid handleAddToCart={handleAddToCart} />
       <ChatBot />
       {/* <ProductGrid /> */}
+      <CreatedBy/>
       <Footer />
     </div>
   );
