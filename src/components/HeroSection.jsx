@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import './HeroSection.css'; // Optional, for custom styles
 import savify1 from './ssavify.png'; 
 import savifyBanner1 from './sale savify web banner.png'
-
+import ban2 from './hero.png'
+import ban1 from './hero1.png'
 import { GrNext } from "react-icons/gr";
 import { GrPrevious } from "react-icons/gr";
 const HeroSection = () => {
     const [index,setIndex]=useState(0); 
-    const images = [savifyBanner1,savify1];
+    const images = [ban1,ban2];
     const handleNext=()=>
     {
         setIndex(index+1);
