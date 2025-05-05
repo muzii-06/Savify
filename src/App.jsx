@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
+
 import HomePage from './components/HomePage';
 import Login from './components/Login';
 import Signup from './components/Signup';
@@ -26,6 +27,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import SearchResults from './components/SearchResults';
 import ManageOrdersSeller from './components/ManageOrdersSeller';
 import NegotiatePage  from './components/NegotiatePage';
+import AdminDashboard from './components/AdminDashboard';
+import ManageSeller from './components/ManageSeller';
+import ManageBuyer from './components/ManageBuyer';
 
 import './App.css';
 import CategoryPage from './components/CategoryPage';
@@ -34,6 +38,7 @@ import SellerForgetPassword from './components/SellerForgetPassword';
 import EditProductModal from './components/EditProductModal';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ManageProducts_Admin from './components/ManageProducts_Admin';
 
 
 const App = () => {
@@ -42,6 +47,8 @@ const App = () => {
   const [username, setUsername] = useState(null); // Store the username
    // Cart state
   const [products, setProducts] = useState([]); // Products state
+ 
+
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
@@ -50,6 +57,7 @@ useEffect(() => {
   console.log("📌 Saving Cart to Local Storage:", cart); // ✅ Log cart before saving
   localStorage.setItem("cart", JSON.stringify(cart));
 }, [cart]);
+
 
   // Function to fetch products
   const fetchProducts = async () => {
@@ -65,6 +73,16 @@ useEffect(() => {
   useEffect(() => {
     fetchProducts();
   }, []);
+  useEffect(() => {
+    const isAdmin = localStorage.getItem('isAdmin');
+    const currentPath = location.pathname;
+  
+    // If admin is logged in and trying to access anything other than admin routes, redirect
+    if (isAdmin && !currentPath.startsWith('/admin')) {
+      navigate('/admin-dashboard');
+    }
+  }, [location]);
+  
 
   // Function to update authentication state
   const setAuth = useCallback(() => {
@@ -72,10 +90,14 @@ useEffect(() => {
     const sellerToken = localStorage.getItem('sellerToken'); // Seller token
     const storedUsername = localStorage.getItem('username') || null;
     const storedSellerId = localStorage.getItem('sellerId') || null;
-  
+    const isAdmin = localStorage.getItem('isAdmin');
     console.log('setAuth Debug:', { token, sellerToken, storedUsername, storedSellerId });
-  
-    if (sellerToken && storedSellerId) {
+    if (isAdmin) {
+      setIsAuthenticated(true);
+      setIsSeller(false);
+      setUsername('Admin');
+    }
+    else if (sellerToken && storedSellerId) {
       setIsAuthenticated(true);
       setIsSeller(true);
       setUsername(storedUsername);
@@ -186,18 +208,23 @@ useEffect(() => {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <HomePage
-              username={username}
-              isAuthenticated={isAuthenticated}
-              handleAddToCart={handleAddToCart}
-              cart={cart}
-              handleLogout={handleLogout} // Pass logout handler
-            />
-          }
-        />
+      <Route
+  path="/"
+  element={
+    localStorage.getItem('isAdmin') ? (
+      <Navigate to="/admin-dashboard" replace />
+    ) : (
+      <HomePage
+        username={username}
+        isAuthenticated={isAuthenticated}
+        handleAddToCart={handleAddToCart}
+        cart={cart}
+        handleLogout={handleLogout}
+      />
+    )
+  }
+/>
+
         <Route
           path="/home"
           element={
@@ -236,15 +263,55 @@ useEffect(() => {
         <Route path="/negotiate" element={<NegotiatePage />} />
         <Route path="/seller/manage-orders" element={<ManageOrdersSeller />} />
         <Route
-          path="/login"
-          element={
-            !isAuthenticated ? (
-              <Login onAuthChange={setAuth} />
-            ) : (
-              <Navigate to={isSeller ? '/dashboard' : '/home'} replace />
-            )
-          }
-        />
+  path="/admin-dashboard"
+  element={
+    localStorage.getItem('isAdmin') ? (
+      <AdminDashboard onAuthChange={setAuth} />
+    ) : (
+      <Navigate to="/" replace /> // ✅ Redirect to HomePage instead of login
+    )
+  }
+/>
+
+
+<Route
+  path="/admin/manage-products"
+  element={
+    localStorage.getItem('isAdmin') ? <ManageProducts_Admin /> : <Navigate to="/login" />
+  }
+/>
+
+<Route
+  path="/admin/manage-buyers"
+  element={
+    localStorage.getItem('isAdmin') ? <ManageBuyer /> : <Navigate to="/login" />
+  }
+/>
+
+<Route
+  path="/admin/manage-sellers"
+  element={
+    localStorage.getItem('isAdmin') ? <ManageSeller /> : <Navigate to="/login" />
+  }
+/>
+
+
+
+<Route
+  path="/login"
+  element={
+    !isAuthenticated ? (
+      <Login onAuthChange={setAuth} />
+    ) : localStorage.getItem('isAdmin') ? (
+      <Navigate to="/admin-dashboard" replace />
+    ) : isSeller ? (
+      <Navigate to="/dashboard" replace />
+    ) : (
+      <Navigate to="/home" replace />
+    )
+  }
+/>
+
         <Route
   path="/edit-seller-profile"
   element={

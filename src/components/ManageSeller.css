@@ -1,0 +1,28 @@
+.manage-sellers-container {
+    padding: 2rem;
+  }
+  
+  .seller-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .seller-table th,
+  .seller-table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+  
+  .seller-table th {
+    background-color: #f0f0f0;
+  }
+  
+  button {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  

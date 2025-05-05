@@ -23,12 +23,16 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  // Note: accountAgeDays will be computed dynamically during bargaining
-  // from the createdAt field
 
   verificationCode: { type: String },
   otpCreatedAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
+
+  // ✅ Admin Field
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);

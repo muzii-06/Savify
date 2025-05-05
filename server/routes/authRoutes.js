@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Admin = require('../models/Admin');
 const Seller = require('../models/Seller'); // Import the Seller model
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
@@ -629,6 +630,77 @@ router.put('/seller-reset-password', async (req, res) => {
     res.status(500).json({ message: 'Server error while resetting password.' });
   }
 });
+let adminOtp = null;
+let adminOtpCreatedAt = null;
+
+// ✅ Send Admin Login OTP
+router.post('/admin-request-login-otp', async (req, res) => {
+  const { email } = req.body;
+
+  if (email !== process.env.ADMIN_EMAIL) {
+    return res.status(404).json({ message: 'Admin not found.' });
+  }
+
+  // Generate OTP
+  adminOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  adminOtpCreatedAt = new Date();
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      to: email,
+      subject: 'Admin Login OTP',
+      html: `<p>Your admin OTP is <strong>${adminOtp}</strong></p>`,
+    });
+
+    res.status(200).json({ message: 'OTP sent to admin email.' });
+  } catch (error) {
+    console.error('Error sending admin OTP:', error);
+    res.status(500).json({ message: 'Failed to send OTP.' });
+  }
+});
+
+// ✅ Admin Login
+router.post('/admin-login', async (req, res) => {
+  const { email, password, verificationCode } = req.body;
+
+  if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).json({ message: 'Invalid admin credentials.' });
+  }
+
+  if (!adminOtp || !adminOtpCreatedAt) {
+    return res.status(400).json({ message: 'OTP not requested.' });
+  }
+
+  const now = new Date();
+  const expiry = new Date(adminOtpCreatedAt);
+  expiry.setMinutes(expiry.getMinutes() + 5);
+
+  if (verificationCode !== adminOtp || now > expiry) {
+    return res.status(400).json({ message: 'Invalid or expired OTP.' });
+  }
+
+  // Clear OTP after use
+  adminOtp = null;
+  adminOtpCreatedAt = null;
+
+  // Generate dummy JWT (optional for frontend auth)
+  const token = jwt.sign({ role: 'admin' }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+  res.status(200).json({
+    message: 'Admin login successful!',
+    token,
+  });
+});
+
+
 
 
 

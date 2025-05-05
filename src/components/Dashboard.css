@@ -1,48 +1,73 @@
-/* Main container */
+/* ===== Dashboard Content Styling ===== */
+.dashboard-content {
+  padding: 30px 20px;
+  /* background-color: #f7f9fc; */
+}
 .dashboard-container {
-    display: flex;
-    height: 100vh;
-    flex-direction: column;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.6);
+  background-blend-mode: overlay;
+  color: #fff;
+  overflow-x: hidden;
+
+  /* ✅ Background image setup */
+ 
+}
+
+
+.dashboard-content h4 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+  border: none;
+  border-radius: 12px;
+  background: white;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.dashboard-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+}
+
+.dashboard-card h5 {
+  font-size: 16px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.dashboard-card h3 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.icon-large {
+  font-size: 36px;
+  color: #e74c3c; /* You can adjust color */
+}
+
+/* Responsive Padding */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 20px 10px;
   }
-  
-  /* TopBar at the top */
-  
-  
-  /* Sidebar - Fixed on the left side for larger screens, full-width for mobile */
-  .sidebar {
-    width: 250px;
-    background-color:white;
-    padding: 20px;
-    height: calc(100% - 92px); /* Full height, minus the top bar */
-    position: fixed;
-    top: 92px; /* Start below the top bar */
-    left: 0;
-    z-index: 2000; /* Ensure it's above other elements */
-    transition: all 0.3s ease-in-out;
+
+  .dashboard-card h3 {
+    font-size: 22px;
   }
-  
-  /* Main content - Adjusts based on screen size */
-  .main-content {
-    margin-left: 250px; /* Leave space for the sidebar */
-    padding: 20px;
-    height: calc(100% - 92px); /* Full height, minus the top bar */
-    overflow-y: auto;
-    background-color: #fff;
-    transition: margin-left 0.3s ease-in-out;
+
+  .dashboard-card h5 {
+    font-size: 14px;
   }
-  
-  /* Responsive styles for mobile */
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 100%; /* Sidebar becomes full-width */
-      height: auto; /* Adjust height */
-      position: relative;
-      top: 0;
-    }
-  
-    .main-content {
-      margin-left: 0; /* No left margin for main content */
-      margin-top: 20px; /* Add space between sidebar and content */
-    }
-  }
-  
+}

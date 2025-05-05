@@ -1,5 +1,7 @@
   import React, { useEffect, useState } from 'react';
   import axios from 'axios';
+  import { FaTrash } from 'react-icons/fa';
+
   import './ManageOrdersSeller.css';
   const ManageOrdersSeller = () => {
     const [orders, setOrders] = useState([]);
@@ -32,6 +34,21 @@
         alert("❌ Failed to update order status.");
       }
     };
+    const handleDeleteOrder = async (orderId) => {
+      if (!window.confirm("Are you sure you want to delete this order?")) return;
+    
+      try {
+        const response = await axios.delete(`http://localhost:5000/api/orders/${orderId}`);
+        if (response.status === 200) {
+          alert("🗑️ Order deleted successfully!");
+          fetchOrders(); // Refresh list
+        }
+      } catch (error) {
+        console.error("❌ Error deleting order:", error);
+        alert("❌ Failed to delete order.");
+      }
+    };
+    
 
     return (
       <div className="container-fluid mt-4">
@@ -44,7 +61,16 @@
             return (
               <div key={idx} className="card my-3 shadow">
                 <div className="card-body">
-                  <h5>Order #{idx + 1}</h5>
+                <div className="d-flex justify-content-between">
+  <h5>Order #{idx + 1}</h5>
+  <FaTrash
+    style={{ cursor: 'pointer', color: 'red' }}
+    onClick={() => handleDeleteOrder(order._id)}
+    title="Delete Order"
+  />
+</div>
+
+                  
                   <p><strong>Username:</strong> {order.buyer.username} </p>
                   <p><strong>Email:</strong>  {order.buyer.email}  </p>
 <p><strong>Contact:</strong> {order.buyer.contactNumber}</p>

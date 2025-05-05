@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import DashboardContent from './DashboardContent';
 import TopBar from './TopBar';
+import bgImage from './sellerdashboard.png';
 import './Dashboard.css';
 
 function Dashboard({setAuth}) {
@@ -26,7 +27,14 @@ function Dashboard({setAuth}) {
   
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container"
+    style={{
+      backgroundImage: `url(${bgImage})`,
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center 70%' ,
+      backgroundAttachment: 'fixed',
+    }}>
       {/* TopBar dynamically shows seller info */}
       <TopBar
         storeName={sellerData.storeName}

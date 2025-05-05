@@ -156,5 +156,42 @@ router.put('/update-status/:orderId', async (req, res) => {
     res.status(500).json({ message: 'Failed to update order status' });
   }
 });
+// ✅ Route to delete an order
+router.delete('/:orderId', async (req, res) => {
+  try {
+    const deletedOrder = await Order.findByIdAndDelete(req.params.orderId);
+    if (!deletedOrder) return res.status(404).json({ message: 'Order not found.' });
+
+    res.status(200).json({ message: 'Order deleted successfully.' });
+  } catch (error) {
+    console.error("❌ Error deleting order:", error);
+    res.status(500).json({ message: 'Failed to delete order.' });
+  }
+});
+
+
+// 📍 Add this to orderRoutes.js or a new dashboardRoutes.js
+router.get('/seller/:sellerId/stats', async (req, res) => {
+  const { sellerId } = req.params;
+
+  try {
+    const orders = await Order.find({ 'items.seller._id': sellerId });
+    const products = await Product.find({ seller: sellerId });
+
+    const totalOrders = orders.length;
+    const totalProducts = products.length;
+    const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    res.status(200).json({
+      totalOrders,
+      totalProducts,
+      totalRevenue,
+    });
+  } catch (error) {
+    console.error('❌ Error fetching seller stats:', error);
+    res.status(500).json({ message: 'Failed to fetch seller stats' });
+  }
+});
+
 
 module.exports = router;
