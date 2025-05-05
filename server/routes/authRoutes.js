@@ -139,24 +139,44 @@ router.post('/seller-request-login-otp', async (req, res) => {
 
 // ** User Signup Route **
 router.post('/signup', async (req, res) => {
-  console.log('Request body:', req.body); // Log the incoming request body
+  console.log('Request body:', req.body);
 
   const { username, email, password, address, dateOfBirth, gender, contactNumber } = req.body;
 
   try {
+    // ✅ Check for missing fields
     if (!username || !email || !password || !address || !dateOfBirth || !gender || !contactNumber) {
-      console.error('Missing required fields');
       return res.status(400).json({ message: 'All fields are required' });
     }
 
+    // ✅ Validate contact number
     if (!/^\+92\d{10}$/.test(contactNumber)) {
-      console.error('Invalid contact number:', contactNumber);
       return res.status(400).json({ message: 'Contact number must start with +92 and contain exactly 10 digits.' });
     }
 
+    // ✅ Validate email ending
+    if (!/@(gmail\.com|students\.riphah\.edu\.pk)$/.test(email)) {
+      return res.status(400).json({ message: 'Only Gmail or Students email addresses from "riphah.edu.pk" are allowed' });
+    }
+
+    // ✅ Validate username: should not start with a number or contain special characters
+    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(username)) {
+      return res.status(400).json({
+        message: 'Username must not start with a number and must not contain special characters.',
+      });
+    }
+
+    // ✅ Validate password: at least 1 special character, 1 capital letter, 1 number, and 6 characters minimum
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character, and be at least 6 characters long.',
+      });
+    }
+
+    // ✅ Check if email already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      console.error('Email already in use:', email);
       return res.status(400).json({ message: 'Email already in use' });
     }
 
@@ -180,6 +200,7 @@ router.post('/signup', async (req, res) => {
     res.status(500).json({ message: 'Server error during signup' });
   }
 });
+
 
 
 
@@ -233,21 +254,47 @@ router.post('/seller-signup', upload.single('storeImage'), async (req, res) => {
   const { username, email, password, storeName, gender, contactNumber, dateOfBirth, warehouseAddress } = req.body;
 
   try {
+    // ✅ Check for missing fields
     if (!username || !email || !password || !storeName || !gender || !contactNumber || !dateOfBirth || !warehouseAddress) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
 
-    if (!/^\+92\d{10}$/.test(contactNumber)) {
-      return res.status(400).json({ message: 'Contact number must start with +92 and contain exactly 10 digits.' });
+    // ✅ Validate email ending: Only Gmail or Students email from "riphah.edu.pk" is allowed
+    if (!/@(gmail\.com|students\.riphah\.edu\.pk)$/.test(email)) {
+      return res.status(400).json({ message: 'Only Gmail or Students email addresses from "riphah.edu.pk" are allowed.' });
     }
 
+    // ✅ Validate username: Must not start with a number and must not contain special characters
+    if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(username)) {
+      return res.status(400).json({
+        message: 'Username must not start with a number and must not contain special characters.',
+      });
+    }
+
+    // ✅ Validate password: Should contain at least one special character, one capital letter, one number, and at least 6 characters long
+    if (!/(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/.test(password)) {
+      return res.status(400).json({
+        message: 'Password must be at least 6 characters long and contain at least one special character, one capital letter, and one number.',
+      });
+    }
+
+    // ✅ Validate contact number: Must start with +92 and contain exactly 10 digits
+    if (!/^\+92\d{10}$/.test(contactNumber)) {
+      return res.status(400).json({
+        message: 'Contact number must start with +92 and contain exactly 10 digits.',
+      });
+    }
+
+    // ✅ Check if email already exists
     const existingSeller = await Seller.findOne({ email });
     if (existingSeller) {
       return res.status(400).json({ message: 'Email already in use.' });
     }
 
+    // ✅ Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // ✅ Create a new Seller object
     const newSeller = new Seller({
       username,
       email,
@@ -257,17 +304,18 @@ router.post('/seller-signup', upload.single('storeImage'), async (req, res) => {
       contactNumber,
       dateOfBirth,
       warehouseAddress,
-      storeImage: req.file?.path || '',
+      storeImage: req.file?.path || '', // Save file path for storeImage
     });
 
+    // ✅ Save the new seller in the database
     await newSeller.save();
+
     res.status(201).json({ message: 'Seller created successfully.' });
   } catch (error) {
     console.error('Error creating seller:', error);
     res.status(500).json({ message: 'Server error while creating seller.' });
   }
 });
-
 // ** Seller Login Route **
 router.post('/seller-login', async (req, res) => {
   const { email, password, verificationCode } = req.body;

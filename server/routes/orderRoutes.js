@@ -170,7 +170,7 @@ router.delete('/:orderId', async (req, res) => {
 });
 
 
-// 📍 Add this to orderRoutes.js or a new dashboardRoutes.js
+// 📍 Add this to orderRoutes.js or a new dashboardRoutes.js  -To get total order,revenue and total products
 router.get('/seller/:sellerId/stats', async (req, res) => {
   const { sellerId } = req.params;
 
