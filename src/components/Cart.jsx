@@ -20,6 +20,9 @@ function Cart({ cart, setCart }) {
     const [avgDiscountPercent, setAvgDiscountPercent] = useState(10);
     const [selectedSellerId, setSelectedSellerId] = useState("");
     const [voucherTimers, setVoucherTimers] = useState({});
+    const [chatMessages, setChatMessages] = useState([]);
+    const [isTyping, setIsTyping] = useState(false);
+
 
     // Update countdown timers every second
     useEffect(() => {
@@ -215,80 +218,76 @@ useEffect(() => {
         setUserCartOffer('');
         setCartAccepted(false);
         setCartOver(false);
+        setChatMessages([
+          {
+            sender: 'ai',
+            text: `🛒 Total price of seller's items is Rs. ${total}. Let's begin bargaining!`,
+          },
+        ]);
         setShowCartBargainModal(true);
       };
       
 
-      const handleCartUserOffer = async () => {
-        if (!userCartOffer || isNaN(userCartOffer)) {
-          alert("Enter a valid number");
-          return;
-        }
+      const handleSendOffer = async () => {
+        if (!userCartOffer || isNaN(userCartOffer)) return alert("Enter a valid number");
       
-        const userId = localStorage.getItem("userId");
+        const offer = Number(userCartOffer);
+        setChatMessages((prev) => [...prev, { sender: 'user', text: `My offer: Rs. ${offer}` }]);
+        setUserCartOffer('');
+        setIsTyping(true);
       
-        const avgRating = sellerCartItems.reduce(
-          (sum, item) => sum + (item.rating || 4.5), 0
-        ) / sellerCartItems.length;
+        setTimeout(async () => {
+          const userId = localStorage.getItem("userId");
+          const avgRating = sellerCartItems.reduce((sum, item) => sum + (parseFloat(item.rating) || 4.5), 0) / sellerCartItems.length;
+          const totalOrders = parseInt(localStorage.getItem("totalOrders") || "1");
+          const accountAgeDays = 30;
+          const maxDiscount = avgDiscountPercent;
       
-        const totalOrders = parseInt(localStorage.getItem("totalOrders") || "1");
-        const accountAgeDays = 30; // Replace with dynamic if needed
-        const maxDiscount = avgDiscountPercent;
+          try {
+            const response = await axios.post("http://localhost:5000/api/negotiate", {
+              userId,
+              productId: sellerCartItems[0]._id,
+              max_discount: maxDiscount,
+              account_age_days: accountAgeDays,
+              total_orders: totalOrders,
+              product_rating: avgRating.toFixed(2),
+            });
       
-        try {
-          const response = await axios.post("http://localhost:5000/api/negotiate", {
-            userId,
-            productId: sellerCartItems[0]._id,
-            max_discount: maxDiscount,
-            account_age_days: accountAgeDays,
-            total_orders: totalOrders,
-            product_rating: avgRating.toFixed(2)
-          });
+            const discount = response.data.discount;
+            const predictedFinalOffer = sellerCartTotal - (sellerCartTotal * discount / 100);
+            const nextRound = cartRound + 1;
       
-          const discount = response.data.discount;
-          const counterOffer = sellerCartTotal - (sellerCartTotal * discount * cartRound / avgRounds) / 100;
+            setIsTyping(false);
       
-          if (userCartOffer >= counterOffer) {
-            setCartAiOffer(userCartOffer);
-            setCartAccepted(true);
-            setCartOver(true);
-      
-            const finalDiscount = ((sellerCartTotal - userCartOffer) / sellerCartTotal) * 100;
-      
-            // 🔁 Voucher with sellerId included
-            const voucherData = {
-              discountedTotal: Number(userCartOffer),
-              discountPercent: finalDiscount.toFixed(2),
-              expiry: new Date().getTime() + 24 * 60 * 60 * 1000,
-              sellerId: selectedSellerId,
-            };
-      
-            const existing = JSON.parse(localStorage.getItem("cartVouchers")) || {};
-            const updated = {
-              ...existing,
-              [selectedSellerId]: voucherData
-            };
-            localStorage.setItem("cartVouchers", JSON.stringify(updated));
-            setValidCartVoucher(updated);
-            
-            toast.success(`🎉 Bargain accepted! Final price: Rs. ${Number(userCartOffer).toFixed(0)}`);
-            setShowCartBargainModal(false); // ✅ Keep user on cart after success
-      
-          } else if (cartRound >= avgRounds) {
-            setCartOver(true);
-          } else {
-            setCartAiOffer(counterOffer);
-            setCartRound(prev => prev + 1);
+            if (cartRound >= avgRounds) {
+              // Keep responding with same final offer
+              setCartAiOffer(predictedFinalOffer);
+              setChatMessages((prev) => [
+                ...prev,
+                { sender: 'ai', text: `🤖 My final offer remains Rs. ${predictedFinalOffer.toFixed(0)}` },
+              ]);
+              setCartOver(false); // Prevent bargain failed message
+            } else {
+              // Play next round with scaled offer
+              const scaledOffer = sellerCartTotal - (sellerCartTotal * discount * cartRound / avgRounds) / 100;
+              setCartAiOffer(scaledOffer);
+              setChatMessages((prev) => [
+                ...prev,
+                { sender: 'ai', text: `🤖 My counter offer is Rs. ${scaledOffer.toFixed(0)}` },
+              ]);
+              setCartRound(nextRound);
+            }
+          } catch (err) {
+            setIsTyping(false);
+            setChatMessages((prev) => [
+              ...prev,
+              { sender: 'ai', text: `❌ Error: Failed to get AI response.` },
+            ]);
           }
-      
-        } catch (err) {
-          console.error("❌ Cart bargain error:", err);
-          toast.error("Failed to run AI model.");
-        }
+        }, 1500);
       };
       
       
-
     return (
         <div className="cart-page">
             <h2 className="cart-title">Your Cart</h2>
@@ -402,90 +401,91 @@ useEffect(() => {
           <button type="button" className="btn-close" onClick={() => setShowCartBargainModal(false)}></button>
         </div>
         <div className="modal-body">
-          {!cartOver ? (
-            <>
-              <p>Total Price of Seller Items: Rs. {sellerCartTotal}</p>
-              <input
-                type="number"
-                className="form-control"
-                value={userCartOffer}
-                onChange={(e) => setUserCartOffer(e.target.value)}
-                placeholder="Enter your offer"
-              />
-              <div className="d-flex gap-2 mt-2">
-  <button className="btn btn-primary" onClick={handleCartUserOffer}>
-    Counter Offer
-  </button>
+        {true ? (
 
-  <button
+    <>
+      <div className="chat-box d-flex flex-column">
+        {chatMessages.map((msg, idx) => (
+          <div
+            key={idx}
+            className={`chat-bubble ${msg.sender === 'user' ? 'user-msg' : 'ai-msg'}`}
+          >
+            {msg.text}
+          </div>
+        ))}
+        {isTyping && <div className="typing-indicator">🤖 Typing...</div>}
+      </div>
+
+      <div className="d-flex gap-2 mt-2">
+        <input
+          type="number"
+          className="form-control"
+          value={userCartOffer}
+          onChange={(e) => setUserCartOffer(e.target.value)}
+          placeholder="Enter your offer"
+          disabled={isTyping}
+        />
+        <button
+          className="btn btn-primary"
+          onClick={handleSendOffer}
+          disabled={isTyping}
+        >
+          Send
+        </button>
+        <button
   className="btn btn-success"
   onClick={() => {
     const finalDiscount = ((sellerCartTotal - cartAiOffer) / sellerCartTotal) * 100;
-const expiryTime = new Date().getTime() + 24 * 60 * 60 * 1000; // 24 hours
+    const expiryTime = Date.now() + 24 * 60 * 60 * 1000;
 
-const discountedTotal = Number(cartAiOffer);
-const discountPercent = finalDiscount.toFixed(2);
-const expiry = expiryTime;
+    const discountedTotal = Number(cartAiOffer);
+    const discountPercent = finalDiscount.toFixed(2);
 
-const existingVouchers = JSON.parse(localStorage.getItem("cartVouchers")) || {};
-const updatedVouchers = {
-  ...existingVouchers,
-  [selectedSellerId]: {
-    discountedTotal,
-    discountPercent,
-    expiry,
-    sellerId: selectedSellerId
-  }
-};
+    const existingVouchers = JSON.parse(localStorage.getItem("cartVouchers")) || {};
+    const updatedVouchers = {
+      ...existingVouchers,
+      [selectedSellerId]: {
+        discountedTotal,
+        discountPercent,
+        expiry: expiryTime,
+        sellerId: selectedSellerId,
+      },
+    };
 
-localStorage.setItem("cartVouchers", JSON.stringify(updatedVouchers));
-setValidCartVoucher(updatedVouchers); // 🔁 set in state as well
+    localStorage.setItem("cartVouchers", JSON.stringify(updatedVouchers));
+    setValidCartVoucher(updatedVouchers);
 
-toast.success(`🎉 Offer Accepted! Final price: Rs. ${discountedTotal.toFixed(0)}`);
-setCartAccepted(true);
-setCartOver(true);
-setShowCartBargainModal(false); // ✅ close modal and stay on cart
-
-
-localStorage.setItem("cartVouchers", JSON.stringify(updatedVouchers));
-setValidCartVoucher(updatedVouchers); // 🔁 set in state as well
-
-    
-
-    toast.success(`🎉 Offer Accepted! Final price: Rs. ${Number(cartAiOffer).toFixed(0)}`);
+    toast.success(`🎉 Offer Accepted! Final price: Rs. ${discountedTotal.toFixed(0)}`);
     setCartAccepted(true);
     setCartOver(true);
-    setShowCartBargainModal(false); // ✅ close modal and stay on cart
+    setShowCartBargainModal(false);
   }}
+  disabled={isTyping || !cartAiOffer}
 >
-  Accept Offer
+  Accept
 </button>
 
-
-  <button className="btn btn-danger" onClick={() => setShowCartBargainModal(false)}>
-    Cancel
-  </button>
+      </div>
+    </>
+  ) : (
+    <div className="text-center">
+      {cartAccepted ? (
+        <>
+          <h5>✅ Bargain Accepted!</h5>
+          <p>You got a discount. Final Price: Rs. {cartAiOffer}</p>
+          <p className="text-muted">You can now proceed to checkout from the cart.</p>
+        </>
+      ) : (
+        <>
+          <h5>❌ Bargain Failed</h5>
+          <p>No agreement reached.</p>
+        </>
+      )}
+    </div>
+  )}
 </div>
 
-              {cartAiOffer && <p className="mt-3">🤖 AI Counter: Rs. {cartAiOffer.toFixed(2)}</p>}
-            </>
-          ) : (
-            <div className="text-center">
-             {cartAccepted ? (
-  <>
-    <h5>✅ Bargain Accepted!</h5>
-    <p>You got a discount. Final Price: Rs. {cartAiOffer}</p>
-    <p className="text-muted">You can now proceed to checkout from the cart.</p>
-  </>
-) : (
-                <>
-                  <h5>❌ Bargain Failed</h5>
-                  <p>No agreement reached.</p>
-                </>
-              )}
-            </div>
-          )}
-        </div>
+
       </div>
     </div>
   </div>

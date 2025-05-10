@@ -28,11 +28,7 @@ const userSchema = new mongoose.Schema({
   otpCreatedAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
 
-  // ✅ Admin Field
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  }
+  
 });
 
 module.exports = mongoose.model('User', userSchema);

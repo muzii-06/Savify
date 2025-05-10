@@ -22,24 +22,24 @@ const ProductPage = ({ products, handleAddToCart, username, isAuthenticated, han
   const [bargainOver, setBargainOver] = useState(false);
   const [bargainRounds, setBargainRounds] = useState(0);
 const [maxDiscountPercent, setMaxDiscountPercent] = useState(0);
+const [canReview, setCanReview] = useState(false);
+const [chatMessages, setChatMessages] = useState([]);
+const [isTyping, setIsTyping] = useState(false);
+const [predictedDiscount, setPredictedDiscount] = useState(0); // <-- NEW
+
+
   
 
+// ✅ Fetch Product Info
 useEffect(() => {
-  console.log("📌 Fetching Product ID:", id);
-
-  if (!id || id.length !== 24) {
-      console.error("❌ Invalid Product ID:", id);
-      return;
-  }
-
   const fetchProduct = async () => {
+    if (!id || id.length !== 24) return;
+
     try {
       const response = await axios.get(`http://localhost:5000/api/products/${id}`);
-      console.log("📌 Product Data Fetched:", response.data);
-  
       setProduct(response.data);
-      setReviews(response.data.reviews || []); // ✅ THIS LINE fetches reviews
-  
+      setReviews(response.data.reviews || []);
+
       if (response.data.maxDiscountPercent && response.data.bargainRounds) {
         setMaxDiscountPercent(response.data.maxDiscountPercent);
         setBargainRounds(response.data.bargainRounds);
@@ -48,9 +48,29 @@ useEffect(() => {
       console.error("❌ Error fetching product:", error.response?.data || error.message);
     }
   };
-  
+
   fetchProduct();
 }, [id]);
+
+// ✅ Check if the user is eligible to review
+useEffect(() => {
+  const checkEligibility = async () => {
+    if (!id || !isAuthenticated) return;
+    const buyerId = localStorage.getItem('userId');
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/orders/buyer/${buyerId}/can-review/${id}`
+      );
+      setCanReview(response.data.canReview);
+    } catch (error) {
+      console.error("❌ Error checking review eligibility:", error);
+    }
+  };
+
+  checkEligibility();
+}, [id, isAuthenticated]);
+
 
 
 
@@ -81,20 +101,26 @@ useEffect(() => {
         product.price -
         (product.price * (discount / bargainRounds) * round) / 100;
   
-      if (userOffer >= counterOffer) {
-        setAiOffer(userOffer);
-        setFinalDiscount(
-          (100 - (userOffer / product.price) * 100).toFixed(2)
-        );
-        setBargainAccepted(true);
-        setBargainOver(true);
+        if (userOffer >= counterOffer) {
+          setAiOffer(userOffer);
+          setFinalDiscount(((product.price - userOffer) / product.price * 100).toFixed(2));
+          setBargainAccepted(true);
+          setBargainOver(true);
+        } else {
+          // Always respond with the same offer once rounds are exhausted
+          if (round < bargainRounds) {
+            setAiOffer(counterOffer);
+            setRound((prev) => prev + 1);
+          } else {
+            setAiOffer((prev) => prev); // No change
+          }
         
-      } else if (round >= bargainRounds) {
-        setBargainOver(true);
-      } else {
-        setAiOffer(counterOffer);
-        setRound((prev) => prev + 1);
-      }
+          setChatMessages((prev) => [
+            ...prev,
+            { sender: 'ai', text: `🤖 My counter offer is Rs. ${counterOffer.toFixed(0)}` },
+          ]);
+        }
+        
     } catch (error) {
       console.error("❌ AI error:", error.response?.data || error.message);
       alert("Something went wrong with the bargain engine.");
@@ -111,7 +137,8 @@ useEffect(() => {
         discountedPrice: aiOffer,
       });
   
-      const discountPercent = ((product.price - aiOffer) / product.price) * 100;
+      const discountPercent = discount; // use model-predicted full value
+
 
       navigate('/checkout', {
         state: {
@@ -289,6 +316,7 @@ useEffect(() => {
   
     handleAddToCart({
       ...product,
+      reviews: product.reviews || [],
       quantity,
       image: `http://localhost:5000/${product.images[0]}`,
       seller: {
@@ -298,10 +326,9 @@ useEffect(() => {
       sellerId: sellerId,
       bargainRounds: product.bargainRounds || 1,
       maxDiscountPercent: product.maxDiscountPercent || 10,
-      rating: product.reviews?.length
-        ? (product.reviews.reduce((acc, r) => acc + r.rating, 0) / product.reviews.length).toFixed(1)
-        : 4.5,
+      rating: parseFloat(averageRating),  // ✅ use the exact averageRating already displayed
     });
+    
   }}
   
   
@@ -321,6 +348,12 @@ useEffect(() => {
     setAiOffer(product.price);
     setBargainAccepted(false);
     setBargainOver(false);
+    setChatMessages([
+      {
+        sender: 'ai',
+        text: `🛒 The original price is Rs. ${product.price}. Let's start bargaining!`,
+      },
+    ]);
   }}
 >
   Start Bargain
@@ -358,34 +391,42 @@ useEffect(() => {
           </div>
 
           {/* Add a Review */}
-          {isAuthenticated && (
-            <div className="add-review mt-4">
-              <h4>Leave a Review</h4>
-              <textarea
-                className="form-control mb-2"
-                rows="3"
-                placeholder="Write your review..."
-                value={newReview}
-                onChange={(e) => setNewReview(e.target.value)}
-              ></textarea>
-              <div className="rating-input d-flex align-items-center mb-3">
-                <span className="me-2">Your Rating:</span>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span
-                    key={star}
-                    className={`star ${rating >= star ? 'text-warning' : 'text-muted'}`}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => setRating(star)}
-                  >
-                    ⭐
-                  </span>
-                ))}
-              </div>
-              <button className="btn btn-success" onClick={handleAddReview}>
-                Submit Review
-              </button>
-            </div>
-          )}
+          {/* Add a Review */}
+{isAuthenticated && canReview && (
+  <div className="add-review mt-4">
+    <h4>Leave a Review</h4>
+    <textarea
+      className="form-control mb-2"
+      rows="3"
+      placeholder="Write your review..."
+      value={newReview}
+      onChange={(e) => setNewReview(e.target.value)}
+    ></textarea>
+    <div className="rating-input d-flex align-items-center mb-3">
+      <span className="me-2">Your Rating:</span>
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span
+          key={star}
+          className={`star ${rating >= star ? 'text-warning' : 'text-muted'}`}
+          style={{ cursor: 'pointer' }}
+          onClick={() => setRating(star)}
+        >
+          ⭐
+        </span>
+      ))}
+    </div>
+    <button className="btn btn-success" onClick={handleAddReview}>
+      Submit Review
+    </button>
+  </div>
+)}
+
+{isAuthenticated && !canReview && (
+  <div className="text-muted mt-3">
+    ✅ You can only leave a review once this product is marked <strong>Delivered</strong> in your order.
+  </div>
+)}
+
         </div>
       </div>
       {showBargainModal && (
@@ -393,73 +434,159 @@ useEffect(() => {
     <div className="modal-dialog modal-dialog-centered">
       <div className="modal-content">
         <div className="modal-header">
-          <h5 className="modal-title">Bargain Round {round} of {bargainRounds}</h5>
+        <h5 className="modal-title">Bargain Assistant</h5>
+
           <button type="button" className="btn-close" onClick={() => setShowBargainModal(false)}></button>
         </div>
         <div className="modal-body">
-          {!bargainOver ? (
-            <>
-              <p>Original Price: Rs. {product.price}</p>
-              <p>Your Offer:</p>
-<input
-  type="number"
-  className="form-control mb-2"
-  value={userOffer}
-  onChange={(e) => setUserOffer(e.target.value)}
-  placeholder="Enter your offer"
-/>
-<div className="d-flex gap-3 mt-2">
-<button
+  <div className="chat-box d-flex flex-column">
+    {chatMessages.map((msg, idx) => (
+      <div
+        key={idx}
+        className={`chat-bubble ${msg.sender === 'user' ? 'user-msg' : 'ai-msg'}`}
+      >
+        {msg.text}
+      </div>
+    ))}
+    {isTyping && <div className="typing-indicator">🤖 Typing...</div>}
+  </div>
+
+  {bargainAccepted ? (
+    <div className="text-center mt-3">
+      <h5>✅ Bargain Accepted!</h5>
+      <p>You got a {finalDiscount}% discount!</p>
+      <button
+        className="btn btn-success"
+        onClick={() =>
+          navigate('/checkout', {
+            state: {
+              directBuy: {
+                ...product,
+                price: aiOffer,
+                quantity,
+              },
+            },
+          })
+        }
+      >
+        Proceed to Checkout
+      </button>
+    </div>
+  ) : (
+    <div className="d-flex flex-wrap gap-2 mt-3 justify-content-start">
+      <input
+        type="number"
+        className="form-control"
+        value={userOffer}
+        onChange={(e) => setUserOffer(e.target.value)}
+        placeholder="Enter your offer"
+        disabled={isTyping}
+      />
+      <button
+        className="btn btn-primary"
+        onClick={async () => {
+          if (!userOffer || isNaN(userOffer)) return alert("Enter a valid number");
+          const offer = Number(userOffer);
+          setChatMessages((prev) => [...prev, { sender: 'user', text: `My offer: Rs. ${offer}` }]);
+          setUserOffer('');
+          setIsTyping(true);
+
+          setTimeout(async () => {
+            try {
+              const buyerId = localStorage.getItem("userId");
+              const response = await axios.post("http://localhost:5000/api/negotiate", {
+                userId: buyerId,
+                productId: product._id,
+                max_discount: maxDiscountPercent,
+                account_age_days: 30,
+                total_orders: 2,
+                product_rating: parseFloat(averageRating) || 4.5,
+              });
+
+              const discount = response.data.discount;
+              setPredictedDiscount(discount);
+              const newOffer =
+                product.price - (product.price * discount * round / bargainRounds) / 100;
+
+              setIsTyping(false);
+
+              // If max rounds reached, just reuse last offer
+              // const discount = response.data.discount;
+              // setPredictedDiscount(discount);
+              
+              const nextRound = round + 1;
+              
+              if (nextRound > bargainRounds) {
+                const finalOffer = product.price - (product.price * discount / 100);
+                setAiOffer(finalOffer);
+                setChatMessages((prev) => [
+                  ...prev,
+                  { sender: 'ai', text: `🤖 My final offer is Rs. ${finalOffer.toFixed(0)}` },
+                ]);
+              } else {
+                const scaledOffer = product.price - (product.price * discount * round / bargainRounds) / 100;
+                setAiOffer(scaledOffer);
+                setChatMessages((prev) => [
+                  ...prev,
+                  { sender: 'ai', text: `🤖 My counter offer is Rs. ${scaledOffer.toFixed(0)}` },
+                ]);
+                setRound(nextRound);
+              }
+              
+
+            } catch (err) {
+              setIsTyping(false);
+              setChatMessages((prev) => [
+                ...prev,
+                { sender: 'ai', text: `❌ Something went wrong with AI engine.` },
+              ]);
+            }
+          }, 1500);
+        }}
+        disabled={isTyping}
+      >
+        Send
+      </button>
+      <button
   className="btn btn-success"
-  onClick={handleAcceptBargain}
+  onClick={() => {
+    const discountPercent = ((product.price - aiOffer) / product.price) * 100;
+    setFinalDiscount(discountPercent.toFixed(2));
+    setBargainAccepted(true);
+
+    navigate('/checkout', {
+      state: {
+        directBuy: {
+          ...product,
+          price: aiOffer,
+          originalPrice: product.price,
+          quantity,
+          voucherApplied: true,
+          discountPercent: discountPercent.toFixed(2),
+          image: `http://localhost:5000/${product.images[0].replace(/\\/g, "/")}`,
+        },
+      },
+    });
+  }}
+  disabled={isTyping || !aiOffer}
 >
-  Accept Offer
+  Accept
 </button>
 
 
-  <button className="btn btn-primary" onClick={handleUserOffer}>
-    Counter Offer
-  </button>
+<button
+  className="btn btn-danger "
+  onClick={() => setShowBargainModal(false)}
+  disabled={isTyping}
+>
+  Cancel
+</button>
 
-  <button className="btn btn-danger" onClick={() => setShowBargainModal(false)}>
-    Cancel
-  </button>
+    </div>
+  )}
 </div>
 
-              {aiOffer && <p className="mt-3">🤖 AI Counter: Rs. {aiOffer.toFixed(2)}</p>}
-            </>
-          ) : (
-            <div className="text-center">
-              {bargainAccepted ? (
-                <>
-                  <h5>✅ Bargain Accepted!</h5>
-                  <p>You got a {finalDiscount}% discount!</p>
-                  <button
-                    className="btn btn-success"
-                    onClick={() =>
-                      navigate('/checkout', {
-                        state: {
-                          directBuy: {
-                            ...product,
-                            price: aiOffer,
-                            quantity,
-                          },
-                        },
-                      })
-                    }
-                  >
-                    Proceed to Checkout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <h5>❌ Bargain Failed</h5>
-                  <p>You didn't accept any offer</p>
-                </>
-              )}
-            </div>
-          )}
-        </div>
+
       </div>
     </div>
   </div>

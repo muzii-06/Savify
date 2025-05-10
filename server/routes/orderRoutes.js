@@ -118,6 +118,26 @@ router.get('/buyer/:buyerId', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch orders' });
   }
 });
+// 🔒 Can this buyer review this product?
+router.get(
+  '/buyer/:buyerId/can-review/:productId',
+  async (req, res) => {
+    try {
+      const { buyerId, productId } = req.params;
+      // find any delivered order that contains this product
+      const found = await Order.findOne({
+        'buyer._id': buyerId,
+        status: 'Delivered',
+        'items.productId': productId
+      });
+      res.json({ canReview: !!found });
+    } catch (err) {
+      console.error('Error checking review eligibility:', err);
+      res.status(500).json({ message: 'Server error' });
+    }
+  }
+);
+
 
 // ✅ Route 3: Get all orders for a Seller
 router.get('/seller/:sellerId', async (req, res) => {

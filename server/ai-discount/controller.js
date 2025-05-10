@@ -34,10 +34,8 @@ const runDiscountModel = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    const allRatings = product.reviews.map((r) => r.rating);
-    const productRating = allRatings.length
-      ? allRatings.reduce((a, b) => a + b, 0) / allRatings.length
-      : 4.5;
+    const productRating = parseFloat(req.body.product_rating) || 4.5;
+
 
     console.log("📥 Running AI Bargain Model with:");
     console.log("👤 Buyer ID:", userId);
