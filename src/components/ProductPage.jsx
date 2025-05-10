@@ -218,7 +218,7 @@ useEffect(() => {
         cart={cart} // ✅ use prop instead of localStorage
       />
 
-      <div className="container product-page mt-4">
+      <div className=" product-page mt-4">
         <div className="row">
           {/* Left Column: Images */}
           <div className="col-lg-6 col-md-6">
@@ -241,68 +241,34 @@ useEffect(() => {
 
           {/* Right Column: Details */}
           <div className="col-lg-6 col-md-6">
-            <h1 className="product-title">{product.name}</h1>
-            <p className="text-muted">
+            <h1 className="product-title text-center">{product.name}</h1>
+            <p className="text-muted text-center ">
               Store: {product.seller && product.seller.storeName ? product.seller.storeName : 'Unknown Store'}
             </p>
 
-            <div className="ratings mb-3">
-              <span className="stars ">⭐⭐⭐⭐⭐</span>
-              <span className="ms-2 text-secondary">{averageRating} Ratings</span>
+            <div className="ratings mb-3 text-center justify-content-center">
+              <span className="stars text-center ">⭐⭐⭐⭐⭐</span>
+              <span className="ms-2 text-secondary text-center ">{averageRating} Ratings</span>
             </div>
 
             <h2 className="text-danger">Rs. {product.price}</h2>
-            <p>{product.description}</p>
+           
 
-            <div className="quantity-control d-flex align-items-center my-3">
-              <button
-                className="btn btn-secondary"
-                onClick={() => handleQuantityChange('decrement')}
-              >
-                -
-              </button>
-              <input
-                type="number"
-                readOnly
-                className="form-control text-center mx-2"
-                value={quantity}
-              />
-              <button
-                className="btn btn-secondary"
-                onClick={() => handleQuantityChange('increment')}
-              >
-                +
-              </button>
-            </div>
+            <div className="quantity-wrapper ">
+  <label className="quantity-label">QUANTITY</label>
+  <input
+    type="number"
+    className="styled-quantity-input"
+    value={quantity}
+    min="1"
+    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+  />
+</div>
 
-            <div className="d-flex gap-3">
+
+            <div className=" ">
             <button
-  className="btn btn-primary w-50 rounded-pill fw-bold"
-  onClick={() => {
-    navigate('/checkout', {
-      state: {
-        directBuy: {
-          _id: product._id,
-          name: product.name,
-          price: product.price,
-          quantity,
-          image: `http://localhost:5000/${product.images[0].replace(/\\/g, "/")}`,
-          seller: {
-            _id: product.seller?._id,
-            storeName: product.seller?.storeName || "Unknown Store",
-          },
-          sellerId: product.seller?._id || "UNKNOWN_SELLER",
-        },
-      },
-    });
-  }}
->
-  Buy Now
-</button>
-
-
-              <button
-  className="btn btn-warning w-50 rounded-pill fw-bold"
+  className="  w-50  cart-button text-white py-3 my-2 d-block mx-auto fw-bold"
   onClick={() => {
     const sellerId = product.seller?._id || product.sellerId || "UNKNOWN_SELLER";
     
@@ -336,12 +302,50 @@ useEffect(() => {
   Add to Cart
 </button>
 <button
-  className="btn btn-dark w-100 rounded-pill fw-bold mt-2"
+  className="buy-button w-50 py-3 my-2 d-block mx-auto text-white fw-bold"
   onClick={() => {
+    if (!isAuthenticated) {
+      navigate('/login'); // 🔐 redirect to login
+      return;
+    }
+
+    navigate('/checkout', {
+      state: {
+        directBuy: {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          quantity,
+          image: `http://localhost:5000/${product.images[0].replace(/\\/g, "/")}`,
+          seller: {
+            _id: product.seller?._id,
+            storeName: product.seller?.storeName || "Unknown Store",
+          },
+          sellerId: product.seller?._id || "UNKNOWN_SELLER",
+        },
+      },
+    });
+  }}
+>
+  Buy Now
+</button>
+
+
+
+            
+<button
+  className="py-3 bargain-button w-50 d-block mx-auto fw-bold my-2"
+  onClick={() => {
+    if (!isAuthenticated) {
+      navigate('/login'); // 🔐 redirect to login
+      return;
+    }
+
     if (!bargainRounds || !maxDiscountPercent) {
       alert("❌ This product is not available for bargain.");
       return;
     }
+
     setShowBargainModal(true);
     setRound(1);
     setUserOffer('');
@@ -362,13 +366,22 @@ useEffect(() => {
 
 
 
+
+
             </div>
+            
+            <div className="mt-5">
+
+            <h4 className='fw-bold'>Product Description</h4>
+            <p className='fs-6 '>{product.description}</p>
+            </div>
+            
           </div>
         </div>
 
         {/* Reviews Section */}
         <div className="reviews-section mt-5">
-          <h3>Reviews</h3>
+          <h4 className='fw-bold'>Customer Reviews</h4>
           <div className="existing-reviews">
             {reviews.length ? (
               reviews.map((review, idx) => (
@@ -403,18 +416,18 @@ useEffect(() => {
       onChange={(e) => setNewReview(e.target.value)}
     ></textarea>
     <div className="rating-input d-flex align-items-center mb-3">
-      <span className="me-2">Your Rating:</span>
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span
-          key={star}
-          className={`star ${rating >= star ? 'text-warning' : 'text-muted'}`}
-          style={{ cursor: 'pointer' }}
-          onClick={() => setRating(star)}
-        >
-          ⭐
-        </span>
-      ))}
-    </div>
+  <span className="me-2 fw-bold">Your Rating:</span>
+  {[1, 2, 3, 4, 5].map((star) => (
+    <span
+      key={star}
+      className="rating-star"
+      onClick={() => setRating(star)}
+    >
+      {rating >= star ? '★' : '☆'}
+    </span>
+  ))}
+</div>
+
     <button className="btn btn-success" onClick={handleAddReview}>
       Submit Review
     </button>
