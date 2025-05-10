@@ -82,6 +82,18 @@ router.get('/admin/products', async (req, res) => {
     }
   });
   
+  // Fix this line
+router.get('/admin/stats', async (req, res) => {
+  try {
+    const buyers = await User.countDocuments();
+    const sellers = await Seller.countDocuments();
+    const products = await Product.countDocuments();
+    res.json({ buyers, sellers, products });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
   
 
 module.exports = router;
