@@ -9,9 +9,9 @@ const ProductCard = ({ id, name, price, image, handleAddToCart, sellerId }) => {
   const product = { id, name, price, image, quantity: 1 };
 
   return (
-    <div className="col-lg-2 col-md-4 col-sm-6 mb-4 border m-3 bg-white rounded-3">
+    <div className="col-lg-2 col-md-3 col-sm-6 mb-4 border m-3 bg-white rounded-3">
       <div
-        className="pr-card"
+        className="pr-card h-100 d-flex flex-column justify-content-between"
         onClick={() => navigate(`/product/${id}`)} // Navigate to the product page
         style={{ cursor: 'pointer' }}
       >
@@ -20,10 +20,8 @@ const ProductCard = ({ id, name, price, image, handleAddToCart, sellerId }) => {
           <p className="card-title fs-4">{name}</p>
           <p className="card-text fs-4">Rs {price}</p>
         </div>
-      </div>
-
-      <button
-        className="btn buy w-100 rounded-pill mt-3"
+        <button
+        className=" buy w-100    "
         onClick={(e) => {
           e.stopPropagation(); // Prevent navigation
 
@@ -50,6 +48,9 @@ const ProductCard = ({ id, name, price, image, handleAddToCart, sellerId }) => {
       >
         Add to Cart
       </button>
+      </div>
+
+     
     </div>
   );
 };

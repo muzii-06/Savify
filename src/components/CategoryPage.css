@@ -3,6 +3,7 @@
     background-color: #f9f9f9; /* Light background */
     padding: 20px; /* Add spacing */
     border-radius: 10px; /* Smooth corners */
+    width:100vw;
 }
   
 .category-title 

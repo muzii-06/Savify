@@ -41,7 +41,7 @@ const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout
         handleLogout={handleLogout}
         cart={cart}
       />
-      <div className="category-page container mt-5">
+      <div className="category-page  mt-5">
         {loading ? (
           <div className="text-center">Loading...</div>
         ) : error ? (
@@ -49,7 +49,7 @@ const CategoryPage = ({ handleAddToCart, username, isAuthenticated, handleLogout
         ) : products.length > 0 ? (
           <>
             <h2 className="category-title">{category}</h2>
-            <div className="product-grid row g-4">
+            <div className="product-grid row g-4 w-100 justify-content-center mx-auto">
               {products.map((product) => {
                 const sellerId = product?.seller?._id || 'UNKNOWN_SELLER';
                 const rating = product.reviews?.length

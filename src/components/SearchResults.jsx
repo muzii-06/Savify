@@ -50,7 +50,7 @@ const SearchResults = ({ handleAddToCart, username, isAuthenticated, handleLogou
         cart={cart}
       />
 
-      <div className="search-results container mt-5">
+      <div className="search-results w-100 mt-5">
         <h2 className="mb-4 text-center">
           {loading ? 'Searching...' : `Search Results for "${query}"`}
         </h2>
@@ -64,7 +64,7 @@ const SearchResults = ({ handleAddToCart, username, isAuthenticated, handleLogou
         ) : error ? (
           <p className="text-danger text-center fs-4">{error}</p>
         ) : (
-          <div className="row g-4">
+          <div className="row g-4 justify-content-center">
             {searchResults.map((product) => {
               // Normalize seller ID and name
               const sellerId = (product?.seller?._id || product?.sellerId || '').toString().trim();

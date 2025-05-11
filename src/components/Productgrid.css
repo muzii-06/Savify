@@ -2,9 +2,15 @@
   background-color: #fff; /* White background */
   border-radius: 15px; /* Smooth corners */
   padding: 20px; /* Internal padding */
-  max-width: 1500px; /* Centered width */
+  max-width: 100%; /* Centered width */
 }
 
 .row {
   margin: 0; /* Remove extra margins */
+}
+.product-grid h2 {
+  font-weight: 700;
+  font-size: 2.2rem;
+  text-align: center;
+  margin-bottom: 2rem;
 }
