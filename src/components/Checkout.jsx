@@ -124,7 +124,7 @@ const discountPercent = directBuy?.discountPercent || voucher?.discountPercent;
 
   return (
     <div className="checkout-container">
-      <h2>Checkout</h2>
+      <h2 className="text-dark">Checkout</h2>
 
       {loading ? (
         <p>Loading...</p>

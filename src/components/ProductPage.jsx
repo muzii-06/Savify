@@ -446,7 +446,7 @@ useEffect(() => {
   <div className="modal show fade d-block" tabIndex="-1">
     <div className="modal-dialog modal-dialog-centered">
       <div className="modal-content">
-        <div className="modal-header">
+        <div className="modal-header-chat">
         <h5 className="modal-title">Bargain Assistant</h5>
 
           <button type="button" className="btn-close" onClick={() => setShowBargainModal(false)}></button>

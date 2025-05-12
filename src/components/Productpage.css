@@ -214,11 +214,14 @@
   overflow: hidden;
 }
 
-.modal-header {
-  background-color: #ff4d4f;
-  color: white;
+.modal-header-chat {
+  background-color: #FFCC00;
+  color: black;
   font-weight: bold;
   padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .chat-box {
@@ -238,7 +241,7 @@
 }
 
 .user-msg {
-  background: #dcf8c6;
+  background:#FFCC00;
   align-self: flex-end;
   margin-left: auto;
 }

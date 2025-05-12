@@ -31,7 +31,7 @@ const ProductGrid = ({ handleAddToCart }) => {
 
   return (
     <div className="product-grid my-5 shadow mx-auto">
-      <h2 className="fs-1 fw-bold text-center mb-4">Just For You</h2>
+      <h2 className="fs-1 fw-bold text-center mb-4 text-dark">Just For You</h2>
 
       {loading ? (
         <div className="text-center">Loading...</div>

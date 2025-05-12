@@ -15,8 +15,16 @@ const Footer = () => {
                         <h5>Let Us Help You</h5>
                         <ul className="list-unstyled">
                             
-                            <li><a href="/">Your Account</a></li>
-                            <li><a href="/">Your Orders</a></li>
+                        <li>
+                        <Link className="" to="/edit-profile">
+                         Your Account
+                        </Link>
+                      </li>
+                      <li>
+  <Link className="" to="/manage-orders-buyer">
+    Your Order
+  </Link>
+</li>
                             <li><Link to="/shipping-rates-policy">Shipping Rates & Policies</Link></li>
                             <li><Link to="/returns-replacement-policy">Returns & Replacements</Link></li>
                             <li><Link to="/help">Help</Link></li>
@@ -27,9 +35,9 @@ const Footer = () => {
                     <div className="col-md-4">
                         <h5>Get to Know Us</h5>
                         <ul className="list-unstyled text-white">
-                            <li><a href="/">Careers</a></li>
-                            <li><a href="/">Blog</a></li>
-                            <li><a href="/">About Savify</a></li>
+                        <li><Link to="/careers">Careers</Link></li>
+                        <li><Link to="/blog">Blog</Link></li>
+                            <li><Link to="/About">About us</Link></li>
                            
                         </ul>
                     </div>

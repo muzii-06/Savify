@@ -14,7 +14,10 @@ import Checkout from "./components/Checkout";
 import OrderSuccess from "./components/OrderSuccess";
 import ManageOrdersBuyer from './components/ManageOrdersBuyer';
 import ShippingRatesAndPolicy from './components/Footer_Pages/ShippingRatesAndPolicy';
+import Blog from './components/Footer_Pages/Blog';
+import Careers from './components/Footer_Pages/Careers';
 import ReturnsAndReplacementPolicy from './components/Footer_Pages/ReturnsAndReplacementPolicy';
+import About from './components/Footer_Pages/About';
 import Help from './components/Footer_Pages/Help';
 import ForgotPassword from './components/ForgotPassword';
 import ManageProducts from "./components/ManageProducts"; // ✅ Import ManageProducts
@@ -350,7 +353,10 @@ useEffect(() => {
         />
         <Route path="/seller-signup" element={<SellerSignup />} />
         <Route path="/shipping-rates-policy" element={<ShippingRatesAndPolicy />} />
+        <Route path="/About" element={<About />} />
+        <Route path="/careers" element={<Careers />} />
         <Route path="/returns-replacement-policy" element={<ReturnsAndReplacementPolicy />} />
+        <Route path="/blog" element={<Blog />} />
         <Route path="/help" element={<Help />} />
         <Route
     path="/category/:category"
