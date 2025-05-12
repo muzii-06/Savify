@@ -3,20 +3,20 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "./CreatedBy.css";
 import dev1 from './dev1.png'
-import dev2 from './dev1.png'
-import dev3 from './dev1.png'
+import dev2 from './dev2.png'
+import dev3 from './dev3.png'
 const creators = [
   {
     name: "Muzammil Arif",
     img: dev1,
   },
   {
-    name: "Person 2",
-    img: "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg",
+    name: "Syed Hassaan Ali Shah",
+    img: dev2,
   },
   {
-    name: "Person 3",
-    img: "https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg",
+    name: "Farhan Ahmed",
+    img: dev3,
   },
 ];
 
