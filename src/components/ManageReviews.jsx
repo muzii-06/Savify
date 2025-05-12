@@ -58,56 +58,85 @@ const ManageReviews = () => {
 
   return (
     <div className="revcontainer mt-4">
-      <h2 className="mhead">Manage Reviews</h2>
-      {reviews.length === 0 ? (
-        <p>No reviews found.</p>
-      ) : (
-        <ul className="list-group">
-          {reviews.map((review) => (
-            <li key={review._id} className="list-group-item">
-              {/* ✅ Display Product Name & Image */}
-              <div className="d-flex align-items-center mb-2">
+  <h2 className="mhead mb-4">Manage Reviews</h2>
+
+  {reviews.length === 0 ? (
+    <p>No reviews found.</p>
+  ) : (
+    <div className="table-responsive">
+      <table className="table table-bordered table-hover align-middle text-center">
+        <thead className="table-light">
+          <tr>
+            <th>Sr #</th>
+            <th>Picture</th>
+            <th>Product Name</th>
+            <th>User</th>
+            <th>Rating</th>
+            <th>Review</th>
+            <th>Reply</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {reviews.map((review, index) => (
+            <tr key={review._id}>
+              <td>{index + 1}</td>
+              <td>
                 <img
                   src={`http://localhost:5000/${review.productImage}`}
                   alt={review.productName}
                   width="50"
-                  className="me-2 rounded"
+                  className="rounded"
                 />
-                <strong>{review.productName}</strong>
-              </div>
-
-              <strong>{review.user}</strong> (⭐{review.rating})
-              <p>{review.comment}</p>
-
-              {review.reply && <p className="text-muted"><strong>Reply:</strong> {review.reply}</p>}
-
-              <button className="btn btn-danger me-2" onClick={() => handleDelete(review.productId, review._id)}>
-                <FaTrash /> Delete
-              </button>
-
-              {replyReviewId === review._id ? (
-                <>
-                  <input
-                    type="text"
-                    className="form-control mt-2"
-                    placeholder="Write a reply..."
-                    value={replyText}
-                    onChange={(e) => setReplyText(e.target.value)}
-                  />
-                  <button className="btn btn-primary mt-2" onClick={() => handleReply(review.productId, review._id)}>
-                    <FaReply /> Submit Reply
+              </td>
+              <td>{review.productName}</td>
+              <td>{review.user}</td>
+              <td>⭐ {review.rating}</td>
+              <td>{review.comment}</td>
+              <td>
+                {review.reply ? (
+                  <p className="text-muted mb-0"><strong>{review.reply}</strong></p>
+                ) : replyReviewId === review._id ? (
+                  <div>
+                    <input
+                      type="text"
+                      className="form-control mb-2"
+                      placeholder="Write a reply..."
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                    />
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() => handleReply(review.productId, review._id)}
+                    >
+                      <FaReply /> Submit
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => setReplyReviewId(review._id)}
+                  >
+                    <FaReply /> Reply
                   </button>
-                </>
-              ) : (
-                <button className="btn btn-secondary" onClick={() => setReplyReviewId(review._id)}>
-                  <FaReply /> Reply
+                )}
+              </td>
+              <td>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleDelete(review.productId, review._id)}
+                >
+                  <FaTrash /> Delete
                 </button>
-              )}
-            </li>
+              </td>
+            </tr>
           ))}
-        </ul>
-      )}
+        </tbody>
+      </table>
     </div>
+  )}
+</div>
+
   );
 };
 

@@ -1,18 +1,28 @@
 .revcontainer {
-    max-width: 80vw;
-    margin: auto;
+    background: #fdfefe;
     padding: 2rem;
-    background-color: #fdfdfd;
     border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    max-width: 100%;
     font-family: 'Segoe UI', sans-serif;
   }
   
   .mhead {
-    color: #2c3e50;
     font-weight: bold;
-    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #2c3e50;
   }
+  
+  .table th,
+  .table td {
+    vertical-align: middle;
+  }
+  
+  .table img {
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
   
   .list-group {
     padding: 0;
