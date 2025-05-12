@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaReply, FaTrash } from "react-icons/fa";
-
+import '../styling/ManageReviews.css';
 const ManageReviews = () => {
   const [reviews, setReviews] = useState([]);
   const [replyText, setReplyText] = useState("");
@@ -57,8 +57,8 @@ const ManageReviews = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Manage Reviews</h2>
+    <div className="revcontainer mt-4">
+      <h2 className="mhead">Manage Reviews</h2>
       {reviews.length === 0 ? (
         <p>No reviews found.</p>
       ) : (

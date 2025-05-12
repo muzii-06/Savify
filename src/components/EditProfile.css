@@ -1,0 +1,101 @@
+/* ===== EditProfile.css ===== */
+
+.container {
+    max-width: 700px;
+    background: #f9fbff;
+    padding: 40px;
+    margin: 50px auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  h2, h3 {
+    color: #1e3a8a;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+    display: block;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="date"],
+  select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    background: #ffffff;
+    transition: border 0.3s;
+  }
+  
+  input:focus,
+  select:focus {
+    border-color: #3b82f6;
+    outline: none;
+  }
+  
+  .btn {
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-primary {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #2563eb;
+  }
+  
+  .btn-warning {
+    background-color: #fbbf24;
+    color: black;
+  }
+  
+  .btn-warning:hover {
+    background-color: #f59e0b;
+  }
+  
+  .btn-success {
+    background-color: #10b981;
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background-color: #059669;
+  }
+  
+  .btn-secondary {
+    background-color: #6b7280;
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #4b5563;
+  }
+  
+  .text-success {
+    color: #16a34a;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  .text-danger {
+    color: #dc2626;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  

@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import DashboardContent from './DashboardContent';
 import TopBar from './TopBar';
 import bgImage from './sellerdashboard.png';
-import './Dashboard.css';
+import '../styling/Dashboard.css';
 
 function Dashboard({setAuth}) {
   const location = useLocation(); // Get the location object
@@ -43,7 +43,7 @@ function Dashboard({setAuth}) {
         setAuth={setAuth}
       />
       {/* Sidebar - Always visible */}
-      <div className="sidebar">
+      <div className="">
         <Sidebar />
       </div>
 

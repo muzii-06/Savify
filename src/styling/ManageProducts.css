@@ -1,0 +1,74 @@
+/* ===== ManageProducts.css ===== */
+
+.manage-products-container {
+    padding: 30px;
+    max-width: 80vw;
+    margin: 0 auto;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .manage-products-container h2 {
+    color: #1e3a8a;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+  }
+  
+  /* .table {
+    background-color:#1e3a8a ;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  } */
+  
+  .table th {
+    /* background-color: #f1f5f9; */
+    color: black;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  
+  .table td {
+    vertical-align: middle;
+    color: #333;
+  }
+  
+  .table img {
+    border-radius: 6px;
+    object-fit: cover;
+    margin: auto;
+    display: block;
+  }
+  
+  .btn-warning {
+    background-color: #fbbf24;
+    border: none;
+    color: black;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-warning:hover {
+    background-color: #f59e0b;
+  }
+  
+  .btn-danger {
+    background-color: #ef4444;
+    border: none;
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-danger:hover {
+    background-color: #dc2626;
+  }
+  
+  .no-products-message {
+    text-align: center;
+    color: #64748b;
+    margin-top: 20px;
+    font-style: italic;
+  }
+  

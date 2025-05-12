@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './AdminDashboard.css';
+import '../styling/AdminDashboard.css';
 import ManageSeller from './ManageSeller';
 import ManageBuyer from './ManageBuyer';
 import ManageProducts_Admin from './ManageProducts_Admin';

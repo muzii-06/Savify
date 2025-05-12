@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import './EditProfile.css';
+
 import axios from 'axios';
 
 const EditProfile = () => {
@@ -25,19 +27,27 @@ const EditProfile = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
+     
+
       try {
         console.log("Fetching user data for ID:", userId);
         const response = await axios.get(`http://localhost:5000/api/auth/user/${userId}`);
+        console.log("Full user response:", response.data);
+        console.log("Parsed dateOfBirth:", response.data.dateOfBirth?.split('T')[0]);
+        console.log("Parsed gender:", response.data.gender);
 
         if (response.data) {
           setUser({
             username: response.data.username || '',
             email: response.data.email || '',
             address: response.data.address || '',
-            dateOfBirth: response.data.dateOfBirth ? response.data.dateOfBirth.split('T')[0] : '',
-            gender: response.data.gender || '',
             contactNumber: response.data.contactNumber || '',
+            dateOfBirth: response.data.dateOfBirth
+              ? response.data.dateOfBirth.split('T')[0]
+              : '',
+            gender: response.data.gender || '',
           });
+          
         }
         setLoading(false);
       } catch (error) {
@@ -138,17 +148,30 @@ const EditProfile = () => {
 
         <div className="mb-3">
           <label>Date of Birth:</label>
-          <input type="date" name="dateOfBirth" value={user.dateOfBirth} onChange={handleChange} className="form-control" required />
+          <input
+  type="date"
+  name="dateOfBirth"
+  value={user.dateOfBirth}
+  onChange={handleChange}
+  className="form-control"
+  required
+/>
         </div>
 
         <div className="mb-3">
           <label>Gender:</label>
-          <select name="gender" value={user.gender} onChange={handleChange} className="form-control" required>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
+          <select
+  name="gender"
+  value={user.gender}
+  onChange={handleChange}
+  className="form-control"
+  required
+>
+  <option value="">Select Gender</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Other">Other</option>
+</select>
         </div>
 
         <div className="mb-3">

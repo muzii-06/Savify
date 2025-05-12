@@ -405,6 +405,8 @@ router.get('/user/:id', async (req, res) => {
       contactNumber: user.contactNumber,
       createdAt: user.createdAt,
       totalOrders: user.totalOrders || 0,
+      dateOfBirth: user.dateOfBirth,
+  gender: user.gender,
     });
   } catch (error) {
     console.error('❌ DB Error:', error);

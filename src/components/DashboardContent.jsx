@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 import { FaBox, FaDollarSign, FaShoppingCart,FaMoneyBillWave } from 'react-icons/fa';
-import './Dashboard.css';
+// import './Dashboard.css';
 
 function DashboardContent() {
   const [stats, setStats] = useState({

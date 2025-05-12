@@ -2,7 +2,7 @@
   import axios from 'axios';
   import { FaTrash } from 'react-icons/fa';
 
-  import './ManageOrdersSeller.css';
+  import '../styling/ManageOrdersSeller.css';
   const ManageOrdersSeller = () => {
     const [orders, setOrders] = useState([]);
     const sellerId = localStorage.getItem("sellerId");

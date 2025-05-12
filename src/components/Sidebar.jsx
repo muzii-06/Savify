@@ -9,7 +9,7 @@ function Sidebar() {
 
   return (
     <>
-      <Nav className="flex-column p-3 sidebar shadow ">
+      <Nav className="flex-column p-3  shadow ">
         <h4>Seller Dashboard</h4>
         <Nav.Item >
           <Nav.Link  as={Link} to="/account-setting">

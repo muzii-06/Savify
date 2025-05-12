@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './ManageSeller.css';
+import '../styling/ManageSeller.css';
 
 const ITEMS_PER_PAGE = 10;
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import EditProductModal from "./EditProductModal"; // ✅ Import Edit Modal
+import '../styling/ManageProducts.css';
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const ManageProducts = () => {
@@ -40,30 +41,30 @@ const ManageProducts = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Manage Your Products</h2>
+    <div className="manage-products-container mt-4">
+      <h2 className="">Manage Your Products</h2>
       {products.length === 0 ? (
         <p>No products found. Add some products!</p>
       ) : (
-        <table className="table table-striped">
-          <thead>
-            <tr>
+        <table className="table mtable table-striped">
+          <thead >
+            <tr className="fw-bold">
               <th>Image</th>
               <th>Name</th>
               <th>Price</th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody cl>
             {products.map((product) => (
               <tr key={product._id}>
                 <td>
                   <img src={`http://localhost:5000/${product.images[0]}`} alt={product.name} width="50" />
                 </td>
-                <td>{product.name}</td>
-                <td>Rs. {product.price}</td>
-                <td>
-                  <button className="btn btn-warning me-2" onClick={() => handleEdit(product._id)}>
+                <td className="text-center">{product.name}</td>
+                <td className="text-center">Rs. {product.price}</td>
+                <td className="d-flex justify-content-center">
+                  <button className="btn btn-warning me-2 " onClick={() => handleEdit(product._id)}>
                     <FaEdit /> Edit
                   </button>
                   <button className="btn btn-danger" onClick={() => handleDelete(product._id)}>
