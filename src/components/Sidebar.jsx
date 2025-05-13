@@ -12,7 +12,7 @@ function Sidebar() {
       <Nav className="flex-column p-3  shadow ">
         <h4>Seller Dashboard</h4>
         <Nav.Item >
-          <Nav.Link  as={Link} to="/account-setting">
+          <Nav.Link  as={Link} to="/edit-seller-profile">
             <p className='text-white m-0 p-0'>
               <FaUser className="icon " />  Account Setting
               </p>
@@ -50,14 +50,7 @@ function Sidebar() {
   </Nav.Link>
 </Nav.Item>
 
-        <Nav.Item>
-          <Nav.Link as={Link} to="/manage-messages">
-          <p className='text-white m-0 p-0'>
-
-            <FaEnvelope className="icon" /> Manage Messages
-          </p>
-          </Nav.Link>
-        </Nav.Item>
+        
       </Nav>
       <AddProductModal show={showModal} handleClose={() => setShowModal(false)} />
     </>
