@@ -31,14 +31,14 @@ const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>Our Vision</h2>
-        <p>
+        <h2 >Our Vision</h2>
+        <p >
           To become the most trusted and innovative e-commerce marketplace in South Asia — where technology meets convenience, and affordability meets quality.
         </p>
       </section>
 
       <section className="about-section">
-        <h2>Contact Us</h2>
+        <h2 className='fs-6'>Contact Us</h2>
         <p>
           Have questions? Reach out to us at <strong>support@savify.com</strong>. We’re always here to help.
         </p>
