@@ -397,7 +397,7 @@ useEffect(() => {
     <div className="modal-dialog modal-dialog-centered">
       <div className="modal-content">
         <div className="modal-header">
-          <h5 className="modal-title">Bargain Round {cartRound} of {avgRounds}</h5>
+          <h5 className="modal-title">Bargain Assistant </h5>
           <button type="button" className="btn-close" onClick={() => setShowCartBargainModal(false)}></button>
         </div>
         <div className="modal-body">
